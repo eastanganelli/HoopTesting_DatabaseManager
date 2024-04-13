@@ -1,19 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import type { GetRef, InputRef } from 'antd';
 import { FolderOpenOutlined, DeleteOutlined, InsertRowBelowOutlined, SaveOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, FloatButton, Button } from 'antd';
+import { Form, Input, Popconfirm, Table, FloatButton, Button, Tag } from 'antd';
 
+import type { standardType } from '../interfaces/table';
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
 const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-interface Item {
-    key: string;
-    standard: string;
-    materials: string;
-    endCap: string;
-}
 
 interface EditableRowProps {
     index: number;
@@ -34,29 +28,17 @@ interface EditableCellProps {
     title: React.ReactNode;
     editable: boolean;
     children: React.ReactNode;
-    dataIndex: keyof Item;
-    record: Item;
-    handleSave: (record: Item) => void;
+    dataIndex: keyof standardType;
+    record: standardType;
+    handleSave: (record: standardType) => void;
 }
 
-const EditableCell: React.FC<EditableCellProps> = ({
-    title,
-    editable,
-    children,
-    dataIndex,
-    record,
-    handleSave,
-    ...restProps
-}) => {
+const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
     const [editing, setEditing] = useState(false);
     const inputRef = useRef<InputRef>(null);
     const form = useContext(EditableContext)!;
 
-    useEffect(() => {
-        if (editing) {
-            inputRef.current?.focus();
-        }
-    }, [editing]);
+    useEffect(() => { if (editing) { inputRef.current?.focus(); } }, [editing]);
 
     const toggleEdit = () => {
         setEditing(!editing);
@@ -69,9 +51,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
             toggleEdit();
             handleSave({ ...record, ...values });
-        } catch (errInfo) {
-            console.log('Save failed:', errInfo);
-        }
+        } catch (errInfo) { console.log('Save failed:', errInfo); }
     };
 
     let childNode = children;
@@ -81,20 +61,11 @@ const EditableCell: React.FC<EditableCellProps> = ({
             <Form.Item
                 style={{ margin: 0 }}
                 name={dataIndex}
-                rules={[
-                    {
-                        required: true,
-                        message: `${title} is required.`,
-                    },
-                ]}
+                rules={[{ required: true, message: `${title} is required.` }]}
             >
                 <Input ref={inputRef} onPressEnter={save} onBlur={save} />
             </Form.Item>
-        ) : (
-            <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
-                {children}
-            </div>
-        );
+        ) : (<div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>{children}</div>);
     }
 
     return <td {...restProps}>{childNode}</td>;
@@ -102,33 +73,25 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
 type EditableTableProps = Parameters<typeof Table>[0];
 
-interface DataType {
-    key: React.Key;
-    standard: string;
-    materials: string;
-    endCap: string;
-}
-
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
 
 const Standards = () => {
-    const [dataSource, setDataSource] = useState<DataType[]>([
+    const [dataSource, setDataSource] = useState<standardType[]>([
         {
             key: '0',
-            standard: 'Edward King 0',
-            materials: '32',
-            endCap: 'London, Park Lane no. 0',
+            standard: 'ISO 1995-1667',
+            materials: [{id: 4, material: "PE"}],
+            endCap: [{id: 1, endcap: "Tipo A"}, {id: 2, endcap: "Tipo B"}],
         },
         {
             key: '1',
-            standard: 'Edward King 1',
-            materials: '32',
-            endCap: 'London, Park Lane no. 1',
+            standard: 'IRAM-1667-1995',
+            materials: [{id: 5, material: "PBC"}],
+            endCap: []
         },
     ]);
 
     const [ids, setIds] = useState<{ id: number; type: string; }[]>([]);
-
     const [count, setCount] = useState(2);
 
     const handleDelete = (key: React.Key) => {
@@ -140,18 +103,20 @@ const Standards = () => {
         {
             title: 'Estandard',
             dataIndex: 'standard',
-            width: '30%',
+            width: '25%',
             editable: true
         },
         {
             title: 'Materiales',
             dataIndex: 'materials',
-            editable: true
+            render: (materials: { id: number; material: string; }[]) => 
+                materials.map(({ id, material }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{material}</Tag>)
         },
         {
             title: 'Tapa',
             dataIndex: 'endCap',
-            editable: true
+            render: (endCap: { id: number; endcap: string; }[]) => 
+                endCap.map(({ id, endcap }) => <p key={id}>{endcap}</p>)
         },
         {
             title: '',
@@ -159,7 +124,7 @@ const Standards = () => {
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>
-                        <Button icon={<FolderOpenOutlined />} type='primary' ghost/>
+                        <Button icon={<FolderOpenOutlined />} type='primary' ghost />
                         <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
                             <Button icon={<DeleteOutlined />} danger />
                         </Popconfirm>
@@ -169,17 +134,17 @@ const Standards = () => {
     ];
 
     const handleAdd = () => {
-        const newData: DataType = {
+        const newData: standardType = {
             key: count,
-            standard: `Edward King ${count}`,
-            materials: '32',
-            endCap: `London, Park Lane no. ${count}`,
+            standard: `Nuevo Estandard`,
+            materials: [],
+            endCap: [],
         };
         setDataSource([...dataSource, newData]);
         setCount(count + 1);
     };
 
-    const handleSave = (row: DataType) => {
+    const handleSave = (row: standardType) => {
         const newData = [...dataSource];
         const index = newData.findIndex((item) => row.key === item.key);
         const item = newData[index];
@@ -203,7 +168,7 @@ const Standards = () => {
         }
         return {
             ...col,
-            onCell: (record: DataType) => ({
+            onCell: (record: standardType) => ({
                 record,
                 editable: col.editable,
                 dataIndex: col.dataIndex,

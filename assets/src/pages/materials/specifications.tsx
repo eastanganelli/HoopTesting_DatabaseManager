@@ -1,9 +1,10 @@
 import React, { FunctionComponent, useContext, useEffect, useRef, useState } from 'react';
 import type { GetRef, InputRef } from 'antd';
-import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
+import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Input, Popconfirm, Table, Button } from 'antd';
 
 import type { EditableRowProps, specificationType } from '../../interfaces/table';
+import Configurations from './configurations';
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 type EditableTableProps = Parameters<typeof Table>[0];
@@ -77,7 +78,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
 		{
-			title: 'Material',
+			title: 'Especificación',
 			dataIndex: 'specification',
 			width: 50,
 			editable: true
@@ -133,7 +134,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 				size='small'
 				bordered
 				dataSource={dataSource}
-				expandable={{ expandedRowRender: (record) => (<> <Button>{'Nueva Especificación'}</Button><br/>{record['material']} </>) }}
+				expandable={{ expandedRowRender: (record) => (<Configurations idMaterial={record['id']} Data={record['configurations']} />) }}
 				columns={columns as ColumnTypes}
 			/>
 		</>

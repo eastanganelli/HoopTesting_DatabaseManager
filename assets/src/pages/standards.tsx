@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import type { GetRef, InputRef } from 'antd';
-import { FolderOpenOutlined, DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
 import { Form, Input, Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
 
 import type { standardType } from '../interfaces/table';
@@ -79,14 +79,14 @@ const Standards = () => {
     const { token } = theme.useToken();
     const [dataSource, setDataSource] = useState<standardType[]>([
         {
-            key: '0',
+            key: 0,
             standard: 'ISO 1995-1667',
             materials: [{ id: 4, material: "PE" }],
             enviroment: [{id: 1, insertFluid: "Agua", outsideFluid: "Agua"}, {id: 2, insertFluid: "Agua", outsideFluid: "Liquido"}, {id: 3, insertFluid: "Agua", outsideFluid: "Aire"}],
             endCap: [{ id: 1, endcap: "Tipo A" }, { id: 2, endcap: "Tipo B" }]
         },
         {
-            key: '1',
+            key: 1,
             standard: 'IRAM-1667-1995',
             materials: [{ id: 5, material: "PBC" }],
             enviroment: [],
@@ -137,6 +137,7 @@ const Standards = () => {
         {
             title: 'Tapa',
             dataIndex: 'endCap',
+            key: 'tags',
             width: 150,
             render: (endCap: { id: number; endcap: string; }[]) =>
                 <>

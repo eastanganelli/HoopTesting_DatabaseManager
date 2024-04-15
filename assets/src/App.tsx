@@ -4,7 +4,7 @@ import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
 
 import Operators from "./pages/operators";
-import Materials from "./pages/materials";
+import Materials from "./pages/materials/materials";
 import Standards from './pages/standards';
 
 const { Content, Sider } = Layout;

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Key } from 'react';
 
 interface EditableRowProps { index: number; }
 
@@ -11,38 +11,64 @@ interface EditableCellProps<T> {
 	handleSave: (record: T) => void;
 }
 
+interface enviromentType {
+    key: Key;
+    insertFluid: string;
+    outsideFluid: string;
+}
+
+interface endCapType {
+    key: Key;
+    endcap: string;
+}
+
+interface conditionalPeriodType {
+    key: Key;
+    minwall: number;
+    maxwall: number;
+    time: string;
+}
+
+interface standardHasMaterialType {
+    key: Key;
+    idMaterial: Key;
+    material: string;
+    description: string;
+}
+
 interface standardType {
-    key: React.Key;
+    key: Key;
     standard: string; // Change to an array of objects
-    materials: { id: number; material: string; }[]; // Change to an array of objects
-    enviroment: { id: number; insertFluid: string; outsideFluid: string; }[]; // Change to an array of objects
-    endCap: { id: number; endcap: string; }[];
+    materials: standardHasMaterialType[]; // Change to an array of objects
+    enviroments: enviromentType[]; // Change to an array of objects
+    endCaps: endCapType[];
+    conditionalPeriods: conditionalPeriodType[];
 }
 
 interface configurationType {
-    key: React.Key;
+    key: Key;
     time: number;
     temperature: number;
 }
 
 interface specificationType {
-    key: React.Key;
+    key: Key;
     specification: string;
     description: string;
     configurations: configurationType[];
 }
 
 interface materialType {
-    key: React.Key;
+    key: Key;
     material: string;
     description: string;
     specifications: specificationType[]  // Change to an array of objects
 }
 
 interface operatorType {
-    dni: number;
+    dni: Key;
     name: string;
     familyName: string;
 }
 
-export type { EditableRowProps, EditableCellProps, standardType, materialType, specificationType, configurationType, operatorType };
+export type { EditableRowProps, EditableCellProps, standardType, standardHasMaterialType, enviromentType, endCapType, conditionalPeriodType, materialType, specificationType, configurationType, operatorType };

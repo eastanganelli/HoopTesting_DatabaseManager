@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal } from 'antd';
 
-import type { standardType } from '../interfaces/table';
+import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType } from '../interfaces/table';
 import type { ColumnTypes }  from '../components/editableCell';
 import { EditableRow, EditableCell } from '../components/editableCell';
 import ModalStandard from '../components/standardsModal/standard';
@@ -15,16 +15,18 @@ const Standards = () => {
         {
             key: 0,
             standard: 'ISO 1995-1667',
-            materials: [{ id: 4, material: "PE" }],
-            enviroment: [{ id: 1, insertFluid: "Agua", outsideFluid: "Agua" }, { id: 2, insertFluid: "Agua", outsideFluid: "Liquido" }, { id: 3, insertFluid: "Agua", outsideFluid: "Aire" }],
-            endCap: [{ id: 1, endcap: "Tipo A" }, { id: 2, endcap: "Tipo B" }]
+            materials: [{ key: 4, idMaterial: 0, material: "PE", description: "Plastico rigido"}],
+            enviroments: [{ key: 1, insertFluid: "Agua", outsideFluid: "Agua" }, { key: 2, insertFluid: "Agua", outsideFluid: "Liquido" }, { key: 3, insertFluid: "Agua", outsideFluid: "Aire" }],
+            endCaps: [{ key: 1, endcap: "Tipo A" }, { key: 2, endcap: "Tipo B" }],
+            conditionalPeriods: [{ key: 0, time: "1 h ± 5 min", maxwall: 3, minwall: 0}, { key: 1, time: "3 h ± 15 min", maxwall: 8, minwall: 3}, { key: 2, time: "6 h ± 30 min", maxwall: 16, minwall: 8}, {key: 3, time: "10 h ± 1 h", maxwall: 32, minwall: 16}, { key: 4, time: "16 h ± 1 h", maxwall: 9999999, minwall: 32}]
         },
         {
             key: 1,
             standard: 'IRAM-1667-1995',
-            materials: [{ id: 5, material: "PBC" }],
-            enviroment: [],
-            endCap: []
+            materials: [{ key: 5, idMaterial: 1, material: "PBC", description: "Plastico semi rigido"}],
+            enviroments: [],
+            endCaps: [],
+            conditionalPeriods: []
         },
     ]);
 
@@ -48,33 +50,43 @@ const Standards = () => {
             editable: true
         },
         {
-            title: 'Materiales',
-            dataIndex: 'materials',
+            title: 'Tapa',
+            dataIndex: 'endCaps',
+            key: 'tags',
             width: 150,
-            render: (materials: { id: number; material: string; }[]) =>
+            render: (endCap: endCapType[], record, _) =>
                 <>
-                    {materials.map(({ id, material }) => <Tag closeIcon onClose={() => console.log('ID_Standard',)}>{`${material}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {endCap.map(({ key, endcap }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
+                    <Tag onClick={() => console.log('id standard', record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
             title: 'Ambiente',
-            dataIndex: 'enviroment',
+            dataIndex: 'enviroments',
             width: 150,
-            render: (enviroment: { id: number; insertFluid: string; outsideFluid: string; }[]) =>
+            render: (enviroment: enviromentType[], record, _) =>
                 <>
-                    {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
+                    {enviroment.map(({ key, insertFluid, outsideFluid }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
                     <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
-            title: 'Tapa',
-            dataIndex: 'endCap',
-            key: 'tags',
+            title: 'Periodos Condicionales',
+            dataIndex: 'conditionalPeriods',
             width: 150,
-            render: (endCap: { id: number; endcap: string; }[]) =>
+            render: (conditionalPeriods: conditionalPeriodType[], record, _) =>
                 <>
-                    {endCap.map(({ id, endcap }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
+                    {conditionalPeriods.map(({ key, minwall, maxwall, time }) => <Tag closeIcon onClose={() => console.log('ID_Standard', record['key'])}>{`${time}`}</Tag>)}
+                    <Tag onClick={() => console.log('id standard', record['key'])} style={tagPlusStyle}><PlusOutlined /></Tag>
+                </>
+        },
+        {
+            title: 'Materiales',
+            dataIndex: 'materials',
+            width: 150,
+            render: (materials: standardHasMaterialType[], record, _) =>
+                <>
+                    {materials.map(({ key, material }) => <Tag closeIcon onClose={() => console.log('ID_Standard',)}>{`${material}`}</Tag>)}
                     <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
@@ -142,7 +154,6 @@ const Standards = () => {
                 columns={columns as ColumnTypes}
             />
             <FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
-            <FloatButton icon={<SaveOutlined />} style={{ right: 72 }} />
         </>
     );
 };

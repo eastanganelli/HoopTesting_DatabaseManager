@@ -71,7 +71,6 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 };
 
 const Materials: FunctionComponent = () => {
-	const { token } = theme.useToken();
 	const [dataSource, setDataSource] = useState<materialType[]>([
 		{
 			key: 0,
@@ -86,8 +85,6 @@ const Materials: FunctionComponent = () => {
 			specifications: [{ key: 2, specification: "PBC-200", description: '', configurations: [{ key: 4, time: 60, temperature: 50 }] }]
 		},
 	]);
-
-	const [ids, setIds] = useState<{ id: number; type: string; }[]>([]);
 	const [count, setCount] = useState(2);
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -147,8 +144,8 @@ const Materials: FunctionComponent = () => {
 				size='small'
 				bordered
 				dataSource={dataSource}
-				expandable={{ expandedRowRender: (record) => (<Specifications />) }}
 				columns={columns as ColumnTypes}
+				expandable={{ expandedRowRender: (record: materialType | any) => (<Specifications idMaterial={record['key']} Data={record['specifications']} />) }}
 			/>
 			<FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
 			<FloatButton icon={<SaveOutlined />} style={{ right: 72 }} />

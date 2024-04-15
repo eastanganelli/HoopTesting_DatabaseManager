@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { FunctionComponent, useContext, useEffect, useRef, useState } from 'react';
 import type { GetRef, InputRef } from 'antd';
 import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
 import { Form, Input, Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
@@ -63,24 +63,11 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 	return <td {...restProps}>{childNode}</td>;
 };
 
-const Specifications = () => {
-	const { token } = theme.useToken();
-	const [dataSource, setDataSource] = useState<specificationType[]>([
-		{
-			key: '0',
-			specification: 'PE100',
-			description: 'Plastico rigido',
-			configurations: [{ "key": 1, "time": 1000, "temperature": 20 }]
-		},
-		{
-			key: '1',
-			specification: 'PBC',
-			description: 'Plastico semi rigido',
-			configurations: [{ "key": 4, "time": 60, "temperature": 50 }]
-		},
-	]);
+interface Props { Data: specificationType[]; idMaterial: number }
 
-	const [ids, setIds] = useState<{ id: number; type: string; }[]>([]);
+const Specifications: FunctionComponent<Props> = (Props : Props) => {
+    const [dataID, setDataID] = useState<number>(Props['idMaterial']);
+	const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
 	const [count, setCount] = useState(2);
 
 	const handleDelete = (key: React.Key) => {
@@ -91,7 +78,7 @@ const Specifications = () => {
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
 		{
 			title: 'Material',
-			dataIndex: 'material',
+			dataIndex: 'specification',
 			width: 50,
 			editable: true
 		},

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
+import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal } from 'antd';
 
 import type { standardType } from '../interfaces/table';
-import type { ColumnTypes } from '../components/editableCell';
+import type { ColumnTypes }  from '../components/editableCell';
 import { EditableRow, EditableCell } from '../components/editableCell';
+import ModalStandard from '../components/standardsModal/standard';
+
+const { confirm } = Modal;
 
 const Standards = () => {
     const { token } = theme.useToken();
@@ -91,9 +94,25 @@ const Standards = () => {
     ];
 
     const handleAdd = () => {
-        const newData: standardType = { key: count, standard: `Nuevo Estandard`, materials: [], enviroment: [], endCap: [] };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
+        let newData: standardType | null = null;
+        const newStandardToAdd = (myData: standardType) => { newData = myData; }
+        
+        confirm({
+            title: 'Nuevo Estandard',
+            content: ( <ModalStandard newStandardToAdd={newStandardToAdd} /> ),
+            width: 600,
+            okText: 'Agregar',
+            onOk: () => {
+                if(newData !== null) {
+                    console.log('New Standard:', newData);
+                    setDataSource([...dataSource, newData]);
+                    setCount(count + 1);
+                }
+            },
+            cancelText: 'Cancelar',
+            onCancel: () => { console.log('Cancel'); },
+            
+        });
     };
 
     const handleSave = (row: standardType) => {
@@ -115,7 +134,7 @@ const Standards = () => {
         <>
             <Table
                 components={components}
-                rowClassName={() => 'editable-row'}
+                // rowClassName={() => 'editable-row'}
                 scroll={{ x: 500 }}
                 size='small'
                 bordered

@@ -31,7 +31,8 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 			title: 'Descripción',
 			dataIndex: 'description',
 			width: 150,
-			editable: true
+			editable: true,
+			render: (text: string) => <>{text === '' ? 'Sin Datos' : text}</>
 		},
 		{
 			title: '',
@@ -78,7 +79,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 				size='small'
 				bordered
 				dataSource={dataSource}
-				expandable={{ expandedRowRender: (record) => (<Configurations idMaterial={record['id']} Data={record['configurations']} />) }}
+				expandable={{ expandedRowRender: (record) => (<Configurations idSpecification={record['id']} Data={record['configurations']} />) }}
 				columns={columns as ColumnTypes}
 			/>
 		</>

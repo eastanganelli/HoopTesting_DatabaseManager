@@ -77,7 +77,7 @@ const Materials = () => {
 		<div>
 			<Table
 				components={components}
-				rowClassName={() => 'editable-row'}
+				// rowClassName={(record) => { console.log(record); return record.key % 2 === 0 ? 'Hello' : ''; }}
 				scroll={{ x: 500 }}
 				size='small'
 				bordered

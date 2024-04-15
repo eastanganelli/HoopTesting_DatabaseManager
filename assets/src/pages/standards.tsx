@@ -42,6 +42,22 @@ const Standards = () => {
         setDataSource(newData);
     };
 
+    const handleEndCapAdd    = (record: standardType) => {};
+    const handleEndCapUpdate = (record: standardType) => {};
+    const handleEnCapRemove  = (record: standardType) => {};
+
+    const handleEnviromentAdd     = (record: standardType) => {};
+    const handleEnviromentUpdate  = (record: standardType) => {};
+    const handleEnviromentRemove  = (record: standardType) => {};
+
+    const handleConditionalPeriodAdd     = (record: standardType) => {};
+    const handleConditionalPeriodUpdate  = (record: standardType) => {};
+    const handleConditionalPeriodRemove  = (record: standardType) => {};
+
+    const handleMaterialAdd     = (record: standardType) => {};
+    const handleMaterialUpdate  = (record: standardType) => {};
+    const handleMaterialRemove  = (record: standardType) => {};
+
     const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
         {
             title: 'Estandard',

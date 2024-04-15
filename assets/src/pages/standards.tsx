@@ -1,79 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import type { GetRef, InputRef } from 'antd';
+import React, { useState } from 'react';
 import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
+import { Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
 
 import type { standardType } from '../interfaces/table';
-
-type FormInstance<T> = GetRef<typeof Form<T>>;
-
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-interface EditableRowProps {
-    index: number;
-}
-
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-    const [form] = Form.useForm();
-    return (
-        <Form form={form} component={false}>
-            <EditableContext.Provider value={form}>
-                <tr {...props} />
-            </EditableContext.Provider>
-        </Form>
-    );
-};
-
-interface EditableCellProps {
-    title: React.ReactNode;
-    editable: boolean;
-    children: React.ReactNode;
-    dataIndex: keyof standardType;
-    record: standardType;
-    handleSave: (record: standardType) => void;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
-    const [editing, setEditing] = useState(false);
-    const inputRef = useRef<InputRef>(null);
-    const form = useContext(EditableContext)!;
-
-    useEffect(() => { if (editing) { inputRef.current?.focus(); } }, [editing]);
-
-    const toggleEdit = () => {
-        setEditing(!editing);
-        form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-    };
-
-    const save = async () => {
-        try {
-            const values = await form.validateFields();
-
-            toggleEdit();
-            handleSave({ ...record, ...values });
-        } catch (errInfo) { console.log('Save failed:', errInfo); }
-    };
-
-    let childNode = children;
-
-    if (editable) {
-        childNode = editing ? (
-            <Form.Item
-                style={{ margin: 0 }}
-                name={dataIndex}
-                rules={[{ required: true, message: `${title} is required.` }]}
-            >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-            </Form.Item>
-        ) : (<div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>{children}</div>);
-    }
-
-    return <td {...restProps}>{childNode}</td>;
-};
-
-type EditableTableProps = Parameters<typeof Table>[0];
-
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+import type { ColumnTypes } from '../components/editableCell';
+import { EditableRow, EditableCell } from '../components/editableCell';
 
 const Standards = () => {
     const { token } = theme.useToken();
@@ -82,7 +13,7 @@ const Standards = () => {
             key: 0,
             standard: 'ISO 1995-1667',
             materials: [{ id: 4, material: "PE" }],
-            enviroment: [{id: 1, insertFluid: "Agua", outsideFluid: "Agua"}, {id: 2, insertFluid: "Agua", outsideFluid: "Liquido"}, {id: 3, insertFluid: "Agua", outsideFluid: "Aire"}],
+            enviroment: [{ id: 1, insertFluid: "Agua", outsideFluid: "Agua" }, { id: 2, insertFluid: "Agua", outsideFluid: "Liquido" }, { id: 3, insertFluid: "Agua", outsideFluid: "Aire" }],
             endCap: [{ id: 1, endcap: "Tipo A" }, { id: 2, endcap: "Tipo B" }]
         },
         {
@@ -94,13 +25,12 @@ const Standards = () => {
         },
     ]);
 
-    const [ids, setIds] = useState<{ id: number; type: string; }[]>([]);
     const [count, setCount] = useState(2);
 
     const tagPlusStyle: React.CSSProperties = {
         background: token.colorBgContainer,
         borderStyle: 'dashed',
-      };
+    };
 
     const handleDelete = (key: React.Key) => {
         const newData = dataSource.filter((item) => item.key !== key);
@@ -152,7 +82,6 @@ const Standards = () => {
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>
-                        {/* <Button icon={<FolderOpenOutlined />} type='primary' ghost /> */}
                         <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
                             <Button icon={<DeleteOutlined />} danger />
                         </Popconfirm>
@@ -183,11 +112,19 @@ const Standards = () => {
     });
 
     return (
-        <div>
-            <Table components={components} rowClassName={() => 'editable-row'} scroll={{ x: 500 }} size='small' bordered dataSource={dataSource} columns={columns as ColumnTypes} />
+        <>
+            <Table
+                components={components}
+                rowClassName={() => 'editable-row'}
+                scroll={{ x: 500 }}
+                size='small'
+                bordered
+                dataSource={dataSource}
+                columns={columns as ColumnTypes}
+            />
             <FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
             <FloatButton icon={<SaveOutlined />} style={{ right: 72 }} />
-        </div>
+        </>
     );
 };
 

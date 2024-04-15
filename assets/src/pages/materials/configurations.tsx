@@ -66,7 +66,7 @@ const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, 
 interface Props { Data: specificationType[]; idMaterial: number }
 
 const Configurations: FunctionComponent<Props> = (Props: Props) => {
-    const [dataID, setDataID] = useState<number>(Props['idMaterial']);
+    const [sepecificationID, setSepecificationID] = useState<number>(Props['idMaterial']);
     const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
     const [count, setCount] = useState(2);
 

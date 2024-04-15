@@ -1,20 +1,23 @@
 import React from 'react';
-import { BookOutlined, FormatPainterOutlined, UserOutlined } from '@ant-design/icons';
+import { BookOutlined, FormatPainterOutlined, UserOutlined, DatabaseOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
 
 import Operators from "./pages/operators";
 import Materials from "./pages/materials/materials";
 import Standards from './pages/standards';
+import Database  from './pages/database';
 
 const { Content, Sider } = Layout;
 
-const menuItems: string[] = ['Estandares', 'Materiales', 'Operadores'];
+const menuItems: string[] = ['Estandares', 'Materiales', 'Operadores', 'Base de datos'];
 
 const items: MenuProps['items'] = [
     BookOutlined,
     FormatPainterOutlined,
-    UserOutlined
+    UserOutlined,
+    DatabaseOutlined
+
 ].map((icon, index) => ({
     key: menuItems[index],
     icon: React.createElement(icon),
@@ -31,6 +34,8 @@ const App: React.FC = () => {
                 return <Materials />;
             case 'Operadores':
                 return <Operators />;
+            case 'Base de datos':
+                return <Database />;
             default:
                 return <Standards />;
         }

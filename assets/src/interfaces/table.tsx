@@ -2,6 +2,15 @@ import React from 'react';
 
 interface EditableRowProps { index: number; }
 
+interface EditableCellProps<T> {
+	title: React.ReactNode;
+	editable: boolean;
+	children: React.ReactNode;
+	dataIndex: keyof T;
+	record: T;
+	handleSave: (record: T) => void;
+}
+
 interface standardType {
     key: React.Key;
     standard: string; // Change to an array of objects
@@ -36,4 +45,4 @@ interface operatorType {
     familyName: string;
 }
 
-export type { EditableRowProps, standardType, materialType, specificationType, configurationType, operatorType };
+export type { EditableRowProps, EditableCellProps, standardType, materialType, specificationType, configurationType, operatorType };

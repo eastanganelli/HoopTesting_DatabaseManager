@@ -51,30 +51,30 @@ const Standards = () => {
             title: 'Tapa',
             dataIndex: 'endCaps',
             width: 150,
-            render: (endCap: endCapType[], record, _) =>
+            render: (endCap: endCapType[], record, index) =>
                 <>
-                    {endCap.map(({ id, endcap }) => <Tag key={id} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
-                    <Tag key={`new`} onClick={() => console.log('id standard', record)} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {endCap.map(({ id, endcap }) => <Tag key={`endcap_${id}`} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
+                    <Tag key={`new_endcap_${index}`} onClick={() => console.log('id standard', record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
             title: 'Ambiente',
             dataIndex: 'enviroments',
             width: 150,
-            render: (enviroment: enviromentType[], record, _) =>
+            render: (enviroment: enviromentType[], record, index) =>
                 <>
-                    {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag key={id} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
-                    <Tag key={`new`} onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag key={`enviroment_${id}`} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
+                    <Tag key={`new_enviroment_${index}`} onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
             title: 'Periodos Condicionales',
             dataIndex: 'conditionalPeriods',
             width: 150,
-            render: (conditionalPeriods: conditionalPeriodType[], record, _) =>
+            render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
-                    {conditionalPeriods.map(({ id, minwall, maxwall, time }) => <Tag key={id} closeIcon onClose={() => console.log('ID_Standard', record['id'])}>{`${time}`}</Tag>)}
-                    <Tag key={`new`} onClick={() => console.log('id standard', record['id'])} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {conditionalPeriods.map(({ id, minwall, maxwall, time }) => <Tag key={`time_${id}`} closeIcon onClose={() => console.log('ID_Standard', record['id'])}>{`${time}`}</Tag>)}
+                    <Tag key={`new_conditionalperiod_${index}`} onClick={() => console.log('id standard', record['id'])} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -83,9 +83,9 @@ const Standards = () => {
             width: 150,
             render: (materials: standardHasMaterialType[], record, index) =>
                 <>
-                    {materials.map(({ id, material }) => <Tag key={id} closeIcon onClose={() => console.log('ID_Standard')}>{`${material}`}</Tag>)}
+                    {materials.map(({ id, material }) => <Tag key={`material_${id}`} closeIcon onClose={() => console.log('ID_Standard')}>{`${material}`}</Tag>)}
                     <Tag
-                        key={`new`}
+                        key={`new_material_${index}`}
                         onClick={() => {
                             let newData: standardHasMaterialType | null = null;
                             const newMaterialToAdd = (myData: standardHasMaterialType) => { newData = myData; }
@@ -97,12 +97,10 @@ const Standards = () => {
                                 okText: 'Agregar',
                                 onOk: () => {
                                     if(newData !== null) {
-                                        standardCommunication.handleMaterial.add(record['id'], newData).then((response: standardHasMaterialType) => {
-                                            console.log('Pre', dataSource[dataSource.findIndex((item) => record.id === item.id)]['materials'])
-                                            dataSource[dataSource.findIndex((item) => record.id === item.id)]['materials'].push(response);
-                                            console.log('Post', dataSource[dataSource.findIndex((item) => record.id === item.id)]['materials'])
-                                            setDataSource(dataSource);
-                                            // setCount(count + 1);
+                                        standardCommunication.handleMaterial.add(Number(record['id']), newData).then((response: standardHasMaterialType) => {
+                                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                                            dataSource[myIndex]['materials'].push(response);
+                                            setDataSource(dataSource.splice(0, dataSource.length));
                                         });
                                     }
                                 },

@@ -16,15 +16,7 @@ const formItemLayout = {
     },
 };
 
-/**
- * onChange={(value) => {
-                        setMaterial({ ...material, id: value.target.value });
-                        Props.newToAdd(material);
-                    }}
-*/
-const onSearch = (value: string) => {
-    console.log('search:', value);
-};
+const onSearch = (value: string) => { console.log('search:', value); };
 
 const filterOption = (input: string, option?: { label: string; value: string }) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 

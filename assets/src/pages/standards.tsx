@@ -8,6 +8,7 @@ import { EditableRow, EditableCell } from '../components/editableCell';
 import ModalStandard from '../components/standardsModal/standard';
 import ModalMaterial from '../components/standardsModal/material';
 import { standardCommunication } from '../utils/communication';
+import ModalConditionalPeriod from '../components/standardsModal/conditionalPeriod';
 
 const { confirm } = Modal;
 
@@ -68,17 +69,44 @@ const Standards = () => {
                 </>
         },
         {
-            title: 'Periodos Condicionales',
+            title: 'Periodo Condicional',
             dataIndex: 'conditionalPeriods',
             width: 150,
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
                     {conditionalPeriods.map(({ id, minwall, maxwall, time }) => <Tag key={`time_${id}`} closeIcon onClose={() => console.log('ID_Standard', record['id'])}>{`${time}`}</Tag>)}
-                    <Tag key={`new_conditionalperiod_${index}`} onClick={() => console.log('id standard', record['id'])} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    <Tag
+                        key={`new_conditionalperiod_${index}`}
+                        onClick={() => {
+                            let newData: conditionalPeriodType | null = null;
+                            const newMaterialToAdd = (myData: conditionalPeriodType) => { newData = myData; }
+
+                            confirm({
+                                title: 'Nuevo Período Condicional',
+                                content: ( <ModalConditionalPeriod newToAdd={newMaterialToAdd} /> ),
+                                width: 800,
+                                okText: 'Agregar',
+                                onOk: () => {
+                                    if(newData !== null) {
+                                        standardCommunication.handleConditionalPeriod.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
+                                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                                            console.log(response as conditionalPeriodType);
+                                            dataSource[myIndex]['conditionalPeriods'].push(response);
+                                            setDataSource(dataSource.splice(0, dataSource.length));
+                                        });
+                                    }
+                                },
+                                cancelText: 'Cancelar',
+                                onCancel: () => { console.log('Cancel'); },
+                                
+                            });
+                        }}
+                        style={tagPlusStyle}
+                    ><PlusOutlined /></Tag>
                 </>
         },
         {
-            title: 'Materiales',
+            title: 'Material',
             dataIndex: 'materials',
             width: 150,
             render: (materials: standardHasMaterialType[], record, index) =>
@@ -114,7 +142,6 @@ const Standards = () => {
                 </>
         },
         {
-            title: '',
             dataIndex: 'operation',
             width: 50,
             render: (_, record) =>

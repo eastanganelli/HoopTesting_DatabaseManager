@@ -55,7 +55,7 @@ const App: React.FC = () => {
             <Layout style={{ overflow: 'auto', marginLeft: 200 }}>
                 <Content style={{ margin: '24px', overflow: 'initial', minHeight: "95vh", textAlign: 'center' }}>
                     <div style={{ padding: 24, textAlign: 'center', minHeight: "95vh", background: colorBgContainer, borderRadius: borderRadiusLG }} >
-                        { getContent() }
+                        {getContent()}
                     </div>
                 </Content>
             </Layout>

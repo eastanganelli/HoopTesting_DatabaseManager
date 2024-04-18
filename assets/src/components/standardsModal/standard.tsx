@@ -3,7 +3,7 @@ import { Form, Input } from "antd";
 
 import { standardType } from "../../interfaces/table";
 
-interface Props { newStandardToAdd: (myData: standardType) => void; }
+interface Props { newToAdd: (myData: standardType) => void; }
 
 const formItemLayout = {
     labelCol: {
@@ -17,7 +17,7 @@ const formItemLayout = {
 };
 
 const modalStandard: FunctionComponent<Props> = (Props: Props) => {
-    const [standard, setStandard] = useState<standardType>({ key: 0, standard: '', materials: [], enviroment: [], endCap: [] });
+    const [standard, setStandard] = useState<standardType>({ id: 0, standard: '', materials: [], conditionalPeriods: [], enviroments: [], endCaps: [] });
 
     return (
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
@@ -25,7 +25,7 @@ const modalStandard: FunctionComponent<Props> = (Props: Props) => {
                 <Input
                     onChange={(value) => {
                         setStandard({ ...standard, standard: value.target.value });
-                        Props.newStandardToAdd(standard);
+                        Props.newToAdd(standard);
                     }}
                 />
             </Form.Item>

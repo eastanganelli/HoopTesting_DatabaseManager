@@ -12,32 +12,33 @@ interface EditableCellProps<T> {
 }
 
 interface enviromentType {
-    key: Key;
+    id: Key;
     insertFluid: string;
     outsideFluid: string;
 }
 
 interface endCapType {
-    key: Key;
+    id: Key;
     endcap: string;
 }
 
 interface conditionalPeriodType {
-    key: Key;
+    id: Key;
+    idMaterial: Key;
+    time: string;
     minwall: number;
     maxwall: number;
-    time: string;
 }
 
 interface standardHasMaterialType {
-    key: Key;
+    id: Key;
     idMaterial: Key;
     material: string;
     description: string;
 }
 
 interface standardType {
-    key: Key;
+    id: Key;
     standard: string; // Change to an array of objects
     materials: standardHasMaterialType[]; // Change to an array of objects
     enviroments: enviromentType[]; // Change to an array of objects
@@ -46,20 +47,20 @@ interface standardType {
 }
 
 interface configurationType {
-    key: Key;
+    id: Key;
     time: number;
     temperature: number;
 }
 
 interface specificationType {
-    key: Key;
+    id: Key;
     specification: string;
     description: string;
     configurations: configurationType[];
 }
 
 interface materialType {
-    key: Key;
+    id: Key;
     material: string;
     description: string;
     specifications: specificationType[]  // Change to an array of objects

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal } from 'antd';
 
@@ -6,30 +6,14 @@ import type { conditionalPeriodType, endCapType, enviromentType, standardHasMate
 import type { ColumnTypes }  from '../components/editableCell';
 import { EditableRow, EditableCell } from '../components/editableCell';
 import ModalStandard from '../components/standardsModal/standard';
+import ModalMaterial from '../components/standardsModal/material';
+import { standardCommunication } from '../utils/communication';
 
 const { confirm } = Modal;
 
 const Standards = () => {
     const { token } = theme.useToken();
-    const [dataSource, setDataSource] = useState<standardType[]>([
-        {
-            key: 0,
-            standard: 'ISO 1995-1667',
-            materials: [{ key: 4, idMaterial: 0, material: "PE", description: "Plastico rigido"}],
-            enviroments: [{ key: 1, insertFluid: "Agua", outsideFluid: "Agua" }, { key: 2, insertFluid: "Agua", outsideFluid: "Liquido" }, { key: 3, insertFluid: "Agua", outsideFluid: "Aire" }],
-            endCaps: [{ key: 1, endcap: "Tipo A" }, { key: 2, endcap: "Tipo B" }],
-            conditionalPeriods: [{ key: 0, time: "1 h ± 5 min", maxwall: 3, minwall: 0}, { key: 1, time: "3 h ± 15 min", maxwall: 8, minwall: 3}, { key: 2, time: "6 h ± 30 min", maxwall: 16, minwall: 8}, {key: 3, time: "10 h ± 1 h", maxwall: 32, minwall: 16}, { key: 4, time: "16 h ± 1 h", maxwall: 9999999, minwall: 32}]
-        },
-        {
-            key: 1,
-            standard: 'IRAM-1667-1995',
-            materials: [{ key: 5, idMaterial: 1, material: "PBC", description: "Plastico semi rigido"}],
-            enviroments: [],
-            endCaps: [],
-            conditionalPeriods: []
-        },
-    ]);
-
+    const [dataSource, setDataSource] = useState<standardType[]>([]);
     const [count, setCount] = useState(2);
 
     const tagPlusStyle: React.CSSProperties = {
@@ -37,28 +21,26 @@ const Standards = () => {
         borderStyle: 'dashed',
     };
 
-    const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.key !== key);
+    const handleDelete = (id: React.Key) => {
+        const newData = dataSource.filter((item) => item.id !== id);
         setDataSource(newData);
     };
 
-    const handleEndCapAdd    = (record: standardType) => {};
-    const handleEndCapUpdate = (record: standardType) => {};
-    const handleEnCapRemove  = (record: standardType) => {};
+    const handleGetStandards = () => {
+        fetch('http://localhost:3000/standards').then(response => { response.json().then((data: standardType[]) => { setDataSource(data); }); });
+    };
 
-    const handleEnviromentAdd     = (record: standardType) => {};
-    const handleEnviromentUpdate  = (record: standardType) => {};
-    const handleEnviromentRemove  = (record: standardType) => {};
-
-    const handleConditionalPeriodAdd     = (record: standardType) => {};
-    const handleConditionalPeriodUpdate  = (record: standardType) => {};
-    const handleConditionalPeriodRemove  = (record: standardType) => {};
-
-    const handleMaterialAdd     = (record: standardType) => {};
-    const handleMaterialUpdate  = (record: standardType) => {};
-    const handleMaterialRemove  = (record: standardType) => {};
+    useEffect(() => {
+        handleGetStandards();
+    }, []);
 
     const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            width: 50,
+            editable: false,
+        },
         {
             title: 'Estandard',
             dataIndex: 'standard',
@@ -68,12 +50,11 @@ const Standards = () => {
         {
             title: 'Tapa',
             dataIndex: 'endCaps',
-            key: 'tags',
             width: 150,
             render: (endCap: endCapType[], record, _) =>
                 <>
-                    {endCap.map(({ key, endcap }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
-                    <Tag onClick={() => console.log('id standard', record)} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {endCap.map(({ id, endcap }) => <Tag key={id} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
+                    <Tag key={`new`} onClick={() => console.log('id standard', record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -82,8 +63,8 @@ const Standards = () => {
             width: 150,
             render: (enviroment: enviromentType[], record, _) =>
                 <>
-                    {enviroment.map(({ key, insertFluid, outsideFluid }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag key={id} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
+                    <Tag key={`new`} onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -92,18 +73,46 @@ const Standards = () => {
             width: 150,
             render: (conditionalPeriods: conditionalPeriodType[], record, _) =>
                 <>
-                    {conditionalPeriods.map(({ key, minwall, maxwall, time }) => <Tag closeIcon onClose={() => console.log('ID_Standard', record['key'])}>{`${time}`}</Tag>)}
-                    <Tag onClick={() => console.log('id standard', record['key'])} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {conditionalPeriods.map(({ id, minwall, maxwall, time }) => <Tag key={id} closeIcon onClose={() => console.log('ID_Standard', record['id'])}>{`${time}`}</Tag>)}
+                    <Tag key={`new`} onClick={() => console.log('id standard', record['id'])} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
             title: 'Materiales',
             dataIndex: 'materials',
             width: 150,
-            render: (materials: standardHasMaterialType[], record, _) =>
+            render: (materials: standardHasMaterialType[], record, index) =>
                 <>
-                    {materials.map(({ key, material }) => <Tag closeIcon onClose={() => console.log('ID_Standard',)}>{`${material}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {materials.map(({ id, material }) => <Tag key={id} closeIcon onClose={() => console.log('ID_Standard')}>{`${material}`}</Tag>)}
+                    <Tag
+                        key={`new`}
+                        onClick={() => {
+                            let newData: standardHasMaterialType | null = null;
+                            const newMaterialToAdd = (myData: standardHasMaterialType) => { newData = myData; }
+
+                            confirm({
+                                title: 'Nuevo Estandard',
+                                content: ( <ModalMaterial newToAdd={newMaterialToAdd} /> ),
+                                width: 600,
+                                okText: 'Agregar',
+                                onOk: () => {
+                                    if(newData !== null) {
+                                        standardCommunication.handleMaterial.add(record['id'], newData).then((response: standardHasMaterialType) => {
+                                            console.log('Pre', dataSource[dataSource.findIndex((item) => record.id === item.id)]['materials'])
+                                            dataSource[dataSource.findIndex((item) => record.id === item.id)]['materials'].push(response);
+                                            console.log('Post', dataSource[dataSource.findIndex((item) => record.id === item.id)]['materials'])
+                                            setDataSource(dataSource);
+                                            // setCount(count + 1);
+                                        });
+                                    }
+                                },
+                                cancelText: 'Cancelar',
+                                onCancel: () => { console.log('Cancel'); },
+                                
+                            });
+                        }}
+                        style={tagPlusStyle}
+                    ><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -113,7 +122,7 @@ const Standards = () => {
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>
-                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
+                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.id)}>
                             <Button icon={<DeleteOutlined />} danger />
                         </Popconfirm>
                     </>
@@ -127,14 +136,15 @@ const Standards = () => {
         
         confirm({
             title: 'Nuevo Estandard',
-            content: ( <ModalStandard newStandardToAdd={newStandardToAdd} /> ),
+            content: ( <ModalStandard newToAdd={newStandardToAdd} /> ),
             width: 600,
             okText: 'Agregar',
             onOk: () => {
                 if(newData !== null) {
-                    console.log('New Standard:', newData);
-                    setDataSource([...dataSource, newData]);
-                    setCount(count + 1);
+                    standardCommunication.handleStandard.add(newData).then((response: standardType) => {
+                        setDataSource([...dataSource, response]);
+                        setCount(count + 1);
+                    });
                 }
             },
             cancelText: 'Cancelar',
@@ -145,7 +155,7 @@ const Standards = () => {
 
     const handleSave = (row: standardType) => {
         const newData = [...dataSource];
-        const index = newData.findIndex((item) => row.key === item.key);
+        const index = newData.findIndex((item) => row.id === item.id);
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
         setDataSource(newData);

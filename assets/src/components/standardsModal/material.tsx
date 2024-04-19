@@ -3,7 +3,8 @@ import { Form, Select } from "antd";
 
 import { materialType, standardHasMaterialType } from "../../interfaces/table";
 
-interface Props { newToAdd: (myData: standardHasMaterialType) => void; }
+interface Props         { newToAdd: (myData: standardHasMaterialType) => void; }
+interface PropsExtended { data: standardHasMaterialType; newToAdd: (myData: standardHasMaterialType) => void; }
 
 const formItemLayout = {
     labelCol: {
@@ -20,7 +21,7 @@ const onSearch = (value: string) => { console.log('search:', value); };
 
 const filterOption = (input: string, option?: { label: string; value: string }) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
-const ModalMaterial: FunctionComponent<Props> = (Props: Props) => {
+const ModalMaterial: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
     const [materials, setMaterials] = useState<materialType[]>([]);
 
     useEffect(() => {
@@ -34,6 +35,7 @@ const ModalMaterial: FunctionComponent<Props> = (Props: Props) => {
                     showSearch
                     placeholder="Seleccione un material"
                     optionFilterProp="children"
+                    value={(Props as PropsExtended)?.data?.material}
                     onChange={(value) => {
                         Props.newToAdd({ id: 0, idMaterial: Number(value), material: materials[Number(value)]['material'], description: '' });
                     }}

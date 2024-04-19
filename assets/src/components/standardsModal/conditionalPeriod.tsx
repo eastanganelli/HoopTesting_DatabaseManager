@@ -3,7 +3,8 @@ import { Form, Space, Input, InputNumber, Select } from "antd";
 
 import { conditionalPeriodType } from "../../interfaces/table";
 
-interface Props { newToAdd: (myData: conditionalPeriodType) => void; }
+interface Props         { newToAdd: (myData: conditionalPeriodType) => void; }
+interface PropsExtended { data: conditionalPeriodType; newToAdd: (myData: conditionalPeriodType) => void; }
 
 const formItemLayout = {
     labelCol: {
@@ -16,7 +17,7 @@ const formItemLayout = {
     },
 };
 
-const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
+const ModalConditionalPeriod: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
     const [conditionalPeriod, setConditionalPeriod] = useState<conditionalPeriodType>({ id: 0, idMaterial: 0, time: '0 h ± 0 min', minwall: 0, maxwall: 0});
     const [timeArray, setTimeArray] = useState<string[]>(['0', '0', 'min']);
 
@@ -33,6 +34,7 @@ const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
                 <InputNumber
                     required
                     min={0}
+                    value={(Props as PropsExtended)?.data?.minwall}
                     addonBefore="Mínimo"
                     suffix="mm"
                     width={50}

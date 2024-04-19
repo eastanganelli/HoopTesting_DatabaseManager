@@ -16,15 +16,16 @@ const formItemLayout = {
     },
 };
 
-const modalEndCap: FunctionComponent<Props> = (Props: Props) => {
+const ModalEndCap: FunctionComponent<Props> = (Props: Props) => {
     const [endCap, setEndCap] = useState<endCapType>({ id: 0, endcap: '' });
 
     return (
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Tapa"   name="inputEstandard"   rules={[{ required: true, message: 'Tapa es requerida!' }]}>
+            <Form.Item label="Tapa"   name="inputEndCap"   rules={[{ required: true, message: 'Tapa es requerida!' }]}>
                 <Input
                     onChange={(value) => {
-                        setEndCap({ ...endCap, endcap: value.target.value });
+                        endCap['endcap'] = value.target.value;
+                        setEndCap(endCap);
                         Props.newToAdd(endCap);
                     }}
                 />
@@ -33,4 +34,4 @@ const modalEndCap: FunctionComponent<Props> = (Props: Props) => {
     );
 };
 
-export default modalEndCap;
+export default ModalEndCap;

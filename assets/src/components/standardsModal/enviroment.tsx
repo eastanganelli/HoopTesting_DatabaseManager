@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Form, Select, Input } from "antd";
+import { Form, Input } from "antd";
 
 import { enviromentType } from "../../interfaces/table";
 
@@ -21,21 +21,23 @@ const ModalEnviroment: FunctionComponent<Props> = (Props: Props) => {
 
     return (
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Fluido insertado" name="inputInsertFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
-                <Select.Option>
-                    <Input
-                        onChange={(value) => {
-                            setEnviroment({ ...enviroment, id: value.target.value });
-                            Props.newToAdd(enviroment);
-                        }}
-                    />
-                    <Input
-                        onChange={(value) => {
-                            setEnviroment({ ...enviroment, id: value.target.value });
-                            Props.newToAdd(enviroment);
-                        }}
-                    />
-                </Select.Option>
+            <Form.Item label="Medio insterno" name="inputInsertFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
+                <Input
+                    onChange={(value) => {
+                        enviroment['insertFluid'] = value.target.value;
+                        setEnviroment(enviroment);
+                        Props.newToAdd(enviroment);
+                    }}
+                />
+            </Form.Item>
+            <Form.Item label="Medio externo" name="inputOutsideFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
+                <Input
+                    onChange={(value) => {
+                        enviroment['outsideFluid'] = value.target.value;
+                        setEnviroment(enviroment);
+                        Props.newToAdd(enviroment);
+                    }}
+                />
             </Form.Item>
         </Form>
     );

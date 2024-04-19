@@ -1,7 +1,7 @@
 import * as path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 
-let devConfig = {
+const devConfig = {
 	mode: "development",
 	entry: "./src/index.tsx",
 	devtool: "inline-source-map",
@@ -39,7 +39,7 @@ let devConfig = {
 	],
 };
 
-let prodConfig = {
+const prodConfig = {
 	mode: "production",
 	entry: "./src/index.tsx",
 	devtool: "inline-source-map",

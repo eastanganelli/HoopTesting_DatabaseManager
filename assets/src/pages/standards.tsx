@@ -4,12 +4,14 @@ import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal } from 'antd'
 
 import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType } from '../interfaces/table';
 import type { ColumnTypes }  from '../components/editableCell';
+
 import { EditableRow, EditableCell } from '../components/editableCell';
-import ModalStandard from '../components/standardsModal/standard';
-import ModalMaterial from '../components/standardsModal/material';
 import { standardCommunication } from '../utils/communication';
+import ModalStandard          from '../components/standardsModal/standard';
+import ModalMaterial          from '../components/standardsModal/material';
 import ModalConditionalPeriod from '../components/standardsModal/conditionalPeriod';
-import ModalEnviroment from '../components/standardsModal/enviroment';
+import ModalEnviroment        from '../components/standardsModal/enviroment';
+import ModalEndCap            from '../components/standardsModal/endcap';
 
 const { confirm } = Modal;
 
@@ -36,6 +38,102 @@ const Standards = () => {
         handleGetStandards();
     }, []);
 
+    const newEndCap = (record: any) => {
+        let newData: endCapType | null = null;
+        const newToAdd = (myData: endCapType) => { newData = myData; }
+
+        confirm({
+            title: 'Nuevo Ambiente',
+            content: ( <ModalEndCap newToAdd={newToAdd} /> ),
+            width: 600,
+            okText: 'Agregar',
+            onOk: () => {
+                if(newData !== null) {
+                    standardCommunication.handleEndCap.add(Number(record['id']), newData).then((response: endCapType) => {
+                        const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                        dataSource[myIndex]['endCaps'].push(response);
+                        setDataSource(dataSource.splice(0, dataSource.length));
+                    });
+                }
+            },
+            cancelText: 'Cancelar',
+            onCancel: () => { console.log('Cancel'); },
+            
+        });
+    };
+
+    const newEnviroment = (record: any) => {
+        let newData: enviromentType | null = null;
+        const newToAdd = (myData: enviromentType) => { newData = myData; }
+
+        confirm({
+            title: 'Nuevo Ambiente',
+            content: ( <ModalEnviroment newToAdd={newToAdd} /> ),
+            width: 600,
+            okText: 'Agregar',
+            onOk: () => {
+                if(newData !== null) {
+                    standardCommunication.handleEnviroment.add(Number(record['id']), newData).then((response: enviromentType) => {
+                        const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                        dataSource[myIndex]['enviroments'].push(response);
+                        setDataSource(dataSource.splice(0, dataSource.length));
+                    });
+                }
+            },
+            cancelText: 'Cancelar',
+            onCancel: () => { console.log('Cancel'); },
+            
+        });
+    };
+
+    const newConditionalPeriod = (record: any) => {
+        let newData: conditionalPeriodType | null = null;
+        const newMaterialToAdd = (myData: conditionalPeriodType) => { newData = myData; }
+
+        confirm({
+            title: 'Nuevo Período Condicional',
+            content: ( <ModalConditionalPeriod newToAdd={newMaterialToAdd} /> ),
+            width: 800,
+            okText: 'Agregar',
+            onOk: () => {
+                if(newData !== null) {
+                    standardCommunication.handleConditionalPeriod.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
+                        const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                        dataSource[myIndex]['conditionalPeriods'].push(response);
+                        setDataSource(dataSource.splice(0, dataSource.length));
+                    });
+                }
+            },
+            cancelText: 'Cancelar',
+            onCancel: () => { console.log('Cancel'); },
+            
+        });
+    };
+
+    const newMaterial = (record: any) => {
+        let newData: standardHasMaterialType | null = null;
+        const newMaterialToAdd = (myData: standardHasMaterialType) => { newData = myData; }
+
+        confirm({
+            title: 'Nuevo Material Relacionado',
+            content: ( <ModalMaterial newToAdd={newMaterialToAdd} /> ),
+            width: 600,
+            okText: 'Agregar',
+            onOk: () => {
+                if(newData !== null) {
+                    standardCommunication.handleMaterial.add(Number(record['id']), newData).then((response: standardHasMaterialType) => {
+                        const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                        dataSource[myIndex]['materials'].push(response);
+                        setDataSource(dataSource.splice(0, dataSource.length));
+                    });
+                }
+            },
+            cancelText: 'Cancelar',
+            onCancel: () => { console.log('Cancel'); },
+            
+        });
+    };
+
     const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
         {
             title: 'ID',
@@ -56,7 +154,7 @@ const Standards = () => {
             render: (endCap: endCapType[], record, index) =>
                 <>
                     {endCap.map(({ id, endcap }) => <Tag key={`endcap_${id}`} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
-                    <Tag key={`new_endcap_${index}`} onClick={() => console.log('id standard', record)} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    <Tag key={`new_endcap_${index}`} onClick={() => { newEndCap(record); }} style={tagPlusStyle} ><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -66,33 +164,7 @@ const Standards = () => {
             render: (enviroment: enviromentType[], record, index) =>
                 <>
                     {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag key={`enviroment_${id}`} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
-                    <Tag
-                        key={`new_enviroment_${index}`}
-                        onClick={() => {
-                            let newData: enviromentType | null = null;
-                            const newToAdd = (myData: enviromentType) => { newData = myData; }
-
-                            confirm({
-                                title: 'Nuevo Estandard',
-                                content: ( <ModalEnviroment newToAdd={newToAdd} /> ),
-                                width: 600,
-                                okText: 'Agregar',
-                                onOk: () => {
-                                    if(newData !== null) {
-                                        standardCommunication.handleEnviroment.add(Number(record['id']), newData).then((response: enviromentType) => {
-                                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
-                                            dataSource[myIndex]['enviroments'].push(response);
-                                            setDataSource(dataSource.splice(0, dataSource.length));
-                                        });
-                                    }
-                                },
-                                cancelText: 'Cancelar',
-                                onCancel: () => { console.log('Cancel'); },
-                                
-                            });
-                        }}
-                        style={tagPlusStyle}
-                    ><PlusOutlined /></Tag>
+                    <Tag key={`new_enviroment_${index}`} onClick={() => { newEnviroment(record); }} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -102,33 +174,7 @@ const Standards = () => {
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
                     {conditionalPeriods.map(({ id, minwall, maxwall, time }) => <Tag key={`time_${id}`} closeIcon onClose={() => console.log('ID_Standard', record['id'])}>{`${time}`}</Tag>)}
-                    <Tag
-                        key={`new_conditionalperiod_${index}`}
-                        onClick={() => {
-                            let newData: conditionalPeriodType | null = null;
-                            const newMaterialToAdd = (myData: conditionalPeriodType) => { newData = myData; }
-
-                            confirm({
-                                title: 'Nuevo Período Condicional',
-                                content: ( <ModalConditionalPeriod newToAdd={newMaterialToAdd} /> ),
-                                width: 800,
-                                okText: 'Agregar',
-                                onOk: () => {
-                                    if(newData !== null) {
-                                        standardCommunication.handleConditionalPeriod.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
-                                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
-                                            dataSource[myIndex]['conditionalPeriods'].push(response);
-                                            setDataSource(dataSource.splice(0, dataSource.length));
-                                        });
-                                    }
-                                },
-                                cancelText: 'Cancelar',
-                                onCancel: () => { console.log('Cancel'); },
-                                
-                            });
-                        }}
-                        style={tagPlusStyle}
-                    ><PlusOutlined /></Tag>
+                    <Tag key={`new_conditionalperiod_${index}`} onClick={() => { newConditionalPeriod(record); }} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -138,33 +184,7 @@ const Standards = () => {
             render: (materials: standardHasMaterialType[], record, index) =>
                 <>
                     {materials.map(({ id, material }) => <Tag key={`material_${id}`} closeIcon onClose={() => console.log('ID_Standard')}>{`${material}`}</Tag>)}
-                    <Tag
-                        key={`new_material_${index}`}
-                        onClick={() => {
-                            let newData: standardHasMaterialType | null = null;
-                            const newMaterialToAdd = (myData: standardHasMaterialType) => { newData = myData; }
-
-                            confirm({
-                                title: 'Nuevo Estandard',
-                                content: ( <ModalMaterial newToAdd={newMaterialToAdd} /> ),
-                                width: 600,
-                                okText: 'Agregar',
-                                onOk: () => {
-                                    if(newData !== null) {
-                                        standardCommunication.handleMaterial.add(Number(record['id']), newData).then((response: standardHasMaterialType) => {
-                                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
-                                            dataSource[myIndex]['materials'].push(response);
-                                            setDataSource(dataSource.splice(0, dataSource.length));
-                                        });
-                                    }
-                                },
-                                cancelText: 'Cancelar',
-                                onCancel: () => { console.log('Cancel'); },
-                                
-                            });
-                        }}
-                        style={tagPlusStyle}
-                    ><PlusOutlined /></Tag>
+                    <Tag key={`new_material_${index}`} onClick={() => { newMaterial(record) }} style={tagPlusStyle} ><PlusOutlined /></Tag>
                 </>
         },
         {

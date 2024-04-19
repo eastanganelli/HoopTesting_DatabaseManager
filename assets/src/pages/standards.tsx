@@ -9,6 +9,7 @@ import ModalStandard from '../components/standardsModal/standard';
 import ModalMaterial from '../components/standardsModal/material';
 import { standardCommunication } from '../utils/communication';
 import ModalConditionalPeriod from '../components/standardsModal/conditionalPeriod';
+import ModalEnviroment from '../components/standardsModal/enviroment';
 
 const { confirm } = Modal;
 
@@ -65,7 +66,33 @@ const Standards = () => {
             render: (enviroment: enviromentType[], record, index) =>
                 <>
                     {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag key={`enviroment_${id}`} closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
-                    <Tag key={`new_enviroment_${index}`} onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    <Tag
+                        key={`new_enviroment_${index}`}
+                        onClick={() => {
+                            let newData: enviromentType | null = null;
+                            const newToAdd = (myData: enviromentType) => { newData = myData; }
+
+                            confirm({
+                                title: 'Nuevo Estandard',
+                                content: ( <ModalEnviroment newToAdd={newToAdd} /> ),
+                                width: 600,
+                                okText: 'Agregar',
+                                onOk: () => {
+                                    if(newData !== null) {
+                                        standardCommunication.handleEnviroment.add(Number(record['id']), newData).then((response: enviromentType) => {
+                                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                                            dataSource[myIndex]['enviroments'].push(response);
+                                            setDataSource(dataSource.splice(0, dataSource.length));
+                                        });
+                                    }
+                                },
+                                cancelText: 'Cancelar',
+                                onCancel: () => { console.log('Cancel'); },
+                                
+                            });
+                        }}
+                        style={tagPlusStyle}
+                    ><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -90,7 +117,6 @@ const Standards = () => {
                                     if(newData !== null) {
                                         standardCommunication.handleConditionalPeriod.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
                                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
-                                            console.log(response as conditionalPeriodType);
                                             dataSource[myIndex]['conditionalPeriods'].push(response);
                                             setDataSource(dataSource.splice(0, dataSource.length));
                                         });

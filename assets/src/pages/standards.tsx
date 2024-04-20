@@ -97,6 +97,7 @@ const Standards = () => {
             okText: 'Agregar',
             onOk: () => {
                 if(newData !== null) {
+                    window.
                     standardCommunication.handleConditionalPeriod.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
                         const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                         dataSource[myIndex]['conditionalPeriods'].push(response);

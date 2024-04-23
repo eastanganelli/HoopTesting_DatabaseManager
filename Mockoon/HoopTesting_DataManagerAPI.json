@@ -759,7 +759,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "relatedMaterial",
+      "endpoint": "relatedmaterial",
       "responses": [
         {
           "uuid": "4bcfa68f-ceaa-4b8b-a92c-712caa28476d",
@@ -788,7 +788,7 @@
       "type": "http",
       "documentation": "",
       "method": "put",
-      "endpoint": "relatedMaterial",
+      "endpoint": "relatedmaterial",
       "responses": [
         {
           "uuid": "63836588-accd-429d-ac64-70f48def7f1e",
@@ -817,7 +817,7 @@
       "type": "http",
       "documentation": "",
       "method": "delete",
-      "endpoint": "relatedMaterial",
+      "endpoint": "relatedmaterial",
       "responses": [
         {
           "uuid": "5dc40943-50ec-4a3d-8486-c3f6bf8b3415",

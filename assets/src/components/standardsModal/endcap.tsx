@@ -4,6 +4,7 @@ import { Form, Input } from "antd";
 import { endCapType } from "../../interfaces/table";
 
 interface Props { newToAdd: (myData: endCapType) => void; }
+interface PropsExtended { data: endCapType; newToAdd: (myData: endCapType) => void; }
 
 const formItemLayout = {
     labelCol: {
@@ -16,13 +17,14 @@ const formItemLayout = {
     },
 };
 
-const ModalEndCap: FunctionComponent<Props> = (Props: Props) => {
-    const [endCap, setEndCap] = useState<endCapType>({ id: 0, endcap: '' });
+const ModalEndCap: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
+    const [endCap, setEndCap] = useState<endCapType>(((Props as PropsExtended)?.data !== undefined ? (Props as PropsExtended)?.data : { id: 0, endcap: '' }));
 
     return (
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Tapa"   name="inputEndCap"   rules={[{ required: true, message: 'Tapa es requerida!' }]}>
+            <Form.Item label="Tapa" name="inputEndCap" rules={[{ required: true, message: 'Tapa es requerida!' }]}>
                 <Input
+                    defaultValue={endCap.endcap.toString()}
                     onChange={(value) => {
                         endCap['endcap'] = value.target.value;
                         setEndCap(endCap);

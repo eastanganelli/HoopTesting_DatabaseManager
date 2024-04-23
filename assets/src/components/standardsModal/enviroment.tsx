@@ -21,7 +21,7 @@ const ModalEnviroment: FunctionComponent<Props> = (Props: Props) => {
 
     return (
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Medio insterno" name="inputInsertFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
+            <Form.Item label="Medio interno" name="inputInsertFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
                 <Input
                     onChange={(value) => {
                         enviroment['insertFluid'] = value.target.value;

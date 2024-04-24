@@ -6,7 +6,7 @@ import { Layout, Menu, theme } from 'antd';
 import Operators from "./pages/operators";
 import Materials from "./pages/materials/materials";
 import Standards from './pages/standards';
-import Database  from './pages/database';
+import Database from './pages/database';
 
 const { Content, Sider } = Layout;
 
@@ -24,22 +24,9 @@ const items: MenuProps['items'] = [
     label: menuItems[index],
 }));
 
-const App: React.FC = () => {
+const App = () => {
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
     const [selected, setSelected] = React.useState('Estandares');
-
-    const getContent = () => {
-        switch (selected) {
-            case 'Materiales':
-                return <Materials />;
-            case 'Operadores':
-                return <Operators />;
-            case 'Base de datos':
-                return <Database />;
-            default:
-                return <Standards />;
-        }
-    };
     
     return (
         <Layout hasSider style={{ minWidth: '850px' }}>
@@ -55,7 +42,7 @@ const App: React.FC = () => {
             <Layout style={{ overflow: 'auto', marginLeft: 200 }}>
                 <Content style={{ margin: '24px', overflow: 'initial', minHeight: "95vh", textAlign: 'center' }}>
                     <div style={{ padding: 24, textAlign: 'center', minHeight: "95vh", background: colorBgContainer, borderRadius: borderRadiusLG }} >
-                        {getContent()}
+                        {selected === 'Materiales' ? <Materials /> : selected === 'Operadores' ? <Operators /> : selected === 'Base de datos' ? <Database /> : <Standards />}
                     </div>
                 </Content>
             </Layout>

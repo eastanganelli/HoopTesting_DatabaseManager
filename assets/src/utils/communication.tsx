@@ -21,8 +21,8 @@ const standardCommunication = {
         update: (inputData: standardType) => {
 
         },
-        remove: (id: number): Promise<boolean | any> => {
-            return new Promise<boolean | any>((resolve, reject) => {
+        remove: (id: number): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
                 fetch(`${basePath}/standard`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
@@ -48,20 +48,19 @@ const standardCommunication = {
                 }).catch((error) => { reject(error); })
             });
         },
-        update: (idStandard: number, inputData: endCapType): Promise<boolean | any> => {
-            return new Promise<boolean | any>((resolve, reject) => {
+        update: (idStandard: number, inputData: endCapType): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
                 fetch(`${basePath}/endcap`, {
-                    method: 'DELETE',
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ idStandard: idStandard, data: inputData })
                 }).then((response) => {
                     if (response.status == 200) resolve(true);
                 }).catch((error) => { reject(error); })
             });
-
         },
-        remove: (id: number): Promise<boolean | any> => {
-            return new Promise<boolean | any>((resolve, reject) => {
+        remove: (id: number): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
                 fetch(`${basePath}/endcap`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
@@ -87,11 +86,19 @@ const standardCommunication = {
                 }).catch((error) => { reject(error); })
             });
         },
-        update: (idStandard: number, inputData: enviromentType) => {
-
+        update: (idStandard: number, inputData: enviromentType): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
+                fetch(`${basePath}/enviroment`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: idStandard, data: inputData })
+                }).then((response) => {
+                    if (response.status == 200) resolve(true);
+                }).catch((error) => { reject(error); })
+            });
         },
-        remove: (id: number): Promise<boolean | any> => {
-            return new Promise<boolean | any>((resolve, reject) => {
+        remove: (id: number): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
                 fetch(`${basePath}/enviroment`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
@@ -117,11 +124,19 @@ const standardCommunication = {
                 }).catch((error) => { reject(error); })
             });
         },
-        update: (idStandard: number, inputData: conditionalPeriodType) => {
-
+        update: (idStandard: number, inputData: conditionalPeriodType): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
+                fetch(`${basePath}/conditionalperiod`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: idStandard, data: inputData})
+                }).then((response) => {
+                    if (response.status == 200) resolve(true);
+                }).catch((error) => { reject(error); })
+            });
         },
-        remove: (id: number): Promise<boolean | any> => {
-            return new Promise<boolean | any>((resolve, reject) => {
+        remove: (id: number): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
                 fetch(`${basePath}/conditionalperiod`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
@@ -147,11 +162,19 @@ const standardCommunication = {
                 }).catch((error) => { reject(error); })
             });
         },
-        update: (id: number, inputData: standardHasMaterialType) => {
-
+        update: (idStandard: number, inputData: standardHasMaterialType): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
+                fetch(`${basePath}/relatedmaterial`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: idStandard, data: inputData })
+                }).then((response) => {
+                    if (response.status == 200) resolve(true);
+                }).catch((error) => { reject(error); })
+            });
         },
-        remove: (id: number): Promise<boolean | any> => {
-            return new Promise<boolean | any>((resolve, reject) => {
+        remove: (id: number): Promise<Boolean> => {
+            return new Promise<Boolean>((resolve, reject) => {
                 fetch(`${basePath}/relatedmaterial`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },

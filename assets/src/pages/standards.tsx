@@ -3,15 +3,15 @@ import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-desig
 import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal, message } from 'antd';
 
 import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType } from '../interfaces/table';
-import type { ColumnTypes }  from '../components/editableCell';
+import type { ColumnTypes } from '../components/editableCell';
 
 import { EditableRow, EditableCell } from '../components/editableCell';
 import { standardCommunication } from '../utils/communication';
-import ModalStandard          from '../components/standardsModal/standard';
-import ModalMaterial          from '../components/standardsModal/material';
+import ModalStandard from '../components/standardsModal/standard';
+import ModalMaterial from '../components/standardsModal/material';
 import ModalConditionalPeriod from '../components/standardsModal/conditionalPeriod';
-import ModalEnviroment        from '../components/standardsModal/enviroment';
-import ModalEndCap            from '../components/standardsModal/endcap';
+import ModalEnviroment from '../components/standardsModal/enviroment';
+import ModalEndCap from '../components/standardsModal/endcap';
 
 const { confirm } = Modal;
 
@@ -37,14 +37,14 @@ const Standards = () => {
     const handleAdd = () => {
         let newData: standardType | null = null;
         const newStandardToAdd = (myData: standardType) => { newData = myData; }
-        
+
         confirm({
             title: 'Nuevo Estandard',
-            content: ( <ModalStandard newToAdd={newStandardToAdd} /> ),
+            content: (<ModalStandard newToAdd={newStandardToAdd} />),
             width: 600,
             okText: 'Agregar',
             onOk: () => {
-                if(newData !== null) {
+                if (newData !== null) {
                     standardCommunication.handleStandard.add(newData).then((response: standardType) => {
                         setDataSource([...dataSource, response]);
                         setCount(count + 1);
@@ -53,7 +53,7 @@ const Standards = () => {
             },
             cancelText: 'Cancelar',
             onCancel: () => { console.log('Cancel'); },
-            
+
         });
     };
 
@@ -73,14 +73,14 @@ const Standards = () => {
         new: (record: any) => {
             let newData: endCapType | null = null;
             const newToAdd = (myData: endCapType) => { newData = myData; }
-    
+
             confirm({
                 title: 'Nuevo Ambiente',
-                content: ( <ModalEndCap newToAdd={newToAdd} /> ),
+                content: (<ModalEndCap newToAdd={newToAdd} />),
                 width: 600,
                 okText: 'Agregar',
                 onOk: () => {
-                    if(newData !== null) {
+                    if (newData !== null) {
                         standardCommunication.handleEndCap.add(Number(record['id']), newData).then((response: endCapType) => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                             dataSource[myIndex]['endCaps'].push(response);
@@ -91,35 +91,37 @@ const Standards = () => {
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { console.log('Cancel'); },
-                
+
             });
-        }, edit: (idStandard: number, data: endCapType) => {
-            let newData: endCapType | null = data;
+        },
+        edit: (idStandard: number, data: endCapType) => {
+            let newData: endCapType = data;
             const newToAdd = (myData: endCapType) => { newData = myData; }
-    
+
             confirm({
-                title: 'Nuevo Ambiente',
-                content: ( <ModalEndCap data={data} newToAdd={newToAdd} /> ),
+                title: 'Editar Tapa',
+                content: (<ModalEndCap data={newData} newToAdd={newToAdd} />),
                 width: 600,
-                okText: 'Agregar',
+                okText: 'Modificar',
                 onOk: () => {
-                    if(newData !== null) {
-                        standardCommunication.handleEndCap.update(idStandard, newData).then((response: endCapType) => {
-                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === data['id']);
-                            dataSource[myIndex]['endCaps'].push(response);
+                    standardCommunication.handleEndCap.update(idStandard, newData).then((status: Boolean) => {
+                        if (status) {
+                            const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
+                            const myIndexEndCap = dataSource[myIndexStandard]['endCaps'].findIndex((item: endCapType) => item['id'] === data['id']);
+                            dataSource[myIndexStandard]['endCaps'][myIndexEndCap] = newData;
                             setDataSource(dataSource.splice(0, dataSource.length));
-                            message.success('Tapa: agregada correctamente!');
-                        }).catch((error) => { message.error('Tapa: se produjo un error al agregarla!'); });
-                    }
+                            message.success('Tapa: modificada correctamente!');
+                        }
+                    }).catch((error) => { message.error('Tapa: se produjo un error al modificarla!'); });
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { console.log('Cancel'); },
-                
+
             });
         },
         delete: (id: number) => {
-            standardCommunication.handleEndCap.remove(id).then((response: boolean) => {
-                if(response) { message.success('Tapa: eliminada correctamente!'); }
+            standardCommunication.handleEndCap.remove(id).then((response: Boolean) => {
+                if (response) { message.success('Tapa: eliminada correctamente!'); }
             }).catch((error) => { message.error('Tapa: se produjo un error al eliminarla!'); });
         }
     }
@@ -128,14 +130,14 @@ const Standards = () => {
         new: (record: any) => {
             let newData: enviromentType | null = null;
             const newToAdd = (myData: enviromentType) => { newData = myData; }
-    
+
             confirm({
                 title: 'Nuevo Ambiente',
-                content: ( <ModalEnviroment newToAdd={newToAdd} /> ),
+                content: (<ModalEnviroment newToAdd={newToAdd} />),
                 width: 600,
                 okText: 'Agregar',
                 onOk: () => {
-                    if(newData !== null) {
+                    if (newData !== null) {
                         standardCommunication.handleEnviroment.add(Number(record['id']), newData).then((response: enviromentType) => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                             dataSource[myIndex]['enviroments'].push(response);
@@ -146,12 +148,37 @@ const Standards = () => {
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { console.log('Cancel'); },
-                
+
             });
-        }, edit: () => {},
+        },
+        edit: (idStandard: number, data: enviromentType) => {
+            let newData: enviromentType = data;
+            const newToAdd = (myData: enviromentType) => { newData = myData; }
+
+            confirm({
+                title: 'Editar Ambiente',
+                content: (<ModalEnviroment data={newData} newToAdd={newToAdd} />),
+                width: 600,
+                okText: 'Modificar',
+                onOk: () => {
+                    standardCommunication.handleEnviroment.update(Number(idStandard), newData).then((status: Boolean) => {
+                        if (status) {
+                            const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
+                            const myIndexEnviroment = dataSource[myIndexStandard]['enviroments'].findIndex((item: enviromentType) => item['id'] === data['id']);
+                            dataSource[myIndexStandard]['enviroments'][myIndexEnviroment] = newData;
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Ambiente: modificada correctamente!');
+                        };
+                    }).catch((error) => { message.error('Ambiente: se produjo un error al modificarla!'); })
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
         delete: (id: number) => {
-            standardCommunication.handleEnviroment.remove(id).then((response: boolean) => {
-                if(response) { message.success('Ambiente: eliminada correctamente!'); }
+            standardCommunication.handleEnviroment.remove(id).then((response: Boolean) => {
+                if (response) { message.success('Ambiente: eliminada correctamente!'); }
             }).catch((error) => { message.error('Ambiente: se produjo un error al eliminarla!'); });
         }
     };
@@ -160,14 +187,14 @@ const Standards = () => {
         new: (record: any) => {
             let newData: conditionalPeriodType | null = null;
             const newMaterialToAdd = (myData: conditionalPeriodType) => { newData = myData; }
-    
+
             confirm({
                 title: 'Nuevo Período Condicional',
-                content: ( <ModalConditionalPeriod newToAdd={newMaterialToAdd} /> ),
+                content: (<ModalConditionalPeriod newToAdd={newMaterialToAdd} />),
                 width: 800,
                 okText: 'Agregar',
                 onOk: () => {
-                    if(newData !== null) {
+                    if (newData !== null) {
                         standardCommunication.handleConditionalPeriod.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                             dataSource[myIndex]['conditionalPeriods'].push(response);
@@ -178,12 +205,37 @@ const Standards = () => {
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { console.log('Cancel'); },
-                
+
             });
-        }, edit: () => {},
+        },
+        edit: (idStandard: number, data: conditionalPeriodType) => {
+            let newData: conditionalPeriodType = data;
+            const newMaterialToAdd = (myData: conditionalPeriodType) => { newData = myData; }
+
+            confirm({
+                title: 'Editar Período Condicional',
+                content: (<ModalConditionalPeriod data={newData} newToAdd={newMaterialToAdd} />),
+                width: 800,
+                okText: 'Modificar',
+                onOk: () => {
+                    standardCommunication.handleConditionalPeriod.update(Number(idStandard), newData).then((status: Boolean) => {
+                        if (status) {
+                            const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
+                            const myIndexConditionalPeriod = dataSource[myIndexStandard]['conditionalPeriods'].findIndex((item: conditionalPeriodType) => item['id'] === data['id']);
+                            dataSource[myIndexStandard]['conditionalPeriods'][myIndexConditionalPeriod] = newData;
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Período Condicional: modificado correctamente!');
+                        }
+                    }).catch((error) => { message.error('Período Condicional: se produjo un error al modificarlo!'); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
         delete: (id: number) => {
-            standardCommunication.handleEndCap.remove(id).then((response: boolean) => {
-                if(response) { message.success('Periodo Condicionamiento: eliminada correctamente!'); }
+            standardCommunication.handleConditionalPeriod.remove(id).then((response: Boolean) => {
+                if (response) { message.success('Periodo Condicionamiento: eliminada correctamente!'); }
             }).catch((error) => { message.error('Periodo Condicionamiento: se produjo un error al eliminarla!'); })
         }
     }
@@ -192,14 +244,14 @@ const Standards = () => {
         new: (record: any) => {
             let newData: standardHasMaterialType | null = null;
             const newMaterialToAdd = (myData: standardHasMaterialType) => { newData = myData; }
-    
+
             confirm({
-                title: 'Nuevo Material Relacionado',
-                content: ( <ModalMaterial newToAdd={newMaterialToAdd} /> ),
+                title: 'Editar Material Relacionado',
+                content: (<ModalMaterial newToAdd={newMaterialToAdd} />),
                 width: 600,
                 okText: 'Agregar',
                 onOk: () => {
-                    if(newData !== null) {
+                    if (newData !== null) {
                         standardCommunication.handleMaterial.add(Number(record['id']), newData).then((response: standardHasMaterialType) => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                             dataSource[myIndex]['materials'].push(response);
@@ -210,12 +262,37 @@ const Standards = () => {
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { console.log('Cancel'); },
-                
+
             });
-        }, edit: () => {},
+        },
+        edit: (idStandard: number, data: standardHasMaterialType) => {
+            let newData: standardHasMaterialType = data;
+            const newMaterialToAdd = (myData: standardHasMaterialType) => { newData = myData; }
+
+            confirm({
+                title: 'Editar Material Relacionado',
+                content: (<ModalMaterial data={newData} newToAdd={newMaterialToAdd} />),
+                width: 600,
+                okText: 'Modificar',
+                onOk: () => {
+                    standardCommunication.handleMaterial.update(Number(idStandard), newData).then((status: Boolean) => {
+                        if (status) {
+                            const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
+                            const myIndexConditionalPeriod = dataSource[myIndexStandard]['materials'].findIndex((item: standardHasMaterialType) => item['id'] === data['id']);
+                            dataSource[myIndexStandard]['materials'][myIndexConditionalPeriod] = newData;
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Material: modificado correctamente!');
+                        }
+                    }).catch((error) => { message.error('Material: se produjo un error al modificarlo!'); })
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
         delete: (id: number) => {
-            standardCommunication.handleEndCap.remove(id).then((response: boolean) => {
-                if(response) { message.success('Material: eliminada correctamente!'); }
+            standardCommunication.handleMaterial.remove(id).then((response: Boolean) => {
+                if (response) { message.success('Material: eliminada correctamente!'); }
             }).catch((error) => { message.error('Material: se produjo un error al eliminarla!'); })
         }
     }
@@ -249,7 +326,7 @@ const Standards = () => {
             width: 150,
             render: (enviroment: enviromentType[], record, index) =>
                 <>
-                    {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag key={`enviroment_${id}`} closeIcon onClose={() => Enviroment.delete(Number(id))}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
+                    {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['id']}`} closeIcon onClick={() => Enviroment.edit(record['id'], value)} onClose={() => Enviroment.delete(Number(value['id']))}>{`${value['insertFluid']} en ${value['outsideFluid']}`}</Tag>)}
                     <Tag key={`new_enviroment_${index}`} onClick={() => Enviroment.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
@@ -259,7 +336,7 @@ const Standards = () => {
             width: 150,
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
-                    {conditionalPeriods.map(({ id, minwall, maxwall, time }) => <Tag key={`time_${id}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(id))}>{`${time}`}</Tag>)}
+                    {conditionalPeriods.map((value: conditionalPeriodType) => <Tag key={`time_${value['id']}`} onClick={() => ConditionalPeriod.edit(record['id'], value)} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['id']))}>{`${value['time']}`}</Tag>)}
                     <Tag key={`new_conditionalperiod_${index}`} onClick={() => ConditionalPeriod.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
@@ -269,7 +346,7 @@ const Standards = () => {
             width: 150,
             render: (materials: standardHasMaterialType[], record, index) =>
                 <>
-                    {materials.map(({ id, material }) => <Tag key={`material_${id}`} closeIcon onClose={() => Material.delete(Number(id))}>{`${material}`}</Tag>)}
+                    {materials.map((value: standardHasMaterialType) => <Tag key={`material_${value['id']}`} onClick={() => Material.edit(record['id'], value)} closeIcon onClose={() => Material.delete(Number(value['id']))}>{`${value['material']}`}</Tag>)}
                     <Tag key={`new_material_${index}`} onClick={() => Material.new(record)} style={tagPlusStyle} ><PlusOutlined /></Tag>
                 </>
         },

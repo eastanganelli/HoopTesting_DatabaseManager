@@ -4,6 +4,7 @@ import { Form, Input } from "antd";
 import { enviromentType } from "../../interfaces/table";
 
 interface Props { newToAdd: (myData: enviromentType) => void; }
+interface PropsExtended { data: enviromentType; newToAdd: (myData: enviromentType) => void; }
 
 const formItemLayout = {
     labelCol: {
@@ -16,11 +17,11 @@ const formItemLayout = {
     },
 };
 
-const ModalEnviroment: FunctionComponent<Props> = (Props: Props) => {
-    const [enviroment, setEnviroment] = useState<enviromentType>({ id: 0, insertFluid: '', outsideFluid: '' });
+const ModalEnviroment: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
+    const [enviroment, setEnviroment] = useState<enviromentType>(((Props as PropsExtended)['data'] !== undefined ? (Props as PropsExtended)['data'] : { id: 0, insertFluid: '', outsideFluid: '' }));
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
+        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }} initialValues={{ inputInsertFluid: enviroment.insertFluid.toString(), inputOutsideFluid: enviroment.outsideFluid.toString() }}>
             <Form.Item label="Medio interno" name="inputInsertFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
                 <Input
                     onChange={(value) => {

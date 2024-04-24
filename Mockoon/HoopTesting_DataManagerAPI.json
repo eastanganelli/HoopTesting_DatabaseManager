@@ -224,6 +224,20 @@
           "uuid": "51774e9b-946a-4960-a140-a264b8b4298f"
         }
       ]
+    },
+    {
+      "uuid": "9097ebb6-abc7-4295-be4c-f68315a7ad60",
+      "name": "DB",
+      "children": [
+        {
+          "type": "route",
+          "uuid": "8e3d4f56-0345-4b7e-ba81-0eb119a2d980"
+        },
+        {
+          "type": "route",
+          "uuid": "6e421ca8-fa64-4b34-ac6e-b3351a813127"
+        }
+      ]
     }
   ],
   "routes": [
@@ -1101,6 +1115,64 @@
         }
       ],
       "responseMode": null
+    },
+    {
+      "uuid": "8e3d4f56-0345-4b7e-ba81-0eb119a2d980",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "",
+      "responses": [
+        {
+          "uuid": "4ac5739a-27d4-43d6-ad79-d35723e14e95",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "6e421ca8-fa64-4b34-ac6e-b3351a813127",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "database",
+      "responses": [
+        {
+          "uuid": "657df4fc-ccf3-43e5-a6aa-c30c16ad586f",
+          "body": "{\n  \"username\": \"pepe\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1115,6 +1187,10 @@
     {
       "type": "folder",
       "uuid": "860f8739-dc63-4403-98f7-9ccb323d013a"
+    },
+    {
+      "type": "folder",
+      "uuid": "9097ebb6-abc7-4295-be4c-f68315a7ad60"
     }
   ],
   "proxyMode": false,

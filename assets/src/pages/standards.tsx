@@ -25,49 +25,55 @@ const Standards = () => {
         borderStyle: 'dashed',
     };
 
-    const handleDelete = (id: React.Key) => {
-        const newData = dataSource.filter((item) => item.id !== id);
-        setDataSource(newData);
-    };
-
     const handleGetStandards = () => {
         fetch('http://localhost:3000/standards').then(response => { response.json().then((data: standardType[]) => { setDataSource(data); }); });
-    };
-
-    const handleAdd = () => {
-        let newData: standardType | null = null;
-        const newStandardToAdd = (myData: standardType) => { newData = myData; }
-
-        confirm({
-            title: 'Nuevo Estandard',
-            content: (<ModalStandard newToAdd={newStandardToAdd} />),
-            width: 600,
-            okText: 'Agregar',
-            onOk: () => {
-                if (newData !== null) {
-                    standardCommunication.handleStandard.add(newData).then((response: standardType) => {
-                        setDataSource([...dataSource, response]);
-                        setCount(count + 1);
-                    });
-                }
-            },
-            cancelText: 'Cancelar',
-            onCancel: () => { console.log('Cancel'); },
-
-        });
-    };
-
-    const handleSave = (row: standardType) => {
-        const newData = [...dataSource];
-        const index = newData.findIndex((item) => row.id === item.id);
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setDataSource(newData);
     };
 
     useEffect(() => {
         handleGetStandards();
     }, []);
+
+    const Standard = {
+        add: () => {
+            let newData: standardType | null = null;
+            const newStandardToAdd = (myData: standardType) => { newData = myData; }
+
+            confirm({
+                title: 'Nuevo Estandard',
+                content: (<ModalStandard newToAdd={newStandardToAdd} />),
+                width: 600,
+                okText: 'Agregar',
+                onOk: () => {
+                    if (newData !== null) {
+                        standardCommunication.handleStandard.add(newData).then((response: standardType) => {
+                            setDataSource([...dataSource, response]);
+                            setCount(count + 1);
+                        });
+                    }
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        edit: (row: standardType) => {
+            const newData = [...dataSource];
+            const index = newData.findIndex((item) => row.id === item.id);
+            if (row['standard'] !== dataSource[index]['standard']) {
+                const item = newData[index];
+                newData.splice(index, 1, { ...item, ...row });
+                setDataSource(newData);
+            }
+        },
+        delete: (id: React.Key) => {
+            standardCommunication.handleStandard.remove(Number(id)).then((status: Boolean) => {
+                if (status) {
+                    setDataSource(dataSource.filter((item) => item.id !== id));
+                    message.success('Estandard: eliminado correctamente!');
+                }
+            }).catch((error) => { message.error('Estandard: se produjo un error al eliminarlo!'); });
+        }
+    };
 
     const EndCap = {
         new: (record: any) => {
@@ -124,7 +130,7 @@ const Standards = () => {
                 if (response) { message.success('Tapa: eliminada correctamente!'); }
             }).catch((error) => { message.error('Tapa: se produjo un error al eliminarla!'); });
         }
-    }
+    };
 
     const Enviroment = {
         new: (record: any) => {
@@ -238,7 +244,7 @@ const Standards = () => {
                 if (response) { message.success('Periodo Condicionamiento: eliminada correctamente!'); }
             }).catch((error) => { message.error('Periodo Condicionamiento: se produjo un error al eliminarla!'); })
         }
-    }
+    };
 
     const Material = {
         new: (record: any) => {
@@ -295,7 +301,7 @@ const Standards = () => {
                 if (response) { message.success('Material: eliminada correctamente!'); }
             }).catch((error) => { message.error('Material: se produjo un error al eliminarla!'); })
         }
-    }
+    };
 
     const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
         {
@@ -356,11 +362,11 @@ const Standards = () => {
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>
-                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.id)}>
+                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => Standard.delete(record.id)}>
                             <Button icon={<DeleteOutlined />} danger />
                         </Popconfirm>
                     </>
-                ) : null,
+                ) : null
         },
     ];
 
@@ -368,21 +374,13 @@ const Standards = () => {
 
     const columns = defaultColumns.map((col) => {
         if (!col.editable) { return col; }
-        return { ...col, onCell: (record: standardType) => ({ record, editable: col.editable, dataIndex: col.dataIndex, title: col.title, handleSave }) };
+        return { ...col, onCell: (record: standardType) => ({ record, editable: col.editable, dataIndex: col.dataIndex, title: col.title, Standard: Standard.edit }) };
     });
 
     return (
         <>
-            <Table
-                components={components}
-                // rowClassName={() => 'editable-row'}
-                scroll={{ x: 500 }}
-                size='small'
-                bordered
-                dataSource={dataSource}
-                columns={columns as ColumnTypes}
-            />
-            <FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
+            <Table components={components} scroll={{ x: 500 }} size='small' bordered dataSource={dataSource} columns={columns as ColumnTypes} />
+            <FloatButton icon={<InsertRowBelowOutlined />} onClick={Standard.add} style={{ right: 24 }} />
         </>
     );
 };

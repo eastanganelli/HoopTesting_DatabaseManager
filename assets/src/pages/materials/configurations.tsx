@@ -1,21 +1,24 @@
-import React, { FunctionComponent, useContext, useEffect, useRef, useState } from 'react';
-import type { GetRef, InputRef } from 'antd';
-import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, Button } from 'antd';
+import React, { FunctionComponent, useState } from 'react';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Popconfirm, Table, Button, Modal } from 'antd';
 
-import type { EditableRowProps, specificationType } from '../../interfaces/table';
+import type { configurationType } from '../../interfaces/table';
 import type { ColumnTypes } from '../../components/editableCell';
 import { EditableRow, EditableCell } from '../../components/editableCell';
+import ModalConfiguration from '../../components/materialModal/configuration';
+import { configurationCommunication } from '../../utils/communication';
 
-interface Props { Data: specificationType[]; idSpecification: number }
+interface Props { Data: configurationType[]; idSpecification: number }
+
+const { confirm } = Modal;
 
 const Configurations: FunctionComponent<Props> = (Props: Props) => {
     const [sepecificationID, setSepecificationID] = useState<number>(Props['idSpecification']);
-    const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
+    const [dataSource, setDataSource] = useState<configurationType[]>(Props['Data']);
     const [count, setCount] = useState(2);
 
     const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.id !== key);
+        const newData = dataSource.filter((item) => item.key !== key);
         setDataSource(newData);
     };
 
@@ -47,15 +50,30 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
         },
     ];
 
-    const handleAdd = () => {
-        const newData: specificationType = { id: count, specification: `Nuevo Material`, description: '', configurations: [] };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
-    };
+	const handleAdd = () => {
+		let newData: configurationType | null = null;
+		const setConfiguration = (myData: configurationType) => { newData = myData; };
 
-    const handleSave = (row: specificationType) => {
+		confirm({
+			title: 'Nueva Especificación',
+			content: ( <ModalConfiguration newToAdd={setConfiguration} /> ),
+			okText: 'Guardar',
+			onOk: () => {
+				if(newData != null) {
+					configurationCommunication.handleMaterial.add(newData).then((response: configurationType) => {
+						setDataSource([...dataSource, response]);
+						setCount(count + 1);
+					});
+				}
+			},
+			cancelText: 'Cancelar',
+			onCancel: () => { }
+		});
+	};
+
+    const handleSave = (row: configurationType) => {
         const newData = [...dataSource];
-        const index = newData.findIndex((item) => row.id === item.id);
+        const index = newData.findIndex((item) => row.key === item.key);
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
         setDataSource(newData);
@@ -65,13 +83,13 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 
     const columns = defaultColumns.map((col) => {
         if (!col.editable) { return col; }
-        return { ...col, onCell: (record: specificationType) => ({ record, editable: col.editable, dataIndex: col.dataIndex, title: col.title, handleSave }) };
+        return { ...col, onCell: (record: configurationType) => ({ record, editable: col.editable, dataIndex: col.dataIndex, title: col.title, handleSave }) };
     });
 
     return (
         <>
             <Button onClick={handleAdd} icon={<PlusOutlined />} />
-            <Table dataSource={dataSource} components={components} size='small' tableLayout='fixed' columns={columns as ColumnTypes}/>
+            <Table dataSource={dataSource} pagination={{ position: ['bottomCenter'] }} components={components} size='small' tableLayout='fixed' columns={columns as ColumnTypes}/>
         </>
     );
 };

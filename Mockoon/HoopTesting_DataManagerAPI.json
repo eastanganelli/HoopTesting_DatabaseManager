@@ -1239,7 +1239,7 @@
       "id": "xa6p",
       "name": "materialsComplete",
       "documentation": "",
-      "value": "[\n {\n   \"id\": 0,\n   \"material\": \"PE\",\n   \"description\": \"\",\n   \"specification\": [{\"id\": 0, \"description\": null, \"specification\": \"PE100\", \"configurations\": [{\"id\": 1, \"time\": 1000, \"temperature\": 20}, {\"id\": 5, \"time\": 100, \"temperature\": 90}]}, {\"id\": 1, \"description\": null, \"specification\": \"PE50\", \"configurations\": [{\"id\": 2, \"time\": 10, \"temperature\": 150}, {\"id\": 3, \"time\": 30, \"temperature\": 50}]}]\n },{\n   \"id\": 1,\n   \"material\": \"PBC\",\n   \"description\": \"\",\n   \"specification\": [{\"id\": 2, \"description\": null, \"specification\": \"PBC-200\", \"configurations\": [{\"id\": 4, \"time\": 60, \"temperature\": 50}]}]\n }\n]"
+      "value": "[\n {\n   \"key\": 0,\n   \"material\": \"PE\",\n   \"description\": \"\",\n   \"specifications\": [{\"key\": 0, \"description\": null, \"specification\": \"PE100\", \"configurations\": [{\"key\": 1, \"time\": 1000, \"temperature\": 20}, {\"key\": 5, \"time\": 100, \"temperature\": 90}]}, {\"key\": 1, \"description\": null, \"specification\": \"PE50\", \"configurations\": [{\"key\": 2, \"time\": 10, \"temperature\": 150}, {\"key\": 3, \"time\": 30, \"temperature\": 50}]}]\n },{\n   \"key\": 1,\n   \"material\": \"PBC\",\n   \"description\": \"\",\n   \"specifications\": [{\"key\": 2, \"description\": null, \"specification\": \"PBC-200\", \"configurations\": [{\"key\": 4, \"time\": 60, \"temperature\": 50}]}]\n }\n]"
     },
     {
       "uuid": "3d4ccc7f-996d-44d6-b42f-6bb607e8f6d8",

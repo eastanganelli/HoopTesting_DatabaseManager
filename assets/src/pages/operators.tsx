@@ -103,14 +103,7 @@ const Operators = () => {
 
 	return (
 		<>
-			<Table
-				columns={columns}
-				dataSource={data}
-				onChange={onChange}
-                size='small'
-				showSorterTooltip={{ target: 'sorter-icon' }}
-				tableLayout="fixed"
-			/>
+			<Table columns={columns} pagination={{ position: ['bottomCenter'] }} dataSource={data} onChange={onChange} size='small' showSorterTooltip={{ target: 'sorter-icon' }} tableLayout="fixed" />
 		</>
 	);
 };

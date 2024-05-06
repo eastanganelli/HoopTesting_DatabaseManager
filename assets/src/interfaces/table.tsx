@@ -47,20 +47,20 @@ interface standardType {
 }
 
 interface configurationType {
-    id: Key;
+    key: Key;
     time: number;
     temperature: number;
 }
 
 interface specificationType {
-    id: Key;
+    key: Key;
     specification: string;
     description: string;
     configurations: configurationType[];
 }
 
 interface materialType {
-    id: Key;
+    key: Key;
     material: string;
     description: string;
     specifications: specificationType[]  // Change to an array of objects

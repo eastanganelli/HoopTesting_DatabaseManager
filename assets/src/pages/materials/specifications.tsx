@@ -24,20 +24,17 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 		{
 			title: 'Especificación',
 			dataIndex: 'specification',
-			width: 50,
 			editable: true
 		},
 		{
 			title: 'Descripción',
 			dataIndex: 'description',
-			width: 150,
 			editable: true,
 			render: (text: string) => <>{text === '' ? 'Sin Datos' : text}</>
 		},
 		{
 			title: '',
 			dataIndex: 'operation',
-			width: 50,
 			render: (_, record) =>
 				dataSource.length >= 1 ? (
 					<>
@@ -73,15 +70,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 	return (
 		<>
             <Button onClick={handleAdd} icon={<PlusOutlined />} />
-			<Table
-				components={components}
-				scroll={{ x: 500 }}
-				size='small'
-				bordered
-				dataSource={dataSource}
-				expandable={{ expandedRowRender: (record) => (<Configurations idSpecification={record['id']} Data={record['configurations']} />) }}
-				columns={columns as ColumnTypes}
-			/>
+			<Table dataSource={dataSource} components={components} size='small' tableLayout='fixed' expandable={{ expandedRowRender: (record) => (<Configurations idSpecification={record['id']} Data={record['configurations']} />) }} columns={columns as ColumnTypes}/>
 		</>
 	);
 };

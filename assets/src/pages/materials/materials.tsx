@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useState } from 'react';
-import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, FloatButton, Button } from 'antd';
+import React, { useState } from 'react';
+import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
+import { Popconfirm, Table, FloatButton, Button, TableColumnsType } from 'antd';
 
 import type { materialType } from '../../interfaces/table';
 import type { ColumnTypes } from '../../components/editableCell';
@@ -29,20 +29,18 @@ const Materials = () => {
 		{
 			title: 'Material',
 			dataIndex: 'material',
-			width: 50,
-			editable: true
+			key: 'material'
 		},
 		{
 			title: 'Descripción',
 			dataIndex: 'description',
-			width: 150,
-			editable: true
+			key: 'description',
 		},
 		{
 			title: '',
 			dataIndex: 'operation',
-			width: 50,
-			render: (_, record) =>
+			key: 'operation',
+			render: (_, record: any) =>
 				dataSource.length >= 1 ? (<Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}><Button icon={<DeleteOutlined />} danger /></Popconfirm>) : null
 		},
 	];
@@ -66,7 +64,7 @@ const Materials = () => {
 		setDataSource(newData);
 	};
 
-	const components = { body: { row: EditableRow, cell: EditableCell } };
+ 	const components = { body: { row: EditableRow, cell: EditableCell } };
 
 	const columns = defaultColumns.map((col) => {
 		if (!col.editable) { return col; }
@@ -77,18 +75,21 @@ const Materials = () => {
 		<div>
 			<Table
 				components={components}
-				// rowClassName={(record) => { console.log(record); return record.key % 2 === 0 ? 'Hello' : ''; }}
-				scroll={{ x: 500 }}
 				size='small'
+				tableLayout='fixed'
 				bordered
 				dataSource={dataSource}
 				columns={columns as ColumnTypes}
 				expandable={{ expandedRowRender: (record: materialType | any) => (<Specifications idMaterial={record['key']} Data={record['specifications']} />) }}
 			/>
 			<FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
-			<FloatButton icon={<SaveOutlined />} style={{ right: 72 }} />
 		</div>
 	);
 };
 
 export default Materials;
+
+/**
+ * <Table columns={columns as ColumnTypes} components={components} size='small' tableLayout='fixed' dataSource={dataSource} expandable={{ expandedRowRender: (record: any) => { console.log(record); return (<></>); } }}/>
+ * expandable={{ expandedRowRender: (record: materialType) => (<Specifications idMaterial={Number(record?.id)} Data={record['specifications']} />) }}
+ */

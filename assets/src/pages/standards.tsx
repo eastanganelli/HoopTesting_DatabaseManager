@@ -26,12 +26,26 @@ const Standards = () => {
     };
 
     const handleGetStandards = () => {
-        fetch('http://localhost:3000/standards').then(response => { response.json().then((data: standardType[]) => { setDataSource(data); }); });
+        fetch('http://localhost:3000/standards').then(response => { response.json().then((data: standardType[]) => { setDataSource(data); }); }).catch((error) => { console.log(error); });
+        window.postMessage("Hello World", '*')
     };
 
     useEffect(() => {
         handleGetStandards();
     }, []);
+
+    const handleSave = (row: standardType) => {
+        const newData = [...dataSource];
+        const index = newData.findIndex((item) => row.id === item.id);
+        if (row['standard'] !== dataSource[index]['standard']) {
+            const item = newData[index];
+            newData.splice(index, 1, { ...item, ...row });
+            setDataSource(newData);
+            standardCommunication.handleStandard.update(row).then((status: Boolean) => {
+                if (status) { message.success('Estandard: modificado correctamente!'); }
+            }).catch((error) => { message.error('Estandard: se produjo un error al modificarlo!'); });
+        }
+    };
 
     const Standard = {
         add: () => {
@@ -55,15 +69,6 @@ const Standards = () => {
                 onCancel: () => { console.log('Cancel'); },
 
             });
-        },
-        edit: (row: standardType) => {
-            const newData = [...dataSource];
-            const index = newData.findIndex((item) => row.id === item.id);
-            if (row['standard'] !== dataSource[index]['standard']) {
-                const item = newData[index];
-                newData.splice(index, 1, { ...item, ...row });
-                setDataSource(newData);
-            }
         },
         delete: (id: React.Key) => {
             standardCommunication.handleStandard.remove(Number(id)).then((status: Boolean) => {
@@ -313,13 +318,11 @@ const Standards = () => {
         {
             title: 'Estandard',
             dataIndex: 'standard',
-            width: 100,
             editable: true
         },
         {
             title: 'Tapa',
             dataIndex: 'endCaps',
-            width: 150,
             render: (endCaps: endCapType[], record, index) =>
                 <>
                     {endCaps.map((value: endCapType) => <Tag key={`endcap_${value['id']}`} closeIcon onClick={() => EndCap.edit(record['id'], value)} onClose={(_) => EndCap.delete(Number(value['id']))}>{`${value['endcap']}`}</Tag>)}
@@ -329,7 +332,6 @@ const Standards = () => {
         {
             title: 'Ambiente',
             dataIndex: 'enviroments',
-            width: 150,
             render: (enviroment: enviromentType[], record, index) =>
                 <>
                     {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['id']}`} closeIcon onClick={() => Enviroment.edit(record['id'], value)} onClose={() => Enviroment.delete(Number(value['id']))}>{`${value['insertFluid']} en ${value['outsideFluid']}`}</Tag>)}
@@ -339,7 +341,6 @@ const Standards = () => {
         {
             title: 'Periodo Condicional',
             dataIndex: 'conditionalPeriods',
-            width: 150,
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
                     {conditionalPeriods.map((value: conditionalPeriodType) => <Tag key={`time_${value['id']}`} onClick={() => ConditionalPeriod.edit(record['id'], value)} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['id']))}>{`${value['time']}`}</Tag>)}
@@ -358,7 +359,6 @@ const Standards = () => {
         },
         {
             dataIndex: 'operation',
-            width: 50,
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>
@@ -374,12 +374,12 @@ const Standards = () => {
 
     const columns = defaultColumns.map((col) => {
         if (!col.editable) { return col; }
-        return { ...col, onCell: (record: standardType) => ({ record, editable: col.editable, dataIndex: col.dataIndex, title: col.title, Standard: Standard.edit }) };
+        return { ...col, onCell: (record: standardType) => ({ record, editable: col.editable, dataIndex: col.dataIndex, title: col.title, handleSave }) };
     });
 
     return (
         <>
-            <Table components={components} scroll={{ x: 500 }} size='small' bordered dataSource={dataSource} columns={columns as ColumnTypes} />
+            <Table components={components} size='small' tableLayout='fixed' dataSource={dataSource} columns={columns as ColumnTypes} />
             <FloatButton icon={<InsertRowBelowOutlined />} onClick={Standard.add} style={{ right: 24 }} />
         </>
     );

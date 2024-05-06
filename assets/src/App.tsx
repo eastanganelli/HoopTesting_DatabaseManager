@@ -26,7 +26,7 @@ const items: MenuProps['items'] = [
 
 const App = () => {
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-    const [selected, setSelected] = React.useState('Estandares');
+    const [selected, setSelected] = React.useState('Materiales');
     
     return (
         <Layout hasSider style={{ minWidth: '850px' }}>

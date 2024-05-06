@@ -19,7 +19,15 @@ const standardCommunication = {
             });
         },
         update: (inputData: standardType) => {
-
+            return new Promise<Boolean>((resolve, reject) => {
+                fetch(`${basePath}/standard`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(inputData)
+                }).then((response) => {
+                    if (response.status == 200) resolve(true);
+                }).catch((error) => { reject(error); })
+            });
         },
         remove: (id: number): Promise<Boolean> => {
             return new Promise<Boolean>((resolve, reject) => {

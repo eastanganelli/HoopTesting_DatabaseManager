@@ -109,6 +109,7 @@ const Operators = () => {
 				onChange={onChange}
                 size='small'
 				showSorterTooltip={{ target: 'sorter-icon' }}
+				tableLayout="fixed"
 			/>
 		</>
 	);

@@ -15,7 +15,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
     const [count, setCount] = useState(2);
 
     const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.key !== key);
+        const newData = dataSource.filter((item) => item.id !== key);
         setDataSource(newData);
     };
 
@@ -48,14 +48,14 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
     ];
 
     const handleAdd = () => {
-        const newData: specificationType = { key: count, specification: `Nuevo Material`, description: '', configurations: [] };
+        const newData: specificationType = { id: count, specification: `Nuevo Material`, description: '', configurations: [] };
         setDataSource([...dataSource, newData]);
         setCount(count + 1);
     };
 
     const handleSave = (row: specificationType) => {
         const newData = [...dataSource];
-        const index = newData.findIndex((item) => row.key === item.key);
+        const index = newData.findIndex((item) => row.id === item.id);
         const item = newData[index];
         newData.splice(index, 1, { ...item, ...row });
         setDataSource(newData);
@@ -71,14 +71,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
     return (
         <>
             <Button onClick={handleAdd} icon={<PlusOutlined />} />
-            <Table
-                components={components}
-                scroll={{ x: 300 }}
-                size='small'
-                bordered
-                dataSource={dataSource}
-                columns={columns as ColumnTypes}
-            />
+            <Table dataSource={dataSource} components={components} size='small' tableLayout='fixed' columns={columns as ColumnTypes}/>
         </>
     );
 };

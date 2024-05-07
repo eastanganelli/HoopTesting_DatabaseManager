@@ -1,10 +1,8 @@
 import React, { FunctionComponent, useState } from 'react';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, Button, Modal } from 'antd';
+import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
+import { Popconfirm, Table, Button, Modal, TableColumnsType } from 'antd';
 
 import type { configurationType } from '../../interfaces/table';
-import type { ColumnTypes } from '../../components/editableCell';
-import { EditableRow, EditableCell } from '../../components/editableCell';
 import ModalConfiguration from '../../components/materialModal/configuration';
 import { configurationCommunication } from '../../utils/communication';
 
@@ -22,26 +20,22 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
         setDataSource(newData);
     };
 
-    const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
+    const defaultColumns: TableColumnsType<configurationType> = [
         {
             title: 'Temperatura [°C]',
-            dataIndex: 'temperature',
-            width: 50,
-            editable: true
+            dataIndex: 'temperature'
         },
         {
             title: 'Tiempo [Horas]',
-            dataIndex: 'time',
-            width: 50,
-            editable: true
+            dataIndex: 'time'
         },
         {
             title: '',
             dataIndex: 'operation',
-            width: 50,
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>
+                        <Button icon={<EditOutlined />} onClick={() => { handleEdit(record); }}/>
                         <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
                             <Button icon={<DeleteOutlined />} danger />
                         </Popconfirm>
@@ -55,7 +49,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 		const setConfiguration = (myData: configurationType) => { newData = myData; };
 
 		confirm({
-			title: 'Nueva Especificación',
+			title: 'Nueva Configuración',
 			content: ( <ModalConfiguration newToAdd={setConfiguration} /> ),
 			okText: 'Guardar',
 			onOk: () => {
@@ -71,6 +65,29 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 		});
 	};
 
+    const handleEdit = (data: configurationType) => {
+		let editData: configurationType = data;
+		const setConfiguration = (myData: configurationType) => { editData = myData; };
+
+		confirm({
+			title: 'Nueva Configuración',
+			content: ( <ModalConfiguration newToAdd={setConfiguration} /> ),
+			okText: 'Guardar',
+			onOk: () => {
+				if(editData != data) {
+					configurationCommunication.handleMaterial.update(editData).then((status: Boolean) => {
+                        if (status) {
+                            setDataSource(dataSource.filter((item) => item.key !== data.key));
+                            // message.success('Estandard: eliminado correctamente!');
+                        }
+                    }).catch((error) => { /* message.error('Estandard: se produjo un error al eliminarlo!'); */ });
+                }
+            },
+			cancelText: 'Cancelar',
+			onCancel: () => { }
+		});
+	};
+
     const handleSave = (row: configurationType) => {
         const newData = [...dataSource];
         const index = newData.findIndex((item) => row.key === item.key);
@@ -79,17 +96,10 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
         setDataSource(newData);
     };
 
-    const components = { body: { row: EditableRow, cell: EditableCell } };
-
-    const columns = defaultColumns.map((col) => {
-        if (!col.editable) { return col; }
-        return { ...col, onCell: (record: configurationType) => ({ record, editable: col.editable, dataIndex: col.dataIndex, title: col.title, handleSave }) };
-    });
-
     return (
         <>
             <Button onClick={handleAdd} icon={<PlusOutlined />} />
-            <Table dataSource={dataSource} pagination={{ position: ['bottomCenter'] }} components={components} size='small' tableLayout='fixed' columns={columns as ColumnTypes}/>
+            <Table dataSource={dataSource} pagination={{ position: ['bottomCenter'] }} size='small' tableLayout='fixed' columns={defaultColumns}/>
         </>
     );
 };

@@ -37,7 +37,7 @@ const Materials = () => {
 	];
 
     const handleGetMaterials = () => {
-        fetch('http://localhost:3000/materials').then(response => { response.json().then((data: materialType[]) => { setDataSource(data); console.log(data[0]['specifications']); }); }).catch((error) => { console.log(error); });
+        fetch('http://localhost:3000/materials').then(response => { response.json().then((data: materialType[]) => { setDataSource(data); }); }).catch((error) => { console.log(error); });
     };
 
     useEffect(() => {
@@ -94,8 +94,3 @@ const Materials = () => {
 };
 
 export default Materials;
-
-/**
- * <Table columns={columns as ColumnTypes} components={components} size='small' tableLayout='fixed' dataSource={dataSource} expandable={{ expandedRowRender: (record: any) => { console.log(record); return (<></>); } }}/>
- * expandable={{ expandedRowRender: (record: materialType) => (<Specifications idMaterial={Number(record?.id)} Data={record['specifications']} />) }}
- */

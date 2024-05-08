@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, Button, Modal, TableColumnsType } from 'antd';
+import { Popconfirm, Table, Button, Modal, TableColumnsType, Divider } from 'antd';
 
 import type { configurationType } from '../../interfaces/table';
 import ModalConfiguration from '../../components/materialModal/configuration';
@@ -26,8 +26,13 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
             dataIndex: 'temperature'
         },
         {
-            title: 'Tiempo [Horas]',
-            dataIndex: 'time'
+            title: 'Tiempo',
+            dataIndex: 'time',
+            render: (value, record) => (
+                <>
+                    {`${record.time / 3600 < 1 ? record.time : record.time / 3600} ${record.time < 3600 ? 's' : 'h'}`}
+                </>
+            ),
         },
         {
             title: '',
@@ -52,6 +57,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 			title: 'Nueva Configuración',
 			content: ( <ModalConfiguration newToAdd={setConfiguration} /> ),
 			okText: 'Guardar',
+			width: 550,
 			onOk: () => {
 				if(newData != null) {
 					configurationCommunication.handleMaterial.add(newData).then((response: configurationType) => {
@@ -70,9 +76,10 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 		const setConfiguration = (myData: configurationType) => { editData = myData; };
 
 		confirm({
-			title: 'Nueva Configuración',
-			content: ( <ModalConfiguration newToAdd={setConfiguration} /> ),
+			title: 'Modificar Configuración',
+			content: ( <ModalConfiguration data={editData} newToAdd={setConfiguration} /> ),
 			okText: 'Guardar',
+			width: 550,
 			onOk: () => {
 				if(editData != data) {
 					configurationCommunication.handleMaterial.update(editData).then((status: Boolean) => {
@@ -97,9 +104,9 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
     };
 
     return (
-        <>
-            <Button onClick={handleAdd} icon={<PlusOutlined />} />
-            <Table dataSource={dataSource} pagination={{ position: ['bottomCenter'] }} size='small' tableLayout='fixed' columns={defaultColumns}/>
+		<>
+            <Button style={{ marginLeft: '0.85em' }} onClick={handleAdd} icon={<PlusOutlined />}>{`Agregar Configuración`}</Button>
+            <Table style={{ border: '1px solid black', borderRadius: '5px', margin: '1em 1em 1em 1em' }} dataSource={dataSource} pagination={{ position: ['bottomCenter'] }} size='small' tableLayout='fixed' columns={defaultColumns}/>
         </>
     );
 };

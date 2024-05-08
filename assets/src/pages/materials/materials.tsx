@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, FloatButton, Button, Modal } from 'antd';
+import { Popconfirm, Table, FloatButton, Button, Modal, Divider } from 'antd';
 
 import type { materialType } from '../../interfaces/table';
 import type { ColumnTypes } from '../../components/editableCell';
@@ -57,6 +57,7 @@ const Materials = () => {
 			title: 'Nuevo Material',
 			content: ( <ModalMaterial newToAdd={setMaterial} /> ),
 			okText: 'Guardar',
+			width: 700,
 			onOk: () => {
 				if(newData != null) {
 					materialCommunication.handleMaterial.add(newData).then((response: materialType) => {

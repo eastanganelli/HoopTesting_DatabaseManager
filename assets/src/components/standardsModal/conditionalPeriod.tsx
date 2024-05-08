@@ -36,7 +36,7 @@ const ModalConditionalPeriod: FunctionComponent<Props | PropsExtended> = (Props:
     }
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1920 }} initialValues={{ minWall: conditionalPeriod['minwall'], maxWall: conditionalPeriod['maxwall'], inTime: Number(timeArray[0]), inAproxTime: Number(timeArray[1]), inType: timeArray[2] }}>
+        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1440 }} initialValues={{ minWall: conditionalPeriod['minwall'], maxWall: conditionalPeriod['maxwall'], inTime: Number(timeArray[0]), inAproxTime: Number(timeArray[1]), inType: timeArray[2] }}>
             <Form.Item label="Grosor Pared" name="inWallThickness" rules={[{ required: true, message: 'Rango de grosor de pared es requerido!' }]}>
                 <Space.Compact>
                     <Form.Item name="minWall">

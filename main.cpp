@@ -4,22 +4,27 @@
 #include <QThread>
 #include "server.h"
 
+#include "mainwindow.h"
+
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     Server* myServer = new Server();
-    QWebEngineView webView;
+    // QWebEngineView webView;
 
     QThread* myWorkerServer = new QThread();
     myServer->moveToThread(myWorkerServer);
     myWorkerServer->start();
     myServer->start();
 
-    webView.load(QUrl(myServer->URL()));
-    webView.setContextMenuPolicy(Qt::NoContextMenu);
-    webView.setMinimumSize(QSize(1280, 720));
+    MainWindow main;
+    main.show();
 
-    webView.show();
+    // webView.load(QUrl(myServer->URL()));
+    // webView.setContextMenuPolicy(Qt::NoContextMenu);
+    // webView.setMinimumSize(QSize(1280, 720));
 
-    webView.page()->runJavaScript("alert(\"hello from C++\")");
+    // webView.show();
+
+    // webView.page()->runJavaScript("alert(\"hello from C++\")");
     return a.exec();
 }

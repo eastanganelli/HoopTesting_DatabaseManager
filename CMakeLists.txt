@@ -21,6 +21,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         static.qrc
         assets.qrc
         server.h server.cpp
+        mainwindow.h mainwindow.cpp mainwindow.ui
     )
 
 qt_add_translations(DatabaseManager TS_FILES)

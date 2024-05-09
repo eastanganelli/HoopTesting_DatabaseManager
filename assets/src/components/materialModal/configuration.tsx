@@ -39,7 +39,7 @@ const ModalConfiguration: FunctionComponent<Props | PropsExtended> = (Props: Pro
     );
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1440 }} initialValues={{ inputTime: (configuration['time']/3600 < 1 ? configuration['time'] : configuration['time']/3600) }}>
+        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1440 }} initialValues={{ inputTime: (configuration['time']/3600 < 1 ? configuration['time'] : configuration['time']/3600), inputTemperature: configuration['temperature'] }}>
             <Form.Item label="Tiempo " name="inputTime" rules={[{ required: true, message: 'Tiempo es requerido!' }]}>
                 <InputNumber
                     addonAfter={selectTimeType}
@@ -55,6 +55,7 @@ const ModalConfiguration: FunctionComponent<Props | PropsExtended> = (Props: Pro
                         setConfiguration({ ...configuration, temperature: Number(value) });
                         Props.newToAdd(configuration);
                     }}
+                    addonAfter="°C"
                 />
             </Form.Item>
         </Form>

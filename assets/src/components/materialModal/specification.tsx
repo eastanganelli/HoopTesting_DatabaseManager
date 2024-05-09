@@ -17,7 +17,7 @@ const formItemLayout = {
 };
 
 const ModalSpecification: FunctionComponent<Props> = (Props: Props) => {
-    const [specification, setSpecification] = useState<specificationType>({ key: 0, specification: '', description: '', configurations: []});
+    const [specification, setSpecification] = useState<specificationType>({ key: 0, specification: '', description: '', configurations: [] });
 
     return (
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1500 }}>

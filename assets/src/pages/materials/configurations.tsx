@@ -95,14 +95,6 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 		});
 	};
 
-    const handleSave = (row: configurationType) => {
-        const newData = [...dataSource];
-        const index = newData.findIndex((item) => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setDataSource(newData);
-    };
-
     return (
 		<>
             <Button style={{ marginLeft: '0.85em' }} onClick={handleAdd} icon={<PlusOutlined />}>{`Agregar Configuración`}</Button>

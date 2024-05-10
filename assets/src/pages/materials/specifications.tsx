@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, Button, Modal, Divider } from 'antd';
+import { Popconfirm, Table, Button, Modal, message } from 'antd';
 
 import type { specificationType } from '../../interfaces/table';
 import type { ColumnTypes } from '../../components/editableCell';
@@ -19,8 +19,12 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 	const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
 	const [count, setCount] = useState(2);
 	const handleDelete = (key: React.Key) => {
-		const newData = dataSource.filter((item) => item.key !== key);
-		setDataSource(newData);
+		specificationCommunication.handleMaterial.remove(Number(key)).then((status: Boolean) => {
+			if (status) {
+				setDataSource(dataSource.filter((item) => item.key !== key));
+				message.success('Especificación: eliminada correctamente!');
+			}
+		}).catch((error) => { message.error('Especificación: se produjo un error al eliminarla!'); });
 	};
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -62,7 +66,8 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 					specificationCommunication.handleMaterial.add(newData).then((response: specificationType) => {
 						setDataSource([...dataSource, response]);
 						setCount(count + 1);
-					});
+						message.success('Especificación: agregada correctamente!');
+					}).catch((error) => { message.error('Especificación: se produjo un error al agregarla!'); });
 				}
 			},
 			cancelText: 'Cancelar',
@@ -73,9 +78,16 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 	const handleSave = (row: specificationType) => {
 		const newData = [...dataSource];
 		const index = newData.findIndex((item) => row.key === item.key);
-		const item = newData[index];
-		newData.splice(index, 1, { ...item, ...row });
-		setDataSource(newData);
+		if(row['specification'] !== dataSource[index]['specification'] || row['description'] !== dataSource[index]['description']) {
+			specificationCommunication.handleMaterial.update(row).then((status: Boolean) => {
+				if (status) {
+					const item = newData[index];
+					newData.splice(index, 1, { ...item, ...row });
+					setDataSource(newData);
+					message.success('Especificación: actualizada correctamente!');
+				}
+			}).catch((error) => { message.error('Especificación: se produjo un error al actualizarla!'); })
+		}
 	};
 
 	const components = { body: { row: EditableRow, cell: EditableCell } };

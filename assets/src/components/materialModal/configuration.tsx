@@ -44,16 +44,20 @@ const ModalConfiguration: FunctionComponent<Props | PropsExtended> = (Props: Pro
                 <InputNumber
                     addonAfter={selectTimeType}
                     onChange={(value) => {
-                        setConfiguration({ ...configuration, time: ((selectedTime === 'h' ? 3600 : 1) * Number(value)) });
-                        Props.newToAdd(configuration);
+                        let auxConfig: configurationType = configuration;
+                        configuration['time'] = ((selectedTime === 'h' ? 3600 : 1) * Number(value));
+                        setConfiguration(auxConfig);
+                        Props.newToAdd(auxConfig);
                     }}
                 />
             </Form.Item>
             <Form.Item label="Temperatura" name="inputTemperature" rules={[{ required: true, message: 'Temperatura es requerido!' }]}>
                 <InputNumber
                     onChange={(value) => {
-                        setConfiguration({ ...configuration, temperature: Number(value) });
-                        Props.newToAdd(configuration);
+                        let auxConfig: configurationType = configuration;
+                        configuration['temperature'] = Number(value);
+                        setConfiguration(auxConfig);
+                        Props.newToAdd(auxConfig);
                     }}
                     addonAfter="°C"
                 />

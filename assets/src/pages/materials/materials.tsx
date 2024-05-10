@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, FloatButton, Button, Modal, Divider } from 'antd';
+import { Popconfirm, Table, FloatButton, Button, Modal, message } from 'antd';
 
 import type { materialType } from '../../interfaces/table';
 import type { ColumnTypes } from '../../components/editableCell';
@@ -20,12 +20,14 @@ const Materials = () => {
 		{
 			title: 'Material',
 			dataIndex: 'material',
-			key: 'material'
+			key: 'material',
+			editable: true
 		},
 		{
 			title: 'Descripción',
 			dataIndex: 'description',
 			key: 'description',
+			editable: true
 		},
 		{
 			title: '',
@@ -45,8 +47,13 @@ const Materials = () => {
     }, []);
 
 	const handleDelete = (key: React.Key) => {
-		const newData = dataSource.filter((item) => item.key !== key);
-		setDataSource(newData);
+		materialCommunication.handleMaterial.remove(Number(key)).then((status: Boolean) => {
+			if (status) {
+				const newData = [...dataSource];
+				setDataSource(newData.filter((item) => item.key !== key));
+				message.success('Material: eliminado correctamente!');
+			}
+		}).catch((error) => { message.error('Material: se produjo un error al eliminarlo!'); });
 	};
 
 	const handleAdd = () => {
@@ -63,7 +70,8 @@ const Materials = () => {
 					materialCommunication.handleMaterial.add(newData).then((response: materialType) => {
 						setDataSource([...dataSource, response]);
 						setCount(count + 1);
-					});
+						message.success('Material: agregado correctamente!');
+					}).catch((error) => { message.error('Material: se produjo un error al agregarlo!'); });
 				}
 			},
 			cancelText: 'Cancelar',
@@ -74,9 +82,14 @@ const Materials = () => {
 	const handleSave = (row: materialType) => {
 		const newData = [...dataSource];
 		const index = newData.findIndex((item) => row.key === item.key);
-		const item = newData[index];
-		newData.splice(index, 1, { ...item, ...row });
-		setDataSource(newData);
+		if(row['material'] !== dataSource[index]['material'] || row['description'] !== dataSource[index]['description']) {
+			const item = newData[index];
+			newData.splice(index, 1, { ...item, ...row });
+			setDataSource(newData);
+			materialCommunication.handleMaterial.update(row).then((status: Boolean) => {
+                if (status) { message.success('Material: modificado correctamente!'); }
+            }).catch((error) => { message.error('Material: se produjo un error al modificarlo!'); });
+		}
 	};
 
  	const components = { body: { row: EditableRow, cell: EditableCell } };

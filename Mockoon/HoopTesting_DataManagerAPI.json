@@ -1173,6 +1173,56 @@
         }
       ],
       "responseMode": null
+    },
+    {
+      "uuid": "69e2c96a-5760-4688-aed3-7f8f4998bbd5",
+      "type": "http",
+      "documentation": "",
+      "method": "delete",
+      "endpoint": "specification",
+      "responses": [
+        {
+          "uuid": "67cd3786-d238-4b9b-b52e-e8816e6980a0",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "access-control-allow-headers",
+              "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+            },
+            {
+              "key": "access-control-allow-methods",
+              "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+            },
+            {
+              "key": "access-control-allow-origin",
+              "value": "*"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "content-length",
+              "value": "2"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1191,6 +1241,10 @@
     {
       "type": "folder",
       "uuid": "9097ebb6-abc7-4295-be4c-f68315a7ad60"
+    },
+    {
+      "type": "route",
+      "uuid": "69e2c96a-5760-4688-aed3-7f8f4998bbd5"
     }
   ],
   "proxyMode": false,

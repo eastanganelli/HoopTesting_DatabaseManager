@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, Button, Modal, TableColumnsType, Divider } from 'antd';
+import { Popconfirm, Table, Button, Modal, TableColumnsType, message } from 'antd';
 
 import type { configurationType } from '../../interfaces/table';
 import ModalConfiguration from '../../components/materialModal/configuration';
@@ -16,8 +16,12 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
     const [count, setCount] = useState(2);
 
     const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.key !== key);
-        setDataSource(newData);
+        configurationCommunication.handleMaterial.remove(Number(key)).then((status: Boolean) => {
+            if (status) {
+                setDataSource(dataSource.filter((item) => item.key !== key));
+                message.success('Confiiguracion: eliminada correctamente!');
+            }
+        }).catch((error) => { message.error('Configuracion: se produjo un error al eliminarlo!'); });
     };
 
     const defaultColumns: TableColumnsType<configurationType> = [
@@ -63,7 +67,8 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 					configurationCommunication.handleMaterial.add(newData).then((response: configurationType) => {
 						setDataSource([...dataSource, response]);
 						setCount(count + 1);
-					});
+                        message.success('Configuracion: agregada correctamente!');
+					}).catch((error) => { message.error('Configuracion: se produjo un error al agregarla!'); });
 				}
 			},
 			cancelText: 'Cancelar',
@@ -71,8 +76,8 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 		});
 	};
 
-    const handleEdit = (data: configurationType) => {
-		let editData: configurationType = data;
+    const handleEdit = (row: configurationType) => {
+		let editData: configurationType = row;
 		const setConfiguration = (myData: configurationType) => { editData = myData; };
 
 		confirm({
@@ -81,13 +86,18 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
-				if(editData != data) {
-					configurationCommunication.handleMaterial.update(editData).then((status: Boolean) => {
+                const newData = [...dataSource];
+                const index = newData.findIndex((item) => row.key === item.key);
+                const item = newData[index];
+                console.log(editData['temperature'], item['temperature'], editData['time'], item['time']);
+				if(editData['temperature'] !== item['temperature'] || editData['time'] !== item['time']) {
+					configurationCommunication.handleMaterial.update(editData).then((status: Boolean) => {                      
                         if (status) {
-                            setDataSource(dataSource.filter((item) => item.key !== data.key));
-                            // message.success('Estandard: eliminado correctamente!');
+                            newData.splice(index, 1, { ...item, ...editData });
+                            setDataSource(newData);
+                            message.success('Configuracion: modificado correctamente!');
                         }
-                    }).catch((error) => { /* message.error('Estandard: se produjo un error al eliminarlo!'); */ });
+                    }).catch((error) => { message.error('Configuracion: se produjo un error al modificarlo!'); });
                 }
             },
 			cancelText: 'Cancelar',

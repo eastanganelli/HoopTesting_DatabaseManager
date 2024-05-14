@@ -20,32 +20,33 @@ const formItemLayout = {
 };
 
 const ModalConfiguration: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
-    const [configuration, setConfiguration] = useState<configurationType>(((Props as PropsExtended)['data'] !== undefined ? (Props as PropsExtended)['data'] : { key: 0, time: 0, temperature: 0 }));
-    const [selectedTime,  setSelectedTime]  = useState<String>((configuration['time']/3600 < 1 ? 's' : 'h'));
+    const [configuration, setConfiguration] = useState<configurationType>(((Props as PropsExtended)['data'] !== undefined ? (Props as PropsExtended)['data'] : { key: 0, time: 0, type: 'h', temperature: 0 }));
 
     const selectTimeType = (
         <Select
-            defaultValue="h"
-            onSelect={(value: any) => {
-                setSelectedTime(value);
-                setConfiguration({ ...configuration, time: ((selectedTime === 'h' ? 3600 : 1) * configuration['time']) });
-                Props.newToAdd(configuration);
-                console.log(( (selectedTime === 'h' ? 3600 : 1) * Number(value)));
+            defaultValue={configuration['type'] !== undefined ? configuration['type'] : 'h'}
+            onSelect={(value) => {
+                let auxConfig: configurationType = {...configuration};
+                auxConfig['type'] = value;
+                setConfiguration(auxConfig);
+                Props.newToAdd(auxConfig);
+                console.log(auxConfig);
             }}
         >
             <Option value="h">Horas</Option>
+            <Option value="m">Minutos</Option>
             <Option value="s">Segundos</Option>
         </Select>
     );
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1440 }} initialValues={{ inputTime: (configuration['time']/3600 < 1 ? configuration['time'] : configuration['time']/3600), inputTemperature: configuration['temperature'] }}>
+        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1440 }} initialValues={{ inputTime: configuration['time'], inputTemperature: configuration['temperature'] }}>
             <Form.Item label="Tiempo " name="inputTime" rules={[{ required: true, message: 'Tiempo es requerido!' }]}>
                 <InputNumber
                     addonAfter={selectTimeType}
                     onChange={(value) => {
-                        let auxConfig: configurationType = configuration;
-                        configuration['time'] = ((selectedTime === 'h' ? 3600 : 1) * Number(value));
+                        let auxConfig: configurationType = {...configuration};
+                        auxConfig['time'] = Number(value);
                         setConfiguration(auxConfig);
                         Props.newToAdd(auxConfig);
                     }}
@@ -54,8 +55,8 @@ const ModalConfiguration: FunctionComponent<Props | PropsExtended> = (Props: Pro
             <Form.Item label="Temperatura" name="inputTemperature" rules={[{ required: true, message: 'Temperatura es requerido!' }]}>
                 <InputNumber
                     onChange={(value) => {
-                        let auxConfig: configurationType = configuration;
-                        configuration['temperature'] = Number(value);
+                        let auxConfig: configurationType = {...configuration};
+                        auxConfig['temperature'] = Number(value);
                         setConfiguration(auxConfig);
                         Props.newToAdd(auxConfig);
                     }}

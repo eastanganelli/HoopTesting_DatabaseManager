@@ -11,7 +11,6 @@ interface Props { Data: configurationType[]; idSpecification: number }
 const { confirm } = Modal;
 
 const Configurations: FunctionComponent<Props> = (Props: Props) => {
-    const [sepecificationID, setSepecificationID] = useState<number>(Props['idSpecification']);
     const [dataSource, setDataSource] = useState<configurationType[]>(Props['Data']);
     const [count, setCount] = useState(2);
 
@@ -19,7 +18,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
         configurationCommunication.handleMaterial.remove(Number(key)).then((status: Boolean) => {
             if (status) {
                 setDataSource(dataSource.filter((item) => item.key !== key));
-                message.success('Confiiguracion: eliminada correctamente!');
+                message.success('Confiiguración: eliminada correctamente!');
             }
         }).catch((error) => { message.error('Configuracion: se produjo un error al eliminarlo!'); });
     };
@@ -34,7 +33,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
             dataIndex: 'time',
             render: (value, record) => (
                 <>
-                    {`${record.time / 3600 < 1 ? record.time : record.time / 3600} ${record.time < 3600 ? 's' : 'h'}`}
+                    {`${record.time} ${record.type}`}
                 </>
             ),
         },
@@ -50,7 +49,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                         </Popconfirm>
                     </>
                 ) : null,
-        },
+        }
     ];
 
 	const handleAdd = () => {
@@ -67,7 +66,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 					configurationCommunication.handleMaterial.add(newData).then((response: configurationType) => {
 						setDataSource([...dataSource, response]);
 						setCount(count + 1);
-                        message.success('Configuracion: agregada correctamente!');
+                        message.success('Configuración: agregada correctamente!');
 					}).catch((error) => { message.error('Configuracion: se produjo un error al agregarla!'); });
 				}
 			},
@@ -77,7 +76,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 	};
 
     const handleEdit = (row: configurationType) => {
-		let editData: configurationType = row;
+		let editData: configurationType = {...row};
 		const setConfiguration = (myData: configurationType) => { editData = myData; };
 
 		confirm({
@@ -89,15 +88,16 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                 const newData = [...dataSource];
                 const index = newData.findIndex((item) => row.key === item.key);
                 const item = newData[index];
-                console.log(editData['temperature'], item['temperature'], editData['time'], item['time']);
-				if(editData['temperature'] !== item['temperature'] || editData['time'] !== item['time']) {
+                console.log(editData, row);
+				if(editData['temperature'] !== row['temperature'] || editData['time'] !== row['time'] || editData['type'] !== row['type']) {
+                    console.log(editData);
 					configurationCommunication.handleMaterial.update(editData).then((status: Boolean) => {                      
                         if (status) {
                             newData.splice(index, 1, { ...item, ...editData });
                             setDataSource(newData);
-                            message.success('Configuracion: modificado correctamente!');
+                            message.success('Configuración: modificado correctamente!');
                         }
-                    }).catch((error) => { message.error('Configuracion: se produjo un error al modificarlo!'); });
+                    }).catch((error) => { message.error('Configuración: se produjo un error al modificarlo!'); });
                 }
             },
 			cancelText: 'Cancelar',

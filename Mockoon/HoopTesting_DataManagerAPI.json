@@ -1173,56 +1173,6 @@
         }
       ],
       "responseMode": null
-    },
-    {
-      "uuid": "69e2c96a-5760-4688-aed3-7f8f4998bbd5",
-      "type": "http",
-      "documentation": "",
-      "method": "delete",
-      "endpoint": "specification",
-      "responses": [
-        {
-          "uuid": "67cd3786-d238-4b9b-b52e-e8816e6980a0",
-          "body": "{}",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [
-            {
-              "key": "access-control-allow-headers",
-              "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
-            },
-            {
-              "key": "access-control-allow-methods",
-              "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
-            },
-            {
-              "key": "access-control-allow-origin",
-              "value": "*"
-            },
-            {
-              "key": "content-type",
-              "value": "application/json; charset=utf-8"
-            },
-            {
-              "key": "content-length",
-              "value": "2"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": false,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1241,10 +1191,6 @@
     {
       "type": "folder",
       "uuid": "9097ebb6-abc7-4295-be4c-f68315a7ad60"
-    },
-    {
-      "type": "route",
-      "uuid": "69e2c96a-5760-4688-aed3-7f8f4998bbd5"
     }
   ],
   "proxyMode": false,
@@ -1293,7 +1239,7 @@
       "id": "xa6p",
       "name": "materialsComplete",
       "documentation": "",
-      "value": "[\n {\n   \"key\": 0,\n   \"material\": \"PE\",\n   \"description\": \"Sin datos\",\n   \"specifications\": [{\"key\": 0, \"description\": \"Sin datos\", \"specification\": \"PE100\", \"configurations\": [{\"key\": 1, \"time\": 3600000, \"temperature\": 20}, {\"key\": 5, \"time\": 360000, \"temperature\": 90}]}, {\"key\": 1, \"description\": \"Sin datos\", \"specification\": \"PE50\", \"configurations\": [{\"key\": 2, \"time\": 36000, \"temperature\": 150}, {\"key\": 3, \"time\": 108000, \"temperature\": 50}]}]\n },{\n   \"key\": 1,\n   \"material\": \"PBC\",\n   \"description\": \"Sin datos\",\n   \"specifications\": [{\"key\": 2, \"description\": \"Sin datos\", \"specification\": \"PBC-200\", \"configurations\": [{\"key\": 4, \"time\": 60, \"temperature\": 50}]}]\n }\n]"
+      "value": "[\n {\n   \"key\": 0,\n   \"material\": \"PE\",\n   \"description\": \"Sin datos\",\n   \"specifications\": [{\"key\": 0, \"description\": \"Sin datos\", \"specification\": \"PE100\", \"configurations\": [{\"key\": 1, \"time\": 1000, \"type\": \"h\", \"temperature\": 20}, {\"key\": 5, \"time\": 100, \"type\": \"h\", \"temperature\": 90}]}, {\"key\": 1, \"description\": \"Sin datos\", \"specification\": \"PE50\", \"configurations\": [{\"key\": 2, \"time\": 10, \"type\": \"h\", \"temperature\": 150}, {\"key\": 3, \"time\": 30, \"type\": \"h\", \"temperature\": 50}]}]\n },{\n   \"key\": 1,\n   \"material\": \"PBC\",\n   \"description\": \"Sin datos\",\n   \"specifications\": [{\"key\": 2, \"description\": \"Sin datos\", \"specification\": \"PBC-200\", \"configurations\": [{\"key\": 4, \"time\": 60, \"type\": \"s\", \"temperature\": 50}]}]\n }\n]"
     },
     {
       "uuid": "3d4ccc7f-996d-44d6-b42f-6bb607e8f6d8",

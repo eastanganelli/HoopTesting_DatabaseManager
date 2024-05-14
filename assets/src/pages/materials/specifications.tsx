@@ -15,7 +15,6 @@ interface Props { Data: specificationType[]; idMaterial: number }
 const { confirm } = Modal;
 
 const Specifications: FunctionComponent<Props> = (Props : Props) => {
-    // const [materialID, setMaterialID] = useState<number>(Props['idMaterial']);
 	const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
 	const [count, setCount] = useState(2);
 	const handleDelete = (key: React.Key) => {
@@ -49,7 +48,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 						</Popconfirm>
 					</>
 				) : null,
-		},
+		}
 	];
 
 	const handleAdd = () => {
@@ -60,7 +59,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 			title: 'Nueva Especificación',
 			content: ( <ModalSpecification newToAdd={setSpecification} /> ),
 			okText: 'Guardar',
-			width: 400,
+			width: 550,
 			onOk: () => {
 				if(newData != null) {
 					specificationCommunication.handleMaterial.add(newData).then((response: specificationType) => {
@@ -99,7 +98,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 
 	return (
 		<>
-			<Button style={{ marginLeft: '0.85em' }} onClick={handleAdd} icon={<PlusOutlined />}>{`Agregar Especificacion`}</Button>
+			<Button style={{ marginLeft: '0.85em' }} onClick={handleAdd} icon={<PlusOutlined />}>{`Agregar Especificación`}</Button>
 			<Table style={{ border: '1px solid black', borderRadius: '5px', margin: '1em 1em 1em 1em' }} dataSource={dataSource} pagination={{ position: ['bottomCenter'] }} components={components} size='small' tableLayout='fixed' expandable={{ expandedRowRender: (record) => (<Configurations idSpecification={record['id']} Data={record['configurations']} />) }} columns={columns as ColumnTypes}/>
 		</>
 	);

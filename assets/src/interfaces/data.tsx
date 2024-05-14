@@ -46,6 +46,7 @@ interface operator {
 interface configuration {
     id: number;
     time: number;
+    type: string;
     temperature: number;
 }
 

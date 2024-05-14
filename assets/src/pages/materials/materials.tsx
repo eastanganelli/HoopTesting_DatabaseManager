@@ -35,7 +35,7 @@ const Materials = () => {
 			key: 'operation',
 			render: (_, record: any) =>
 				dataSource.length >= 1 ? (<Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}><Button icon={<DeleteOutlined />} danger /></Popconfirm>) : null
-		},
+		}
 	];
 
     const handleGetMaterials = () => {
@@ -64,7 +64,7 @@ const Materials = () => {
 			title: 'Nuevo Material',
 			content: ( <ModalMaterial newToAdd={setMaterial} /> ),
 			okText: 'Guardar',
-			width: 700,
+			width: 550,
 			onOk: () => {
 				if(newData != null) {
 					materialCommunication.handleMaterial.add(newData).then((response: materialType) => {

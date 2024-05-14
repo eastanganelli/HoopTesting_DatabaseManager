@@ -49,6 +49,7 @@ interface standardType {
 interface configurationType {
     key: Key;
     time: number;
+    type: string;
     temperature: number;
 }
 

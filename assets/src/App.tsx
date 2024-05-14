@@ -12,16 +12,10 @@ const { Content, Sider } = Layout;
 
 const menuItems: string[] = ['Estandares', 'Materiales', 'Operadores', 'Base de datos'];
 
-const items: MenuProps['items'] = [
-    BookOutlined,
-    FormatPainterOutlined,
-    UserOutlined,
-    DatabaseOutlined
-
-].map((icon, index) => ({
+const items: MenuProps['items'] = [ BookOutlined, FormatPainterOutlined, UserOutlined, DatabaseOutlined ].map((icon, index) => ({
     key: menuItems[index],
     icon: React.createElement(icon),
-    label: menuItems[index],
+    label: menuItems[index]
 }));
 
 const App = () => {

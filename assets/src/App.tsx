@@ -20,7 +20,7 @@ const items: MenuProps['items'] = [ BookOutlined, FormatPainterOutlined, UserOut
 
 const App = () => {
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-    const [selected, setSelected] = React.useState('Materiales');
+    const [selected, setSelected] = React.useState('Operadores');
     
     return (
         <Layout hasSider style={{ minWidth: '850px' }}>

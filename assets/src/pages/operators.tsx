@@ -1,109 +1,55 @@
-import React from "react";
-import { Table } from 'antd';
+import React, { useState, useEffect } from "react";
+import { Table, Button, FloatButton } from 'antd';
+
+import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
 import type { TableColumnsType, TableProps } from 'antd';
 
-interface DataType {
-	key: React.Key;
-	name: string;
-	age: number;
-	address: string;
-}
+import { operatorType } from "../interfaces/table";
 
-const columns: TableColumnsType<DataType> = [
+const columns: TableColumnsType<operatorType> = [
 	{
-		title: 'Name',
-		dataIndex: 'name',
+		title: 'DNI',
+		dataIndex: 'key',
 		showSorterTooltip: { target: 'full-header' },
-		filters: [
-			{
-				text: 'Joe',
-				value: 'Joe',
-			},
-			{
-				text: 'Jim',
-				value: 'Jim',
-			},
-			{
-				text: 'Submenu',
-				value: 'Submenu',
-				children: [
-					{
-						text: 'Green',
-						value: 'Green',
-					},
-					{
-						text: 'Black',
-						value: 'Black',
-					},
-				],
-			},
-		],
-		// specify the condition of filtering result
-		// here is that finding the name started with `value`
 		onFilter: (value, record) => record.name.indexOf(value as string) === 0,
 		sorter: (a, b) => a.name.length - b.name.length,
 		sortDirections: ['descend'],
 	},
 	{
-		title: 'Age',
-		dataIndex: 'age',
+		title: 'Nombre',
+		dataIndex: 'name',
+		onFilter: (value, record) => record.name.indexOf(value as string) === 0,
+		sorter: (a, b) => a.name.length - b.name.length,
 		defaultSortOrder: 'descend',
-		sorter: (a, b) => a.age - b.age,
 	},
 	{
-		title: 'Address',
-		dataIndex: 'address',
-		filters: [
-			{
-				text: 'London',
-				value: 'London',
-			},
-			{
-				text: 'New York',
-				value: 'New York',
-			},
-		],
-		onFilter: (value, record) => record.address.indexOf(value as string) === 0,
+		title: 'Apellido',
+		onFilter: (value, record) => record.name.indexOf(value as string) === 0,
+		sorter: (a, b) => a.name.length - b.name.length,
+		dataIndex: 'familyName',
 	},
+	{
+		title: '',
+		dataIndex: 'actions',
+		render: (text, record) => (
+			<>
+				<Button icon={<DeleteOutlined />} onClick={() => {}} style={{ marginRight: 8 }} danger />
+			</>
+		),
+	}
 ];
-
-const data = [
-	{
-		key: '1',
-		name: 'John Brown',
-		age: 32,
-		address: 'New York No. 1 Lake Park',
-	},
-	{
-		key: '2',
-		name: 'Jim Green',
-		age: 42,
-		address: 'London No. 1 Lake Park',
-	},
-	{
-		key: '3',
-		name: 'Joe Black',
-		age: 32,
-		address: 'Sydney No. 1 Lake Park',
-	},
-	{
-		key: '4',
-		name: 'Jim Red',
-		age: 32,
-		address: 'London No. 2 Lake Park',
-	},
-];
-
-const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
-	console.log('params', pagination, filters, sorter, extra);
-};
-
 
 const Operators = () => {
+	const [dataSource, setDataSource] = useState<operatorType[]>([]);
+
+	useEffect(() => {
+			fetch('http://localhost:3000/operators').then(response => { response.json().then((data: operatorType[]) => { setDataSource(data); }); }).catch((error) => { console.log(error); });
+	}, []);
 
 	return (
 		<>
-			<Table columns={columns} pagination={{ position: ['bottomCenter'] }} dataSource={data} onChange={onChange} size='small' tableLayout="fixed" showSorterTooltip={{ target: 'sorter-icon' }} />
+			<Table columns={columns} size='small' tableLayout='fixed' pagination={{ position: ['bottomCenter'] }} dataSource={dataSource} showSorterTooltip={{ target: 'sorter-icon' }} />
+			<FloatButton icon={<InsertRowBelowOutlined />} onClick={() => {}} style={{ right: 24 }} />
 		</>
 	);
 };

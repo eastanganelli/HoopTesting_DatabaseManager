@@ -1246,7 +1246,7 @@
       "id": "yqwy",
       "name": "operators",
       "documentation": "",
-      "value": "[\n  {\n    \"dni\": 33452323,\n    \"name\": \"Camus\",\n    \"familyName\": \"Penguin\"\n  }, {\n    \"dni\": 39068857,\n    \"name\": \"Ezequiel Augusto\",\n    \"familyName\": \"Stanganelli\"\n  }, {\n    \"dni\": 45693035,\n    \"name\": \"Dinko\",\n    \"familyName\": \"Salak\"\n  }\n]"
+      "value": "[\n  {\n    \"key\": 33452323,\n    \"name\": \"Camus\",\n    \"familyName\": \"Penguin\"\n  }, {\n    \"key\": 39068857,\n    \"name\": \"Ezequiel Augusto\",\n    \"familyName\": \"Stanganelli\"\n  }, {\n    \"key\": 45693035,\n    \"name\": \"Dinko\",\n    \"familyName\": \"Salak\"\n  }\n]"
     }
   ],
   "callbacks": []

@@ -39,9 +39,9 @@ interface standardHasMaterialType {
 
 interface standardType {
     id: Key;
-    standard: string; // Change to an array of objects
-    materials: standardHasMaterialType[]; // Change to an array of objects
-    enviroments: enviromentType[]; // Change to an array of objects
+    standard: string;
+    materials: standardHasMaterialType[];
+    enviroments: enviromentType[];
     endCaps: endCapType[];
     conditionalPeriods: conditionalPeriodType[];
 }
@@ -68,7 +68,7 @@ interface materialType {
 }
 
 interface operatorType {
-    dni: Key;
+    key: Key;
     name: string;
     familyName: string;
 }

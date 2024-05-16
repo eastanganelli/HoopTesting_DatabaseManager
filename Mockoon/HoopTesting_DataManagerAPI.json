@@ -231,11 +231,19 @@
       "children": [
         {
           "type": "route",
-          "uuid": "8e3d4f56-0345-4b7e-ba81-0eb119a2d980"
+          "uuid": "6e421ca8-fa64-4b34-ac6e-b3351a813127"
         },
         {
           "type": "route",
-          "uuid": "6e421ca8-fa64-4b34-ac6e-b3351a813127"
+          "uuid": "a2d709fa-4d6c-4e5c-a4f0-14008d2218f8"
+        },
+        {
+          "type": "route",
+          "uuid": "453b2909-28fc-4625-9a30-357ba44eeb9f"
+        },
+        {
+          "type": "route",
+          "uuid": "41c3a32a-a2e4-4d62-b014-a6127b4818ca"
         }
       ]
     }
@@ -1117,35 +1125,6 @@
       "responseMode": null
     },
     {
-      "uuid": "8e3d4f56-0345-4b7e-ba81-0eb119a2d980",
-      "type": "crud",
-      "documentation": "",
-      "method": "",
-      "endpoint": "",
-      "responses": [
-        {
-          "uuid": "4ac5739a-27d4-43d6-ad79-d35723e14e95",
-          "body": "{}",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [],
-          "bodyType": "DATABUCKET",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null
-    },
-    {
       "uuid": "6e421ca8-fa64-4b34-ac6e-b3351a813127",
       "type": "http",
       "documentation": "",
@@ -1159,9 +1138,96 @@
           "statusCode": 200,
           "label": "",
           "headers": [],
-          "bodyType": "INLINE",
+          "bodyType": "DATABUCKET",
           "filePath": "",
-          "databucketID": "",
+          "databucketID": "1tko",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "a2d709fa-4d6c-4e5c-a4f0-14008d2218f8",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "database",
+      "responses": [
+        {
+          "uuid": "de7b4d30-3b37-46f6-a158-e710f874f19b",
+          "body": "{\n  \"username\": \"pepe\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "1tko",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "453b2909-28fc-4625-9a30-357ba44eeb9f",
+      "type": "http",
+      "documentation": "",
+      "method": "put",
+      "endpoint": "database",
+      "responses": [
+        {
+          "uuid": "d5fad76d-6f75-45da-8fae-b2bdedde1cb1",
+          "body": "{\n  \"username\": \"pepe\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "1tko",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "41c3a32a-a2e4-4d62-b014-a6127b4818ca",
+      "type": "http",
+      "documentation": "",
+      "method": "delete",
+      "endpoint": "database",
+      "responses": [
+        {
+          "uuid": "843f4e5b-1d83-4424-92d1-f909e2861b61",
+          "body": "{\n  \"username\": \"pepe\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "1tko",
           "sendFileAsBody": false,
           "rules": [],
           "rulesOperator": "OR",
@@ -1247,6 +1313,13 @@
       "name": "operators",
       "documentation": "",
       "value": "[\n  {\n    \"key\": 1,\n    \"dni\": 33452323,\n    \"name\": \"Camus\",\n    \"familyName\": \"Penguin\"\n  }, {\n    \"key\": 2,\n    \"dni\": 39068857,\n    \"name\": \"Ezequiel Augusto\",\n    \"familyName\": \"Stanganelli\"\n  }, {\n    \"key\": 3,\n    \"dni\": 45693035,\n    \"name\": \"Dinko\",\n    \"familyName\": \"Salak\"\n  }\n]"
+    },
+    {
+      "uuid": "ba71c74a-600e-415e-b906-f080bb8eeaa0",
+      "id": "1tko",
+      "name": "database",
+      "documentation": "",
+      "value": "{\n  \"address\": \"localhost\",\n  \"port\": \"8080\",\n  \"user\": \"databaseManager\",\n  \"password\": \"STEL_DatabaseManager\"\n}"
     }
   ],
   "callbacks": []

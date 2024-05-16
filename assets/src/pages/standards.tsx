@@ -6,7 +6,8 @@ import type { conditionalPeriodType, endCapType, enviromentType, standardHasMate
 import type { ColumnTypes } from '../components/editableCell';
 
 import { EditableRow, EditableCell } from '../components/editableCell';
-import { standardCommunication } from '../utils/communication';
+import { standardCommunication, endCapCommunication, enviromentCommunication, conditionalPeriodCommunication, materialCommunication } from '../utils/communication/standard';
+
 import ModalStandard from '../components/standardsModal/standard';
 import ModalMaterial from '../components/standardsModal/material';
 import ModalConditionalPeriod from '../components/standardsModal/conditionalPeriod';
@@ -41,7 +42,7 @@ const Standards = () => {
             const item = newData[index];
             newData.splice(index, 1, { ...item, ...row });
             setDataSource(newData);
-            standardCommunication.handleStandard.update(row).then((status: Boolean) => {
+            standardCommunication.update(row).then((status: Boolean) => {
                 if (status) { message.success('Estandard: modificado correctamente!'); }
             }).catch((error) => { message.error('Estandard: se produjo un error al modificarlo!'); });
         }
@@ -59,7 +60,7 @@ const Standards = () => {
                 okText: 'Agregar',
                 onOk: () => {
                     if (newData !== null) {
-                        standardCommunication.handleStandard.add(newData).then((response: standardType) => {
+                        standardCommunication.add(newData).then((response: standardType) => {
                             setDataSource([...dataSource, response]);
                             setCount(count + 1);
                         });
@@ -71,7 +72,7 @@ const Standards = () => {
             });
         },
         delete: (id: React.Key) => {
-            standardCommunication.handleStandard.remove(Number(id)).then((status: Boolean) => {
+            standardCommunication.remove(Number(id)).then((status: Boolean) => {
                 if (status) {
                     setDataSource(dataSource.filter((item) => item.id !== id));
                     message.success('Estandard: eliminado correctamente!');
@@ -88,11 +89,11 @@ const Standards = () => {
             confirm({
                 title: 'Nuevo Ambiente',
                 content: (<ModalEndCap newToAdd={newToAdd} />),
-                width: 600,
+                width: 550,
                 okText: 'Agregar',
                 onOk: () => {
                     if (newData !== null) {
-                        standardCommunication.handleEndCap.add(Number(record['id']), newData).then((response: endCapType) => {
+                        endCapCommunication.add(Number(record['id']), newData).then((response: endCapType) => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                             dataSource[myIndex]['endCaps'].push(response);
                             setDataSource(dataSource.splice(0, dataSource.length));
@@ -112,10 +113,10 @@ const Standards = () => {
             confirm({
                 title: 'Editar Tapa',
                 content: (<ModalEndCap data={newData} newToAdd={newToAdd} />),
-                width: 600,
+                width: 550,
                 okText: 'Modificar',
                 onOk: () => {
-                    standardCommunication.handleEndCap.update(idStandard, newData).then((status: Boolean) => {
+                    endCapCommunication.update(idStandard, newData).then((status: Boolean) => {
                         if (status) {
                             const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
                             const myIndexEndCap = dataSource[myIndexStandard]['endCaps'].findIndex((item: endCapType) => item['id'] === data['id']);
@@ -131,7 +132,7 @@ const Standards = () => {
             });
         },
         delete: (id: number) => {
-            standardCommunication.handleEndCap.remove(id).then((response: Boolean) => {
+            endCapCommunication.remove(id).then((response: Boolean) => {
                 if (response) { message.success('Tapa: eliminada correctamente!'); }
             }).catch((error) => { message.error('Tapa: se produjo un error al eliminarla!'); });
         }
@@ -149,7 +150,7 @@ const Standards = () => {
                 okText: 'Agregar',
                 onOk: () => {
                     if (newData !== null) {
-                        standardCommunication.handleEnviroment.add(Number(record['id']), newData).then((response: enviromentType) => {
+                        enviromentCommunication.add(Number(record['id']), newData).then((response: enviromentType) => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                             dataSource[myIndex]['enviroments'].push(response);
                             setDataSource(dataSource.splice(0, dataSource.length));
@@ -172,7 +173,7 @@ const Standards = () => {
                 width: 600,
                 okText: 'Modificar',
                 onOk: () => {
-                    standardCommunication.handleEnviroment.update(Number(idStandard), newData).then((status: Boolean) => {
+                    enviromentCommunication.update(Number(idStandard), newData).then((status: Boolean) => {
                         if (status) {
                             const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
                             const myIndexEnviroment = dataSource[myIndexStandard]['enviroments'].findIndex((item: enviromentType) => item['id'] === data['id']);
@@ -188,7 +189,7 @@ const Standards = () => {
             });
         },
         delete: (id: number) => {
-            standardCommunication.handleEnviroment.remove(id).then((response: Boolean) => {
+            enviromentCommunication.remove(id).then((response: Boolean) => {
                 if (response) { message.success('Ambiente: eliminada correctamente!'); }
             }).catch((error) => { message.error('Ambiente: se produjo un error al eliminarla!'); });
         }
@@ -206,7 +207,7 @@ const Standards = () => {
                 okText: 'Agregar',
                 onOk: () => {
                     if (newData !== null) {
-                        standardCommunication.handleConditionalPeriod.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
+                        conditionalPeriodCommunication.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                             dataSource[myIndex]['conditionalPeriods'].push(response);
                             setDataSource(dataSource.splice(0, dataSource.length));
@@ -229,7 +230,7 @@ const Standards = () => {
                 width: 800,
                 okText: 'Modificar',
                 onOk: () => {
-                    standardCommunication.handleConditionalPeriod.update(Number(idStandard), newData).then((status: Boolean) => {
+                    conditionalPeriodCommunication.update(Number(idStandard), newData).then((status: Boolean) => {
                         if (status) {
                             const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
                             const myIndexConditionalPeriod = dataSource[myIndexStandard]['conditionalPeriods'].findIndex((item: conditionalPeriodType) => item['id'] === data['id']);
@@ -245,7 +246,7 @@ const Standards = () => {
             });
         },
         delete: (id: number) => {
-            standardCommunication.handleConditionalPeriod.remove(id).then((response: Boolean) => {
+            conditionalPeriodCommunication.remove(id).then((response: Boolean) => {
                 if (response) { message.success('Periodo Condicionamiento: eliminada correctamente!'); }
             }).catch((error) => { message.error('Periodo Condicionamiento: se produjo un error al eliminarla!'); })
         }
@@ -263,7 +264,7 @@ const Standards = () => {
                 okText: 'Agregar',
                 onOk: () => {
                     if (newData !== null) {
-                        standardCommunication.handleMaterial.add(Number(record['id']), newData).then((response: standardHasMaterialType) => {
+                        materialCommunication.add(Number(record['id']), newData).then((response: standardHasMaterialType) => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
                             dataSource[myIndex]['materials'].push(response);
                             setDataSource(dataSource.splice(0, dataSource.length));
@@ -286,7 +287,7 @@ const Standards = () => {
                 width: 600,
                 okText: 'Modificar',
                 onOk: () => {
-                    standardCommunication.handleMaterial.update(Number(idStandard), newData).then((status: Boolean) => {
+                    materialCommunication.update(Number(idStandard), newData).then((status: Boolean) => {
                         if (status) {
                             const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
                             const myIndexConditionalPeriod = dataSource[myIndexStandard]['materials'].findIndex((item: standardHasMaterialType) => item['id'] === data['id']);
@@ -302,7 +303,7 @@ const Standards = () => {
             });
         },
         delete: (id: number) => {
-            standardCommunication.handleMaterial.remove(id).then((response: Boolean) => {
+            materialCommunication.remove(id).then((response: Boolean) => {
                 if (response) { message.success('Material: eliminada correctamente!'); }
             }).catch((error) => { message.error('Material: se produjo un error al eliminarla!'); })
         }
@@ -362,7 +363,7 @@ const Standards = () => {
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>
-                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => Standard.delete(record.id)}>
+                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => Standard.delete(record['id'])}>
                             <Button icon={<DeleteOutlined />} danger />
                         </Popconfirm>
                     </>

@@ -69,6 +69,7 @@ interface materialType {
 
 interface operatorType {
     key: Key;
+    dni: string;
     name: string;
     familyName: string;
 }

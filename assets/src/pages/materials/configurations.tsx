@@ -4,7 +4,7 @@ import { Popconfirm, Table, Button, Modal, TableColumnsType, message } from 'ant
 
 import type { configurationType } from '../../interfaces/table';
 import ModalConfiguration from '../../components/materialModal/configuration';
-import { configurationCommunication } from '../../utils/communication';
+import { configurationCommunication } from '../../utils/communication/material';
 
 interface Props { Data: configurationType[]; idSpecification: number }
 
@@ -15,13 +15,66 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
     const [count, setCount] = useState(2);
 
     const handleDelete = (key: React.Key) => {
-        configurationCommunication.handleMaterial.remove(Number(key)).then((status: Boolean) => {
+        configurationCommunication.remove(Number(key)).then((status: Boolean) => {
             if (status) {
                 setDataSource(dataSource.filter((item) => item.key !== key));
                 message.success('Confiiguración: eliminada correctamente!');
             }
         }).catch((error) => { message.error('Configuracion: se produjo un error al eliminarlo!'); });
     };
+
+	const handleAdd = () => {
+		let newData: configurationType | null = null;
+		const setConfiguration = (myData: configurationType) => { newData = myData; };
+
+		confirm({
+			title: 'Nueva Configuración',
+			content: ( <ModalConfiguration newToAdd={setConfiguration} /> ),
+			okText: 'Guardar',
+			width: 550,
+			onOk: () => {
+				if(newData != null) {
+					configurationCommunication.add(newData).then((response: configurationType) => {
+						setDataSource([...dataSource, response]);
+						setCount(count + 1);
+                        message.success('Configuración: agregada correctamente!');
+					}).catch((error) => { message.error('Configuracion: se produjo un error al agregarla!'); });
+				}
+			},
+			cancelText: 'Cancelar',
+			onCancel: () => { }
+		});
+	};
+
+    const handleEdit = (row: configurationType) => {
+		let editData: configurationType = {...row};
+		const setConfiguration = (myData: configurationType) => { editData = myData; };
+
+		confirm({
+			title: 'Modificar Configuración',
+			content: ( <ModalConfiguration data={editData} newToAdd={setConfiguration} /> ),
+			okText: 'Guardar',
+			width: 550,
+			onOk: () => {
+                const newData = [...dataSource];
+                const index = newData.findIndex((item) => row.key === item.key);
+                const item = newData[index];
+                console.log(editData, row);
+				if(editData['temperature'] !== row['temperature'] || editData['time'] !== row['time'] || editData['type'] !== row['type']) {
+                    console.log(editData);
+					configurationCommunication.update(editData).then((status: Boolean) => {                      
+                        if (status) {
+                            newData.splice(index, 1, { ...item, ...editData });
+                            setDataSource(newData);
+                            message.success('Configuración: modificado correctamente!');
+                        }
+                    }).catch((error) => { message.error('Configuración: se produjo un error al modificarlo!'); });
+                }
+            },
+			cancelText: 'Cancelar',
+			onCancel: () => { }
+		});
+	};
 
     const defaultColumns: TableColumnsType<configurationType> = [
         {
@@ -51,59 +104,6 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                 ) : null,
         }
     ];
-
-	const handleAdd = () => {
-		let newData: configurationType | null = null;
-		const setConfiguration = (myData: configurationType) => { newData = myData; };
-
-		confirm({
-			title: 'Nueva Configuración',
-			content: ( <ModalConfiguration newToAdd={setConfiguration} /> ),
-			okText: 'Guardar',
-			width: 550,
-			onOk: () => {
-				if(newData != null) {
-					configurationCommunication.handleMaterial.add(newData).then((response: configurationType) => {
-						setDataSource([...dataSource, response]);
-						setCount(count + 1);
-                        message.success('Configuración: agregada correctamente!');
-					}).catch((error) => { message.error('Configuracion: se produjo un error al agregarla!'); });
-				}
-			},
-			cancelText: 'Cancelar',
-			onCancel: () => { }
-		});
-	};
-
-    const handleEdit = (row: configurationType) => {
-		let editData: configurationType = {...row};
-		const setConfiguration = (myData: configurationType) => { editData = myData; };
-
-		confirm({
-			title: 'Modificar Configuración',
-			content: ( <ModalConfiguration data={editData} newToAdd={setConfiguration} /> ),
-			okText: 'Guardar',
-			width: 550,
-			onOk: () => {
-                const newData = [...dataSource];
-                const index = newData.findIndex((item) => row.key === item.key);
-                const item = newData[index];
-                console.log(editData, row);
-				if(editData['temperature'] !== row['temperature'] || editData['time'] !== row['time'] || editData['type'] !== row['type']) {
-                    console.log(editData);
-					configurationCommunication.handleMaterial.update(editData).then((status: Boolean) => {                      
-                        if (status) {
-                            newData.splice(index, 1, { ...item, ...editData });
-                            setDataSource(newData);
-                            message.success('Configuración: modificado correctamente!');
-                        }
-                    }).catch((error) => { message.error('Configuración: se produjo un error al modificarlo!'); });
-                }
-            },
-			cancelText: 'Cancelar',
-			onCancel: () => { }
-		});
-	};
 
     return (
 		<>

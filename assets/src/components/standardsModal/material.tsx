@@ -39,7 +39,7 @@ const ModalMaterial: FunctionComponent<Props | PropsExtended> = (Props: Props | 
                     onChange={(value) => { Props.newToAdd({ id: 0, idMaterial: Number(value), material: materials[Number(value)]['material'], description: '' }); }}
                     onSearch={onSearch}
                     filterOption={filterOption}
-                    options={ materials.map((material: materialType) => ({ label: material.material.toString(), value: material.id.toString() })) }
+                    options={ materials.map((material: materialType) => ({ label: material.material.toString(), value: material.key.toString() })) }
                 >
                 </Select>
             </Form.Item>

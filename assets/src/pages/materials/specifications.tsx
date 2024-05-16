@@ -8,7 +8,7 @@ import { EditableRow, EditableCell } from '../../components/editableCell';
 
 import Configurations from './configurations';
 import ModalSpecification from '../../components/materialModal/specification';
-import { specificationCommunication } from '../../utils/communication';
+import { specificationCommunication } from '../../utils/communication/material';
 
 interface Props { Data: specificationType[]; idMaterial: number }
 
@@ -18,7 +18,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 	const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
 	const [count, setCount] = useState(2);
 	const handleDelete = (key: React.Key) => {
-		specificationCommunication.handleMaterial.remove(Number(key)).then((status: Boolean) => {
+		specificationCommunication.remove(Number(key)).then((status: Boolean) => {
 			if (status) {
 				setDataSource(dataSource.filter((item) => item.key !== key));
 				message.success('Especificación: eliminada correctamente!');
@@ -62,7 +62,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 			width: 550,
 			onOk: () => {
 				if(newData != null) {
-					specificationCommunication.handleMaterial.add(newData).then((response: specificationType) => {
+					specificationCommunication.add(newData).then((response: specificationType) => {
 						setDataSource([...dataSource, response]);
 						setCount(count + 1);
 						message.success('Especificación: agregada correctamente!');
@@ -78,7 +78,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 		const newData = [...dataSource];
 		const index = newData.findIndex((item) => row.key === item.key);
 		if(row['specification'] !== dataSource[index]['specification'] || row['description'] !== dataSource[index]['description']) {
-			specificationCommunication.handleMaterial.update(row).then((status: Boolean) => {
+			specificationCommunication.update(row).then((status: Boolean) => {
 				if (status) {
 					const item = newData[index];
 					newData.splice(index, 1, { ...item, ...row });

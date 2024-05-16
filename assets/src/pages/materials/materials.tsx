@@ -8,7 +8,7 @@ import { EditableRow, EditableCell } from '../../components/editableCell';
 
 import ModalMaterial from '../../components/materialModal/material';
 import Specifications from './specifications';
-import { materialCommunication } from '../../utils/communication';
+import { materialCommunication } from '../../utils/communication/material';
 
 const { confirm } = Modal;
 
@@ -47,7 +47,7 @@ const Materials = () => {
     }, []);
 
 	const handleDelete = (key: React.Key) => {
-		materialCommunication.handleMaterial.remove(Number(key)).then((status: Boolean) => {
+		materialCommunication.remove(Number(key)).then((status: Boolean) => {
 			if (status) {
 				const newData = [...dataSource];
 				setDataSource(newData.filter((item) => item.key !== key));
@@ -67,7 +67,7 @@ const Materials = () => {
 			width: 550,
 			onOk: () => {
 				if(newData != null) {
-					materialCommunication.handleMaterial.add(newData).then((response: materialType) => {
+					materialCommunication.add(newData).then((response: materialType) => {
 						setDataSource([...dataSource, response]);
 						setCount(count + 1);
 						message.success('Material: agregado correctamente!');
@@ -86,7 +86,7 @@ const Materials = () => {
 			const item = newData[index];
 			newData.splice(index, 1, { ...item, ...row });
 			setDataSource(newData);
-			materialCommunication.handleMaterial.update(row).then((status: Boolean) => {
+			materialCommunication.update(row).then((status: Boolean) => {
                 if (status) { message.success('Material: modificado correctamente!'); }
             }).catch((error) => { message.error('Material: se produjo un error al modificarlo!'); });
 		}

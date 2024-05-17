@@ -1,31 +1,30 @@
+#include <QApplication>
+#include <QtWebEngineWidgets/QWebEngineView>
+
+#include <QThread>
+#include "server.h"
+
 #include "mainwindow.h"
 
-#include <QApplication>
-#include <QDir>
-#include <QtHttpServer/QHttpServer>
-#include <QtHttpServer/QHttpServerResponse>
-
 int main(int argc, char *argv[]) {
-
     QApplication a(argc, argv);
-    QHttpServer myServer;
-    MainWindow w;
+    Server* myServer = new Server();
+    // QWebEngineView webView;
 
+    QThread* myWorkerServer = new QThread();
+    myServer->moveToThread(myWorkerServer);
+    myWorkerServer->start();
+    myServer->start();
 
-    QDir assetsDir = QDir(QApplication::applicationDirPath() + "/dist");
-    const QString assetsRootDir = assetsDir.absolutePath();
+    MainWindow main;
+    main.show();
 
-    myServer.route("/", [assetsRootDir]() {
-        qDebug() << "URL:::::: " << assetsRootDir + QStringLiteral("/index.html");
-        return QHttpServerResponse::fromFile(assetsRootDir + QStringLiteral("/index.html"));
-    });
+    // webView.load(QUrl(myServer->URL()));
+    // webView.setContextMenuPolicy(Qt::NoContextMenu);
+    // webView.setMinimumSize(QSize(1280, 720));
 
-    const auto port = myServer.listen(QHostAddress::Any, 8300);
-    if (!port) {
-        qDebug() << QCoreApplication::translate(
-            "QHttpServerExample", "Server failed to listen on a port 8000");
-        return 0;
-    }
-    w.show();
+    // webView.show();
+
+    // webView.page()->runJavaScript("alert(\"hello from C++\")");
     return a.exec();
 }

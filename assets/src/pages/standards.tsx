@@ -1,178 +1,375 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import type { GetRef, InputRef } from 'antd';
-import { FolderOpenOutlined, DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-design/icons';
+import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal, message } from 'antd';
 
-import type { standardType } from '../interfaces/table';
+import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType } from '../interfaces/table';
+import type { ColumnTypes } from '../components/editableCell';
 
-type FormInstance<T> = GetRef<typeof Form<T>>;
+import { EditableRow, EditableCell } from '../components/editableCell';
+import { standardCommunication, endCapCommunication, enviromentCommunication, conditionalPeriodCommunication, materialCommunication } from '../utils/communication/standard';
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
+import ModalStandard from '../components/standardsModal/standard';
+import ModalMaterial from '../components/standardsModal/material';
+import ModalConditionalPeriod from '../components/standardsModal/conditionalPeriod';
+import ModalEnviroment from '../components/standardsModal/enviroment';
+import ModalEndCap from '../components/standardsModal/endcap';
 
-interface EditableRowProps {
-    index: number;
-}
-
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-    const [form] = Form.useForm();
-    return (
-        <Form form={form} component={false}>
-            <EditableContext.Provider value={form}>
-                <tr {...props} />
-            </EditableContext.Provider>
-        </Form>
-    );
-};
-
-interface EditableCellProps {
-    title: React.ReactNode;
-    editable: boolean;
-    children: React.ReactNode;
-    dataIndex: keyof standardType;
-    record: standardType;
-    handleSave: (record: standardType) => void;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
-    const [editing, setEditing] = useState(false);
-    const inputRef = useRef<InputRef>(null);
-    const form = useContext(EditableContext)!;
-
-    useEffect(() => { if (editing) { inputRef.current?.focus(); } }, [editing]);
-
-    const toggleEdit = () => {
-        setEditing(!editing);
-        form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-    };
-
-    const save = async () => {
-        try {
-            const values = await form.validateFields();
-
-            toggleEdit();
-            handleSave({ ...record, ...values });
-        } catch (errInfo) { console.log('Save failed:', errInfo); }
-    };
-
-    let childNode = children;
-
-    if (editable) {
-        childNode = editing ? (
-            <Form.Item
-                style={{ margin: 0 }}
-                name={dataIndex}
-                rules={[{ required: true, message: `${title} is required.` }]}
-            >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-            </Form.Item>
-        ) : (<div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>{children}</div>);
-    }
-
-    return <td {...restProps}>{childNode}</td>;
-};
-
-type EditableTableProps = Parameters<typeof Table>[0];
-
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+const { confirm } = Modal;
 
 const Standards = () => {
     const { token } = theme.useToken();
-    const [dataSource, setDataSource] = useState<standardType[]>([
-        {
-            key: '0',
-            standard: 'ISO 1995-1667',
-            materials: [{ id: 4, material: "PE" }],
-            enviroment: [{id: 1, insertFluid: "Agua", outsideFluid: "Agua"}, {id: 2, insertFluid: "Agua", outsideFluid: "Liquido"}, {id: 3, insertFluid: "Agua", outsideFluid: "Aire"}],
-            endCap: [{ id: 1, endcap: "Tipo A" }, { id: 2, endcap: "Tipo B" }]
-        },
-        {
-            key: '1',
-            standard: 'IRAM-1667-1995',
-            materials: [{ id: 5, material: "PBC" }],
-            enviroment: [],
-            endCap: []
-        },
-    ]);
-
-    const [ids, setIds] = useState<{ id: number; type: string; }[]>([]);
+    const [dataSource, setDataSource] = useState<standardType[]>([]);
     const [count, setCount] = useState(2);
 
     const tagPlusStyle: React.CSSProperties = {
         background: token.colorBgContainer,
         borderStyle: 'dashed',
-      };
+    };
 
-    const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.key !== key);
-        setDataSource(newData);
+    const handleGetStandards = () => {
+        fetch('http://localhost:3000/standards').then(response => { response.json().then((data: standardType[]) => { setDataSource(data); }); }).catch((error) => { console.log(error); });
+        window.postMessage("Hello World", '*')
+    };
+
+    useEffect(() => {
+        handleGetStandards();
+    }, []);
+
+    const handleSave = (row: standardType) => {
+        const newData = [...dataSource];
+        const index = newData.findIndex((item) => row.id === item.id);
+        if (row['standard'] !== dataSource[index]['standard']) {
+            const item = newData[index];
+            newData.splice(index, 1, { ...item, ...row });
+            setDataSource(newData);
+            standardCommunication.update(row).then((status: Boolean) => {
+                if (status) { message.success('Estandard: modificado correctamente!'); }
+            }).catch((error) => { message.error('Estandard: se produjo un error al modificarlo!'); });
+        }
+    };
+
+    const Standard = {
+        add: () => {
+            let newData: standardType | null = null;
+            const newStandardToAdd = (myData: standardType) => { newData = myData; }
+
+            confirm({
+                title: 'Nuevo Estandard',
+                content: (<ModalStandard newToAdd={newStandardToAdd} />),
+                width: 600,
+                okText: 'Agregar',
+                onOk: () => {
+                    if (newData !== null) {
+                        standardCommunication.add(newData).then((response: standardType) => {
+                            setDataSource([...dataSource, response]);
+                            setCount(count + 1);
+                        });
+                    }
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        delete: (id: React.Key) => {
+            standardCommunication.remove(Number(id)).then((status: Boolean) => {
+                if (status) {
+                    setDataSource(dataSource.filter((item) => item.id !== id));
+                    message.success('Estandard: eliminado correctamente!');
+                }
+            }).catch((error) => { message.error('Estandard: se produjo un error al eliminarlo!'); });
+        }
+    };
+
+    const EndCap = {
+        new: (record: any) => {
+            let newData: endCapType | null = null;
+            const newToAdd = (myData: endCapType) => { newData = myData; }
+
+            confirm({
+                title: 'Nuevo Ambiente',
+                content: (<ModalEndCap newToAdd={newToAdd} />),
+                width: 550,
+                okText: 'Agregar',
+                onOk: () => {
+                    if (newData !== null) {
+                        endCapCommunication.add(Number(record['id']), newData).then((response: endCapType) => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                            dataSource[myIndex]['endCaps'].push(response);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Tapa: agregada correctamente!');
+                        }).catch((error) => { message.error('Tapa: se produjo un error al agregarla!'); });
+                    }
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        edit: (idStandard: number, data: endCapType) => {
+            let newData: endCapType = data;
+            const newToAdd = (myData: endCapType) => { newData = myData; }
+
+            confirm({
+                title: 'Editar Tapa',
+                content: (<ModalEndCap data={newData} newToAdd={newToAdd} />),
+                width: 550,
+                okText: 'Modificar',
+                onOk: () => {
+                    endCapCommunication.update(idStandard, newData).then((status: Boolean) => {
+                        if (status) {
+                            const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
+                            const myIndexEndCap = dataSource[myIndexStandard]['endCaps'].findIndex((item: endCapType) => item['id'] === data['id']);
+                            dataSource[myIndexStandard]['endCaps'][myIndexEndCap] = newData;
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Tapa: modificada correctamente!');
+                        }
+                    }).catch((error) => { message.error('Tapa: se produjo un error al modificarla!'); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        delete: (id: number) => {
+            endCapCommunication.remove(id).then((response: Boolean) => {
+                if (response) { message.success('Tapa: eliminada correctamente!'); }
+            }).catch((error) => { message.error('Tapa: se produjo un error al eliminarla!'); });
+        }
+    };
+
+    const Enviroment = {
+        new: (record: any) => {
+            let newData: enviromentType | null = null;
+            const newToAdd = (myData: enviromentType) => { newData = myData; }
+
+            confirm({
+                title: 'Nuevo Ambiente',
+                content: (<ModalEnviroment newToAdd={newToAdd} />),
+                width: 600,
+                okText: 'Agregar',
+                onOk: () => {
+                    if (newData !== null) {
+                        enviromentCommunication.add(Number(record['id']), newData).then((response: enviromentType) => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                            dataSource[myIndex]['enviroments'].push(response);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Ambiente: agregada correctamente!');
+                        });
+                    }
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        edit: (idStandard: number, data: enviromentType) => {
+            let newData: enviromentType = data;
+            const newToAdd = (myData: enviromentType) => { newData = myData; }
+
+            confirm({
+                title: 'Editar Ambiente',
+                content: (<ModalEnviroment data={newData} newToAdd={newToAdd} />),
+                width: 600,
+                okText: 'Modificar',
+                onOk: () => {
+                    enviromentCommunication.update(Number(idStandard), newData).then((status: Boolean) => {
+                        if (status) {
+                            const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
+                            const myIndexEnviroment = dataSource[myIndexStandard]['enviroments'].findIndex((item: enviromentType) => item['id'] === data['id']);
+                            dataSource[myIndexStandard]['enviroments'][myIndexEnviroment] = newData;
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Ambiente: modificada correctamente!');
+                        };
+                    }).catch((error) => { message.error('Ambiente: se produjo un error al modificarla!'); })
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        delete: (id: number) => {
+            enviromentCommunication.remove(id).then((response: Boolean) => {
+                if (response) { message.success('Ambiente: eliminada correctamente!'); }
+            }).catch((error) => { message.error('Ambiente: se produjo un error al eliminarla!'); });
+        }
+    };
+
+    const ConditionalPeriod = {
+        new: (record: any) => {
+            let newData: conditionalPeriodType | null = null;
+            const newMaterialToAdd = (myData: conditionalPeriodType) => { newData = myData; }
+
+            confirm({
+                title: 'Nuevo Período Condicional',
+                content: (<ModalConditionalPeriod newToAdd={newMaterialToAdd} />),
+                width: 800,
+                okText: 'Agregar',
+                onOk: () => {
+                    if (newData !== null) {
+                        conditionalPeriodCommunication.add(Number(record['id']), newData).then((response: conditionalPeriodType) => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                            dataSource[myIndex]['conditionalPeriods'].push(response);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Período Condicional: agregado correctamente!');
+                        });
+                    }
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        edit: (idStandard: number, data: conditionalPeriodType) => {
+            let newData: conditionalPeriodType = data;
+            const newMaterialToAdd = (myData: conditionalPeriodType) => { newData = myData; }
+
+            confirm({
+                title: 'Editar Período Condicional',
+                content: (<ModalConditionalPeriod data={newData} newToAdd={newMaterialToAdd} />),
+                width: 800,
+                okText: 'Modificar',
+                onOk: () => {
+                    conditionalPeriodCommunication.update(Number(idStandard), newData).then((status: Boolean) => {
+                        if (status) {
+                            const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
+                            const myIndexConditionalPeriod = dataSource[myIndexStandard]['conditionalPeriods'].findIndex((item: conditionalPeriodType) => item['id'] === data['id']);
+                            dataSource[myIndexStandard]['conditionalPeriods'][myIndexConditionalPeriod] = newData;
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Período Condicional: modificado correctamente!');
+                        }
+                    }).catch((error) => { message.error('Período Condicional: se produjo un error al modificarlo!'); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        delete: (id: number) => {
+            conditionalPeriodCommunication.remove(id).then((response: Boolean) => {
+                if (response) { message.success('Periodo Condicionamiento: eliminada correctamente!'); }
+            }).catch((error) => { message.error('Periodo Condicionamiento: se produjo un error al eliminarla!'); })
+        }
+    };
+
+    const Material = {
+        new: (record: any) => {
+            let newData: standardHasMaterialType | null = null;
+            const newMaterialToAdd = (myData: standardHasMaterialType) => { newData = myData; }
+
+            confirm({
+                title: 'Editar Material Relacionado',
+                content: (<ModalMaterial newToAdd={newMaterialToAdd} />),
+                width: 600,
+                okText: 'Agregar',
+                onOk: () => {
+                    if (newData !== null) {
+                        materialCommunication.add(Number(record['id']), newData).then((response: standardHasMaterialType) => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['id'] === record['id']);
+                            dataSource[myIndex]['materials'].push(response);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Material: agregado correctamente!');
+                        });
+                    }
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        edit: (idStandard: number, data: standardHasMaterialType) => {
+            let newData: standardHasMaterialType = data;
+            const newMaterialToAdd = (myData: standardHasMaterialType) => { newData = myData; }
+
+            confirm({
+                title: 'Editar Material Relacionado',
+                content: (<ModalMaterial data={newData} newToAdd={newMaterialToAdd} />),
+                width: 600,
+                okText: 'Modificar',
+                onOk: () => {
+                    materialCommunication.update(Number(idStandard), newData).then((status: Boolean) => {
+                        if (status) {
+                            const myIndexStandard = dataSource.findIndex((item: standardType) => item['id'] === idStandard);
+                            const myIndexConditionalPeriod = dataSource[myIndexStandard]['materials'].findIndex((item: standardHasMaterialType) => item['id'] === data['id']);
+                            dataSource[myIndexStandard]['materials'][myIndexConditionalPeriod] = newData;
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success('Material: modificado correctamente!');
+                        }
+                    }).catch((error) => { message.error('Material: se produjo un error al modificarlo!'); })
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        delete: (id: number) => {
+            materialCommunication.remove(id).then((response: Boolean) => {
+                if (response) { message.success('Material: eliminada correctamente!'); }
+            }).catch((error) => { message.error('Material: se produjo un error al eliminarla!'); })
+        }
     };
 
     const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
         {
+            title: 'ID',
+            dataIndex: 'id',
+            width: 50,
+            editable: false,
+        },
+        {
             title: 'Estandard',
             dataIndex: 'standard',
-            width: 100,
             editable: true
         },
         {
-            title: 'Materiales',
-            dataIndex: 'materials',
-            width: 150,
-            render: (materials: { id: number; material: string; }[]) =>
+            title: 'Tapa',
+            dataIndex: 'endCaps',
+            render: (endCaps: endCapType[], record, index) =>
                 <>
-                    {materials.map(({ id, material }) => <Tag closeIcon onClose={() => console.log('ID_Standard',)}>{`${material}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {endCaps.map((value: endCapType) => <Tag key={`endcap_${value['id']}`} closeIcon onClick={() => EndCap.edit(record['id'], value)} onClose={(_) => EndCap.delete(Number(value['id']))}>{`${value['endcap']}`}</Tag>)}
+                    <Tag key={`new_endcap_${index}`} onClick={() => EndCap.new(record)} style={tagPlusStyle} ><PlusOutlined /></Tag>
                 </>
         },
         {
             title: 'Ambiente',
-            dataIndex: 'enviroment',
-            width: 150,
-            render: (enviroment: { id: number; insertFluid: string; outsideFluid: string; }[]) =>
+            dataIndex: 'enviroments',
+            render: (enviroment: enviromentType[], record, index) =>
                 <>
-                    {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['id']}`} closeIcon onClick={() => Enviroment.edit(record['id'], value)} onClose={() => Enviroment.delete(Number(value['id']))}>{`${value['insertFluid']} en ${value['outsideFluid']}`}</Tag>)}
+                    <Tag key={`new_enviroment_${index}`} onClick={() => Enviroment.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
-            title: 'Tapa',
-            dataIndex: 'endCap',
-            width: 150,
-            render: (endCap: { id: number; endcap: string; }[]) =>
+            title: 'Periodo Condicional',
+            dataIndex: 'conditionalPeriods',
+            render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
-                    {endCap.map(({ id, endcap }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
+                    {conditionalPeriods.map((value: conditionalPeriodType) => <Tag key={`time_${value['id']}`} onClick={() => ConditionalPeriod.edit(record['id'], value)} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['id']))}>{`${value['time']}`}</Tag>)}
+                    <Tag key={`new_conditionalperiod_${index}`} onClick={() => ConditionalPeriod.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
-            title: '',
+            title: 'Material',
+            dataIndex: 'materials',
+            width: 150,
+            render: (materials: standardHasMaterialType[], record, index) =>
+                <>
+                    {materials.map((value: standardHasMaterialType) => <Tag key={`material_${value['id']}`} onClick={() => Material.edit(record['id'], value)} closeIcon onClose={() => Material.delete(Number(value['id']))}>{`${value['material']}`}</Tag>)}
+                    <Tag key={`new_material_${index}`} onClick={() => Material.new(record)} style={tagPlusStyle} ><PlusOutlined /></Tag>
+                </>
+        },
+        {
             dataIndex: 'operation',
-            width: 50,
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>
-                        {/* <Button icon={<FolderOpenOutlined />} type='primary' ghost /> */}
-                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
+                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => Standard.delete(record['id'])}>
                             <Button icon={<DeleteOutlined />} danger />
                         </Popconfirm>
                     </>
-                ) : null,
+                ) : null
         },
     ];
-
-    const handleAdd = () => {
-        const newData: standardType = { key: count, standard: `Nuevo Estandard`, materials: [], enviroment: [], endCap: [] };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
-    };
-
-    const handleSave = (row: standardType) => {
-        const newData = [...dataSource];
-        const index = newData.findIndex((item) => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setDataSource(newData);
-    };
 
     const components = { body: { row: EditableRow, cell: EditableCell } };
 
@@ -182,11 +379,10 @@ const Standards = () => {
     });
 
     return (
-        <div>
-            <Table components={components} rowClassName={() => 'editable-row'} scroll={{ x: 500 }} size='small' bordered dataSource={dataSource} columns={columns as ColumnTypes} />
-            <FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
-            <FloatButton icon={<SaveOutlined />} style={{ right: 72 }} />
-        </div>
+        <>
+            <Table components={components} size='small' tableLayout='fixed' dataSource={dataSource} columns={columns as ColumnTypes} />
+            <FloatButton icon={<InsertRowBelowOutlined />} onClick={Standard.add} style={{ right: 24 }} />
+        </>
     );
 };
 

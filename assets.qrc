@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/assets">
+        <file>../../my-app/build/asset-manifest.json</file>
+        <file>../../my-app/build/favicon.ico</file>
+        <file>../../my-app/build/logo192.png</file>
+        <file>../../my-app/build/logo512.png</file>
+        <file>../../my-app/build/manifest.json</file>
+        <file>../../my-app/build/robots.txt</file>
+    </qresource>
+</RCC>

@@ -38,4 +38,27 @@ const databaseCommunication = {
     }
 };
 
-export default databaseCommunication;
+const TestConnection = (inputData: database): Promise<Boolean> => {
+    return new Promise<Boolean>((resolve, reject) => {
+        fetch(`${basePath}/testConnection`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputData)
+        }).then((response) => {
+            if (response.status == 200) resolve(true);
+        }).catch((error) => { reject(error); })
+    });
+};
+
+const ConnectDB = (): Promise<Boolean> => {
+    return new Promise<Boolean>((resolve, reject) => {
+        fetch(`${basePath}/connectDB`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        }).then((response) => {
+            if (response.status == 200) resolve(true);
+        }).catch((error) => { reject(error); })
+    });
+}
+
+export { databaseCommunication, ConnectDB, TestConnection };

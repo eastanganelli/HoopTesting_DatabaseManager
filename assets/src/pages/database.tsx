@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Space, Button } from 'antd';
 import { database } from "../interfaces/data";
-import databaseCommunication from "../utils/communication/database";
+import { databaseCommunication, ConnectDB, TestConnection} from "../utils/communication/database";
 
 const layout = { labelCol: { span: 8 }, wrapperCol: { span: 16 } };
 
@@ -29,7 +29,13 @@ const Operators = () => {
 		}
 	};
 
-	const onTestConnection = () => { form.resetFields(); };
+	const onTestConnection = () => {
+		TestConnection(form.getFieldsValue()).then((response) => {
+			if (response) {
+				console.log('Connection test successful');
+			}
+		}).catch((error) => { console.log('Error testing connection', error); });
+	};
 
 	useEffect(() => {
 		fetch('http://localhost:3000/database').then((response) => { if (response.status == 200) { response.json().then((data) => { console.log(data); setDatabase(data); form.setFieldsValue(data); }); }});

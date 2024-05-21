@@ -9,15 +9,15 @@
 
 class Windowing {
     const QSize defaultWindowSize;
-    QSharedPointer<QList<MyReactPage*>> activeWindows;
+    QList<QSharedPointer<MyReactPage>> activeWindows;
 
 public:
     Windowing();
     ~Windowing() {}
 
     void newWindow(const QString Title, const QUrl path);
-    void closeWindow(const uint id_);
-    QWebEngineView getWidget();
+    void closeWindow(const uint ID);
+    QSharedPointer<MyReactPage> getWidget(const uint ID);
 };
 
 #endif // WINDOWING_H

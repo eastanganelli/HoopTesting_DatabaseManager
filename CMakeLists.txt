@@ -9,11 +9,19 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(REACT_UI "${CMAKE_SOURCE_DIR}/assets")
+
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets HttpServer WebEngineWidgets WebView)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets HttpServer WebEngineWidgets WebView)
 find_package(Qt6 REQUIRED COMPONENTS LinguistTools)
 
-set(PROJECT_SOURCES main.cpp    )
+add_custom_target (
+    react-compile
+    COMMAND npm install && npm install && npm run build
+    WORKING_DIRECTORY ${REACT_UI}
+)
+
+set(PROJECT_SOURCES main.cpp )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(DatabaseManager MANUAL_FINALIZATION ${PROJECT_SOURCES}
@@ -22,7 +30,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         assets.qrc
         server.h server.cpp
         mainwindow.h mainwindow.cpp mainwindow.ui
+        windowing.h windowing.cpp
+        myreactpage.h myreactpage.cpp
+
     )
+    add_dependencies(DatabaseManager react-compile)
 
 qt_add_translations(DatabaseManager TS_FILES)
 # Define target properties for Android with Qt 6 as:

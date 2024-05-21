@@ -13,7 +13,7 @@ const { confirm } = Modal;
 
 const Operators = () => {
 	const [dataSource, setDataSource] = useState<operatorType[]>([]);
-    const [count, setCount] = useState(2);
+    // const [count, setCount] = useState(2);
 
 	useEffect(() => {
 			fetch('http://localhost:3000/operators').then(response => { response.json().then((data: operatorType[]) => { setDataSource(data); }); }).catch((error) => { console.log(error); });

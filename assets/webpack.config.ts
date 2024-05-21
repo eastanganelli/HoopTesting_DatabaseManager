@@ -44,7 +44,7 @@ const prodConfig = {
 	entry: "./src/index.tsx",
 	devtool: "inline-source-map",
 	output: {
-		path: path.resolve("D:\\ezequ\\Projects\\HoopTesting_System\\HoopTesting_DatabaseManager\\build\\Desktop_Qt_6_7_0_MSVC2019_64bit-Debug", "dist"),
+		path: path.resolve("D:\\ezequ\\Projects\\HoopTesting_System\\HoopTesting_DatabaseManager", "dist"),
 		filename: "bundle.js",
 		clean: true,
 	},
@@ -77,4 +77,4 @@ const prodConfig = {
 	],
 };
 
-module.exports = [ devConfig/*, prodConfig */];
+module.exports = [ /*devConfig, */prodConfig ];

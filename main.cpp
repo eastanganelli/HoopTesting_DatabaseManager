@@ -1,29 +1,28 @@
 #include <QApplication>
-#include <QtWebEngineWidgets/QWebEngineView>
-
 #include <QThread>
-#include "server.h"
+#include <QSharedPointer>
 
-#include "mainwindow.h"
+#include "server.h"
+#include "windowing.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    Server* myServer = new Server();
-    // QWebEngineView webView;
+    Windowing windowing;
+    QSharedPointer<Server> myServer = QSharedPointer<Server>(new Server());
+    QSharedPointer<QThread> myWorkerServer = QSharedPointer<QThread>(new QThread());
 
-    QThread* myWorkerServer = new QThread();
-    myServer->moveToThread(myWorkerServer);
-    myWorkerServer->start();
-    myServer->start();
+    try {
 
-    MainWindow main;
-    main.show();
+        myServer->moveToThread(myWorkerServer.data());
+        myWorkerServer->start();
+        myServer->start();
+        windowing.newWindow("STEL - Administrador de Base de Datos", QUrl(myServer->URL()));
 
-    // webView.load(QUrl(myServer->URL()));
-    // webView.setContextMenuPolicy(Qt::NoContextMenu);
-    // webView.setMinimumSize(QSize(1280, 720));
+    } catch(...) {
+        qDebug() << "Error al crear la nueva ventana";
+    }
 
-    // webView.show();
+    myWorkerServer->quit();
 
     // webView.page()->runJavaScript("alert(\"hello from C++\")");
     return a.exec();

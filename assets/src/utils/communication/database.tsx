@@ -3,50 +3,30 @@ import type { database } from '../../interfaces/data';
 const basePath: string = 'http://localhost:3000';
 
 const databaseCommunication = {
-    add: (inputData: database): Promise<Boolean> => {
-        return new Promise<Boolean>((resolve, reject) => {
-            fetch(`${basePath}/operator`, {
+    add: (inputData: database): Promise<any> => {
+        return new Promise<any>((resolve, reject) => {
+            fetch(`${basePath}/database`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                if (response.status == 200) resolve(true);
-            }).catch((error) => { reject(error); })
-        });
-    },
-    update: (inputData: database) => {
-        return new Promise<Boolean>((resolve, reject) => {
-            fetch(`${basePath}/operator`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(inputData)
-            }).then((response) => {
-                if (response.status == 200) resolve(true);
-            }).catch((error) => { reject(error); })
-        });
-    },
-    remove: (id: number): Promise<Boolean> => {
-        return new Promise<Boolean>((resolve, reject) => {
-            fetch(`${basePath}/operator`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
-            }).then((response) => {
-                if (response.status == 200) resolve(true);
-            }).catch((error) => { reject(error); })
+                if (response.status == 200) resolve('Configuracion: Guardado Correctamente!');
+                else if (response.status === 400) reject('Configuracion: Error al Guardar!');
+            }).catch(() => { reject('Configuracion: Error al Guardar!'); })
         });
     }
 };
 
-const TestConnection = (inputData: database): Promise<Boolean> => {
-    return new Promise<Boolean>((resolve, reject) => {
+const TestConnection = (inputData: database): Promise<any> => {
+    return new Promise<any>((resolve, reject) => {
         fetch(`${basePath}/testConnection`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(inputData)
         }).then((response) => {
-            if (response.status == 200) resolve(true);
-        }).catch((error) => { reject(error); })
+            if (response.status === 200) resolve('Prueba: Conexión exitosa');
+            else if (response.status === 400) reject('Prueba: Conexión fallida');
+        }).catch(() => { reject('Prueba: Conexión fallida'); })
     });
 };
 

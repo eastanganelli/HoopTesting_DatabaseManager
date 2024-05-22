@@ -1,3 +1,3 @@
 #include "database.h"
 
-database::database() {}
+Database::Database() {}

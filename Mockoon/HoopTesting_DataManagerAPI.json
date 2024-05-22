@@ -239,11 +239,11 @@
         },
         {
           "type": "route",
-          "uuid": "453b2909-28fc-4625-9a30-357ba44eeb9f"
+          "uuid": "137be5bb-3ba8-457e-bb18-08605c8d2f08"
         },
         {
           "type": "route",
-          "uuid": "41c3a32a-a2e4-4d62-b014-a6127b4818ca"
+          "uuid": "f5916be7-4f42-4be8-8185-c81fb187e98a"
         }
       ]
     }
@@ -1162,12 +1162,12 @@
       "responses": [
         {
           "uuid": "de7b4d30-3b37-46f6-a158-e710f874f19b",
-          "body": "{\n  \"username\": \"pepe\"\n}",
+          "body": "{}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
           "headers": [],
-          "bodyType": "DATABUCKET",
+          "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "1tko",
           "sendFileAsBody": false,
@@ -1178,27 +1178,46 @@
           "default": true,
           "crudKey": "id",
           "callbacks": []
+        },
+        {
+          "uuid": "50d04f32-a5b7-46cd-87b8-f7b16e2cf413",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "responseMode": null
+      "responseMode": "RANDOM"
     },
     {
-      "uuid": "453b2909-28fc-4625-9a30-357ba44eeb9f",
+      "uuid": "137be5bb-3ba8-457e-bb18-08605c8d2f08",
       "type": "http",
       "documentation": "",
-      "method": "put",
-      "endpoint": "database",
+      "method": "post",
+      "endpoint": "testConnection",
       "responses": [
         {
-          "uuid": "d5fad76d-6f75-45da-8fae-b2bdedde1cb1",
-          "body": "{\n  \"username\": \"pepe\"\n}",
+          "uuid": "7b2753a9-c8ef-4195-9715-24ec788724a9",
+          "body": "{}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
           "headers": [],
-          "bodyType": "DATABUCKET",
+          "bodyType": "INLINE",
           "filePath": "",
-          "databucketID": "1tko",
+          "databucketID": "",
           "sendFileAsBody": false,
           "rules": [],
           "rulesOperator": "OR",
@@ -1207,33 +1226,71 @@
           "default": true,
           "crudKey": "id",
           "callbacks": []
+        },
+        {
+          "uuid": "57290ad6-5252-4a79-ae21-f51234d422f4",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "responseMode": null
+      "responseMode": "RANDOM"
     },
     {
-      "uuid": "41c3a32a-a2e4-4d62-b014-a6127b4818ca",
+      "uuid": "f5916be7-4f42-4be8-8185-c81fb187e98a",
       "type": "http",
       "documentation": "",
-      "method": "delete",
-      "endpoint": "database",
+      "method": "post",
+      "endpoint": "connectDB",
       "responses": [
         {
-          "uuid": "843f4e5b-1d83-4424-92d1-f909e2861b61",
-          "body": "{\n  \"username\": \"pepe\"\n}",
+          "uuid": "e383ed78-f768-4dfa-905e-b09fac892dc8",
+          "body": "",
           "latency": 0,
           "statusCode": 200,
           "label": "",
           "headers": [],
-          "bodyType": "DATABUCKET",
+          "bodyType": "INLINE",
           "filePath": "",
-          "databucketID": "1tko",
+          "databucketID": "",
           "sendFileAsBody": false,
           "rules": [],
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "2b811a91-1ab4-41b2-a41e-86e0fb04aa1c",
+          "body": "",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
           "crudKey": "id",
           "callbacks": []
         }

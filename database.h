@@ -1,10 +1,10 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-class database
+class Database
 {
 public:
-    database();
+    Database();
 };
 
 #endif // DATABASE_H

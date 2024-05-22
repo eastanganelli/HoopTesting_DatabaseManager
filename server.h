@@ -1,14 +1,17 @@
 #ifndef SERVER_H
 #define SERVER_H
+
 #include <QHttpServer>
 #include <QString>
-#include <QThread>
+#include <QSharedPointer>
+
+#include "dbmanager.h"
 
 class Server : public QObject {
     QHttpServer* httpServer;
     QHostAddress myAddress;
     uint myPort;
-    QThread WorkerRoute;
+    QSharedPointer<DBManager> myDB;
 
     public:
         Server(const QHostAddress path = QHostAddress::LocalHost, const uint port = 9090);

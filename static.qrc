@@ -1,16 +1,5 @@
 <RCC>
-    <qresource prefix="/static/css">
-        <file alias="main.f855e6bc.css">../../my-app/build/static/css/main.f855e6bc.css</file>
-        <file alias="main.f855e6bc.css.map">../../my-app/build/static/css/main.f855e6bc.css.map</file>
-    </qresource>
-    <qresource prefix="/static/js">
-        <file>../../my-app/build/static/js/453.ed3810f9.chunk.js</file>
-        <file>../../my-app/build/static/js/453.ed3810f9.chunk.js.map</file>
-        <file>../../my-app/build/static/js/main.2d626ea2.js</file>
-        <file>../../my-app/build/static/js/main.2d626ea2.js.LICENSE.txt</file>
-        <file>../../my-app/build/static/js/main.2d626ea2.js.map</file>
-    </qresource>
-    <qresource prefix="/static/media">
-        <file>../../my-app/build/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg</file>
-    </qresource>
+    <qresource prefix="/static/css"/>
+    <qresource prefix="/static/js"/>
+    <qresource prefix="/static/media"/>
 </RCC>

@@ -1,6 +1,5 @@
 import type { materialType, specificationType, configurationType } from '../../interfaces/table';
-
-const basePath: string = 'http://localhost:3000';
+import { basePath } from '../basePath';
 
 const materialCommunication = {
     add: (inputData: materialType): Promise<materialType> => {

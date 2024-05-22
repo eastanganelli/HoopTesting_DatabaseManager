@@ -1,6 +1,5 @@
 import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType } from '../../interfaces/table';
-
-const basePath: string = 'http://localhost:3000';
+import { basePath } from '../basePath';
 
 const standardCommunication = {
         add: (inputData: standardType): Promise<standardType> => {

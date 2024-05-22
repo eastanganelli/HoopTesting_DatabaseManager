@@ -33,15 +33,15 @@ void DBManager::loadConfiguration() {
 }
 
 void DBManager::test(const QString hostname, const uint port, const QString username, const QString password) {
-    QSqlDatabase dbTest;
-    dbTest.setHostName(hostname);
-    dbTest.setPort(port);
-    dbTest.setUserName(username);
-    dbTest.setPassword(password);
-    dbTest.open();
-    bool state = dbTest.isOpen();
+    QSqlDatabase* dbTest = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", "test"));
+    dbTest->setHostName(hostname);
+    dbTest->setPort(port);
+    dbTest->setUserName(username);
+    dbTest->setPassword(password);
+    dbTest->open();
+    bool state = dbTest->isOpen();
     if(state) {
-        dbTest.close();
+        dbTest->close();
         return;
     }
 

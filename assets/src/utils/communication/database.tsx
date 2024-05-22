@@ -33,7 +33,7 @@ const TestConnection = (inputData: database): Promise<any> => {
         }).then((response) => {
             if (response.status === 200) resolve('Prueba: Conexión exitosa');
             else if (response.status === 400) reject('Prueba: Conexión fallida');
-        }).catch(() => { reject('Prueba: Conexión fallida'); })
+        }).catch((err) => { reject(err.msg); })
     });
 };
 

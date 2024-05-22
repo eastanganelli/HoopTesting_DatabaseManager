@@ -42,14 +42,10 @@ const devConfig = {
 const prodConfig = {
 	mode: "production",
 	entry: "./src/index.tsx",
-	devtool: "inline-source-map",
 	output: {
 		path: path.resolve("D:\\ezequ\\Projects\\HoopTesting_System\\HoopTesting_DatabaseManager", "dist"),
 		filename: "bundle.js",
 		clean: true,
-	},
-	devServer: {
-		port: 3030,
 	},
 	module: {
 		rules: [
@@ -77,4 +73,4 @@ const prodConfig = {
 	],
 };
 
-module.exports = [ /*devConfig, */prodConfig ];
+module.exports = [ devConfig, prodConfig ];

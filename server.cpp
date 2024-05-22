@@ -3,11 +3,13 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QtWebEngineWidgets/QWebEngineView>
+#include "Request/database.h"
 
 Server::Server(const QHostAddress path, const uint port) {
     this->httpServer = new QHttpServer();
     this->myAddress  = path;
     this->myPort     = port;
+    this->myDB       = QSharedPointer<DBManager>(new DBManager());
 }
 
 Server::~Server() {
@@ -18,6 +20,7 @@ Server::~Server() {
 
 void Server::start() {
     try {
+
         if(!(this->httpServer->listen(this->myAddress, this->myPort))) {
             throw std::exception("Port not available");
         }
@@ -60,18 +63,12 @@ void Server::start() {
                 return html.toUtf8();
             });
         }
-
         {
-            this->httpServer->route("/database", QHttpServerRequest::Method::Get, []() {
-                qDebug() << "Hola Perra";
-                return QHttpServerResponse::StatusCode::Accepted;
-            });
-
-            this->httpServer->route("/database", QHttpServerRequest::Method::Post, [](const QHttpServerRequest& request) {
-                qDebug() << request.body().toStdString();
-                return QHttpServerResponse::StatusCode::Accepted;
-            });
+            Database::APIDatabase(*this->httpServer,     "/database",        this->myDB);
+            Database::ConnectDatabase(*this->httpServer, "/connectDatabase", this->myDB);
+            Database::TestDatabase(*this->httpServer,    "/testDatabase");
         }
+
 
     } catch(...) {
         qDebug() << "Error with Port";

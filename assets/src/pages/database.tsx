@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Form, Input, Space, Button, message } from 'antd';
+import React, { useEffect } from "react";
+import { Form, Input, InputNumber, Space, Button, message } from 'antd';
 import { database } from "../interfaces/data";
 import { databaseCommunication, TestConnection} from "../utils/communication/database";
 
@@ -23,7 +23,8 @@ const Operators = () => {
 	};
 
 	useEffect(() => {
-		fetch('http://localhost:3000/database').then((response) => { if (response.status == 200) { response.json().then((data) => { form.setFieldsValue(data); }); }});
+		databaseCommunication.get().then((data) => { form.setFieldsValue(data); }).catch((error) => { message.error(error); });
+		// fetch('http://localhost:3000/database').then((response) => { if (response.status == 200) { response.json().then((data) => { form.setFieldsValue(data); }); }});
 	}, []);
 
 	return (
@@ -33,7 +34,7 @@ const Operators = () => {
 					<Input placeholder="localhost"/>
 				</Form.Item>
 				<Form.Item name="port" label="Puerto" rules={[{ required: true, message: "El Puerto es requerido!" }]}>
-					<Input placeholder="8080"/>
+					<InputNumber placeholder="8080" style={{ width: '100%' }}/>
 				</Form.Item>
 				<Form.Item name="user" label="Usuario" rules={[{ required: true, message: "El Usuario es requerido!" }]}>
 					<Input placeholder="ej: usuario12345"/>

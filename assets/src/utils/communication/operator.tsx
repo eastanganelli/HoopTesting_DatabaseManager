@@ -1,6 +1,5 @@
 import type { operatorType } from '../../interfaces/table';
-
-const basePath: string = 'http://localhost:3000';
+import { basePath } from '../basePath';
 
 const operatorCommunication = {
     add: (inputData: operatorType): Promise<operatorType> => {

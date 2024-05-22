@@ -9,15 +9,15 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(REACT_UI "${CMAKE_SOURCE_DIR}/assets")
+set(REACT_UI ${CMAKE_SOURCE_DIR}/assets)
 
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets HttpServer WebEngineWidgets WebView)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets HttpServer WebEngineWidgets WebView)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets HttpServer WebEngineWidgets WebView Sql)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets HttpServer WebEngineWidgets WebView Sql)
 find_package(Qt6 REQUIRED COMPONENTS LinguistTools)
 
 add_custom_target (
     react-compile
-    COMMAND npm install && npm install && npm run build
+    COMMAND npm install && npm run build
     WORKING_DIRECTORY ${REACT_UI}
 )
 
@@ -25,13 +25,19 @@ set(PROJECT_SOURCES main.cpp )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(DatabaseManager MANUAL_FINALIZATION ${PROJECT_SOURCES}
-        database.h database.cpp
+
         static.qrc
         assets.qrc
         server.h server.cpp
         mainwindow.h mainwindow.cpp mainwindow.ui
         windowing.h windowing.cpp
         myreactpage.h myreactpage.cpp
+        dbmanager.h dbmanager.cpp
+        simplecrypt.cpp simplecrypt.h
+        Request/database.h Request/database.cpp
+        Request/material.h Request/material.cpp
+        Request/standard.h Request/standard.cpp
+        Request/operator.h Request/operator.cpp
 
     )
     add_dependencies(DatabaseManager react-compile)
@@ -51,13 +57,13 @@ else()
     endif()
 endif()
 
-target_link_libraries(DatabaseManager PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::HttpServer Qt${QT_VERSION_MAJOR}::WebEngineWidgets Qt${QT_VERSION_MAJOR}::WebView)
+target_link_libraries(DatabaseManager PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::HttpServer Qt${QT_VERSION_MAJOR}::WebEngineWidgets Qt${QT_VERSION_MAJOR}::WebView Qt${QT_VERSION_MAJOR}::Sql)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.DatabaseManager)
+  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.eastanganelli.DatabaseManager)
 endif()
 set_target_properties(DatabaseManager PROPERTIES
     ${BUNDLE_ID_OPTION}

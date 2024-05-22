@@ -23,7 +23,5 @@ int main(int argc, char *argv[]) {
     }
 
     myWorkerServer->quit();
-
-    // webView.page()->runJavaScript("alert(\"hello from C++\")");
     return a.exec();
 }

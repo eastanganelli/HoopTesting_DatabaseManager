@@ -9,7 +9,7 @@
 class DBManager : public QSqlDatabase {
 public:
     DBManager();
-    void loadConfiguration();
+    void load();
 
     static void test(const QString hostname, const uint port, const QString username, const QString password);
     static void read(QString& hostname, uint& port, QString& username, QString& password);

@@ -1,27 +1,45 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BookOutlined, FormatPainterOutlined, UserOutlined, DatabaseOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme, message } from 'antd';
 
 import Operators from "./pages/operators";
 import Materials from "./pages/materials/materials";
 import Standards from './pages/standards';
 import Database from './pages/database';
+import { ConnectDB } from './utils/communication/database';
 
 const { Content, Sider } = Layout;
 
-const menuItems: string[] = ['Estandares', 'Materiales', 'Operadores', 'Base de datos'];
-
-const items: MenuProps['items'] = [ BookOutlined, FormatPainterOutlined, UserOutlined, DatabaseOutlined ].map((icon, index) => ({
-    key: menuItems[index],
-    icon: React.createElement(icon),
-    label: menuItems[index]
-}));
-
 const App = () => {
+    const [menuItems, setMenuItems] = React.useState<any[]>([]);
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
     const [selected, setSelected] = React.useState('Base de datos');
     
+    useEffect(() => {
+        // alert(window.location.href);
+        ConnectDB().then(() => {
+            let menuItemsAux = [
+                { key: 'standards', label: 'Estandares', icon: FormatPainterOutlined },
+                { key: 'materials', label: 'Materiales', icon: BookOutlined },
+                { key: 'operators', label: 'Operadores', icon: UserOutlined },
+                { key: 'db', label: 'Base de datos', icon: DatabaseOutlined }
+            ];
+            setMenuItems(menuItemsAux);
+            setSelected(menuItemsAux[0]['key']);
+            message.success('Conexión exitosa');
+        }).catch((error) => {
+            setMenuItems([{ key: 'db', label: 'Base de datos', icon: DatabaseOutlined}]);
+            message.error('Conexión fallida');
+        });
+    }, []);
+
+    const items: MenuProps['items'] = menuItems.map((menuItem: { key: string; label: string; icon: any; }) => ({
+        key: menuItem.key,
+        icon: React.createElement(menuItem.icon),
+        label: menuItem.label
+    }));
+
     return (
         <Layout hasSider style={{ minWidth: '850px' }}>
             <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }} >

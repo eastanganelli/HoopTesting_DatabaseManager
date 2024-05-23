@@ -3,7 +3,7 @@
 
 #include "database.h"
 
-void Database::APIDatabase(QHttpServer &myServer, const QString &apiPath, QSharedPointer<DBManager> myDB) {
+void Database::API(QHttpServer &myServer, const QString &apiPath, QSharedPointer<DBManager>& myDB) {
     myServer.route(apiPath, QHttpServerRequest::Method::Get, [myDB]() {
         QJsonObject responseJSON;
         try {
@@ -52,11 +52,11 @@ void Database::APIDatabase(QHttpServer &myServer, const QString &apiPath, QShare
     });
 }
 
-void Database::ConnectDatabase(QHttpServer &myServer, const QString &apiPath, QSharedPointer<DBManager> myDB) {
+void Database::ConnectDatabase(QHttpServer &myServer, const QString &apiPath, QSharedPointer<DBManager>& myDB) {
     myServer.route(apiPath, QHttpServerRequest::Method::Get, [myDB]() {
         QJsonObject responseJSON;
         try {
-            myDB->loadConfiguration();
+            myDB->load();
             if(myDB->open()) {
                 responseJSON = { {"msg", "Conectado"} };
                 QHttpServerResponse response(responseJSON, QHttpServerResponse::StatusCode::Ok);

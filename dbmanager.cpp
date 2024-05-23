@@ -4,14 +4,14 @@
 #include "dbmanager.h"
 #include "simplecrypt.h"
 
-DBManager::DBManager() : QSqlDatabase("QMYSQL") {
+DBManager::DBManager() : QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", "stel_db_static")) {
     this->setHostName("");
     this->setPort(0);
     this->setUserName("");
     this->setPassword("");
 }
 
-void DBManager::loadConfiguration() {
+void DBManager::load() {
     SimpleCrypt myDecrypt;
     myDecrypt.setKey(Q_UINT64_C(0x3453049));
     QSettings mySettings(QApplication::applicationDirPath() + "/settings.ini", QSettings::IniFormat);
@@ -33,7 +33,7 @@ void DBManager::loadConfiguration() {
 }
 
 void DBManager::test(const QString hostname, const uint port, const QString username, const QString password) {
-    QSqlDatabase* dbTest = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", "test"));
+    QSqlDatabase* dbTest = new QSqlDatabase(QSqlDatabase::addDatabase("QMYSQL", "stel_db_static"));
     dbTest->setHostName(hostname);
     dbTest->setPort(port);
     dbTest->setUserName(username);

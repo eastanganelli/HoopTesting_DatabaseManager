@@ -3,7 +3,9 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QtWebEngineWidgets/QWebEngineView>
+
 #include "Request/database.h"
+#include "Request/operator.h"
 
 Server::Server(const QHostAddress path, const uint port) {
     this->httpServer = new QHttpServer();
@@ -24,6 +26,7 @@ void Server::start() {
         if(!(this->httpServer->listen(this->myAddress, this->myPort))) {
             throw std::exception("Port not available");
         }
+
 
         {
             QDir assetsDir = QDir(QApplication::applicationDirPath() + "/dist");
@@ -63,10 +66,14 @@ void Server::start() {
                 return html.toUtf8();
             });
         }
+
         {
-            Database::APIDatabase(*this->httpServer,     "/database",        this->myDB);
+            Database::API(*this->httpServer,             "/database",        this->myDB);
             Database::ConnectDatabase(*this->httpServer, "/connectDatabase", this->myDB);
             Database::TestDatabase(*this->httpServer,    "/testDatabase");
+        }
+        {
+            Operator::API(*this->httpServer,             "/operator", this->myDB);
         }
 
 

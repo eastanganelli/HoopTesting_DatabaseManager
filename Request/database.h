@@ -10,8 +10,8 @@
 
 class Database {
 public:
-    static void APIDatabase(QHttpServer     &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
-    static void ConnectDatabase(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer             &myServer, const QString& apiPath, QSharedPointer<DBManager> &myDB);
+    static void ConnectDatabase(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> &myDB);
     static void TestDatabase(QHttpServer    &myServer, const QString& apiPath);
 };
 

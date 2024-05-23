@@ -1,6 +1,7 @@
 #ifndef STANDARD_H
 #define STANDARD_H
 
+#include <QHttpServer>
 #include <QHttpServerRequest>
 #include <QHttpServerResponse>
 #include <QSharedPointer>
@@ -9,42 +10,27 @@
 
 class Standard {
 public:
-    static const char* GET(QSharedPointer<DBManager>&     myDB);
-    static const char* POST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* TEST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* CONNECT(QSharedPointer<DBManager>& myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
+    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
 };
 
 class EndCap {
 public:
-    static const char* GET(QSharedPointer<DBManager>&     myDB);
-    static const char* POST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* TEST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* CONNECT(QSharedPointer<DBManager>& myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
+    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
 };
 
 class Enviroment {
 public:
-    static const char* GET(QSharedPointer<DBManager>&     myDB);
-    static const char* POST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* TEST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* CONNECT(QSharedPointer<DBManager>& myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
+    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
 };
 
 class ConditionalPeriod {
 public:
-    static const char* GET(QSharedPointer<DBManager>&     myDB);
-    static const char* POST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* TEST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* CONNECT(QSharedPointer<DBManager>& myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
+    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
 };
 
 class Material {
 public:
-    static const char* GET(QSharedPointer<DBManager>&     myDB);
-    static const char* POST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* TEST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* CONNECT(QSharedPointer<DBManager>& myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
+    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
 };
 
 #endif // STANDARD_H

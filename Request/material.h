@@ -1,6 +1,7 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
+#include <QHttpServer>
 #include <QHttpServerRequest>
 #include <QHttpServerResponse>
 #include <QSharedPointer>
@@ -9,26 +10,17 @@
 
 class Material {
 public:
-    static const char* GET(QSharedPointer<DBManager>&     myDB);
-    static const char* POST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* TEST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* CONNECT(QSharedPointer<DBManager>& myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
+    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
 };
 
 class Specification {
 public:
-    static const char* GET(QSharedPointer<DBManager>&     myDB);
-    static const char* POST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* TEST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* CONNECT(QSharedPointer<DBManager>& myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
+    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
 };
 
 class Configuration {
 public:
-    static const char* GET(QSharedPointer<DBManager>&     myDB);
-    static const char* POST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* TEST(QSharedPointer<DBManager>&    myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
-    static const char* CONNECT(QSharedPointer<DBManager>& myDB, const QHttpServerRequest& request, const QHttpServerResponse& response);
+    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
 };
 
 #endif // MATERIAL_H

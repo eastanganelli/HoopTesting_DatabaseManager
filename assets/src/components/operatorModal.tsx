@@ -34,6 +34,7 @@ const ModalOperator: FunctionComponent<Props> = (Props: Props) => {
             </Form.Item>
             <Form.Item label="Nombre" name="inputName" rules={[{ required: true, message: 'Nombre requerido!' }]}>
                 <Input
+                    maxLength={20}
                     width={100}
                     onChange={(value) => {
                         let aux = {...operator};
@@ -45,6 +46,7 @@ const ModalOperator: FunctionComponent<Props> = (Props: Props) => {
             </Form.Item>
             <Form.Item label="Apellido" name="inputFamilyName" rules={[{ required: true, message: 'Apellido requerido!' }]}>
                 <Input
+                    maxLength={30}
                     width={100}
                     onChange={(value) => {
                         let aux = {...operator};

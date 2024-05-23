@@ -40,10 +40,11 @@ const TestConnection = (inputData: database): Promise<any> => {
 const ConnectDB = (): Promise<Boolean> => {
     return new Promise<Boolean>((resolve, reject) => {
         fetch(`${basePath}/connectDatabase`, {
-            method: 'POST',
+            method: 'GET',
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' }
         }).then((response) => {
             if (response.status == 200) resolve(true);
+            else if (response.status === 204) reject(false);
         }).catch((error) => { reject(error); })
     });
 }

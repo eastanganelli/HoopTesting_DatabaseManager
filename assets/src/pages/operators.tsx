@@ -16,7 +16,7 @@ const Operators = () => {
     // const [count, setCount] = useState(2);
 
 	useEffect(() => {
-			fetch('http://localhost:3000/operators').then(response => { response.json().then((data: operatorType[]) => { setDataSource(data); }); }).catch((error) => { console.log(error); });
+			operatorCommunication.get().then((data: operatorType[]) => { setDataSource(data); }).catch((error) => { message.error('Configuracion: se produjo un error al obtenerla!'); });
 	}, []);
 
     const handleDelete = (key: React.Key) => {

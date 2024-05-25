@@ -3,6 +3,7 @@
 #include <QJsonArray>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QSqlError>
 #include <QHttpServerResponse>
 
@@ -27,7 +28,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
                     { "key", myQuery.value("key").toInt() },
                     { "dni", myQuery.value("dni").toString() },
                     { "name", myQuery.value("name").toString() },
-                    { "familyname", myQuery.value("familyname").toString() }
+                    { "familyName", myQuery.value("familyname").toString() }
                 };
                 responseArray.push_back(element);
             }
@@ -56,11 +57,8 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
         QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
 
         try {
-            myQuery.prepare("CALL insertOperator(:dni, :name, :familyname);");
-            myQuery.bindValue(":dni",        bodyJSON["dni"].toInt());
-            myQuery.bindValue(":name",       bodyJSON["name"].toString());
-            myQuery.bindValue(":familyname", bodyJSON["familyname"].toString());
-            myQuery.exec();
+            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
+            myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty()) {
                 qDebug() << myQuery.lastError().text();
@@ -68,16 +66,14 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
                 throw std::exception(std::string("El operador con ID: " + id + "ya existe!" ).c_str());
             }
 
-            qDebug() << myQuery.value(1);
-
-            if(myQuery.value(0).toString() == "Already Exists!") {
-                responseJSON = { { "msg", myQuery.value("response").toString() } };
+            if(myQuery.record().count() < 2) {
+                throw std::exception(std::string("El operador que desea ingresar ya existe!" ).c_str());
             } else {
                 QJsonObject op= {
-                    { "key",        myQuery.value(0).toInt() },
-                    { "dni",        myQuery.value(1).toInt() },
-                    { "name",       myQuery.value(2).toString() },
-                    { "familyname", myQuery.value(3).toString() }
+                    { "key",        myQuery.value("id").toInt() },
+                    { "dni",        myQuery.value("dni").toInt() },
+                    { "name",       myQuery.value("name").toString() },
+                    { "familyname", myQuery.value("familyName").toString() }
                 };
 
                 responseJSON = { { "operator", op } };
@@ -95,14 +91,10 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
         QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
 
         try {
-            myQuery.prepare("CALL updateOperator(:id, :dni, :name, :familyname);");
-            myQuery.bindValue(":id",         bodyJSON["key"].toInt());
-            myQuery.bindValue(":dni",        bodyJSON["dni"].toInt());
-            myQuery.bindValue(":name",       bodyJSON["name"].toString());
-            myQuery.bindValue(":familyname", bodyJSON["familyname"].toString());
-            myQuery.exec();
+            myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyname"].toString()));
+            myQuery.next();
 
-            if(!myQuery.lastError().text().isEmpty()) {
+            if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccess!") {
                 qDebug() << myQuery.lastError().text();
                 std::string id = bodyJSON["key"].toString().toStdString();
                 throw std::exception(std::string("No se encontró operador con ID: " + id + "!" ).c_str());

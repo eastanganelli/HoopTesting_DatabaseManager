@@ -2,6 +2,13 @@ import type { operatorType } from '../../interfaces/table';
 import { basePath } from '../basePath';
 
 const operatorCommunication = {
+    get: (): Promise<operatorType[]> => {
+        return new Promise<operatorType[]>((resolve, reject) => {
+            fetch(`${basePath}/operators`).then((response) => {
+                response.json().then(data => { resolve(data.operators); });
+            }).catch((error) => { reject(error); });
+        });
+    },
     add: (inputData: operatorType): Promise<operatorType> => {
         return new Promise<operatorType>((resolve, reject) => {
             fetch(`${basePath}/operator`, {

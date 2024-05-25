@@ -28,7 +28,7 @@ const App = () => {
             setMenuItems(menuItemsAux);
             setSelected(menuItemsAux[0]['key']);
             message.success('Conexión exitosa');
-        }).catch((error) => {
+        }).catch(() => {
             setMenuItems([{ key: 'db', label: 'Base de datos', icon: DatabaseOutlined}]);
             message.error('Conexión fallida');
         });

@@ -6,11 +6,9 @@
 #include <QHttpServerResponse>
 #include <QSharedPointer>
 
-#include "../dbmanager.h"
-
 class Operator {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> &myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 #endif // OPERATOR_H

@@ -14,7 +14,7 @@ const { Content, Sider } = Layout;
 const App = () => {
     const [menuItems, setMenuItems] = React.useState<any[]>([]);
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-    const [selected, setSelected] = React.useState('Base de datos');
+    const [selected, setSelected] = React.useState('');
     
     useEffect(() => {
         // alert(window.location.href);
@@ -54,7 +54,7 @@ const App = () => {
             <Layout style={{ overflow: 'auto', marginLeft: 200 }}>
                 <Content style={{ margin: '24px', overflow: 'initial', minHeight: "95vh", textAlign: 'center' }}>
                     <div style={{ padding: 24, textAlign: 'center', minHeight: "95vh", background: colorBgContainer, borderRadius: borderRadiusLG }} >
-                        {selected === 'Materiales' ? <Materials /> : selected === 'Operadores' ? <Operators /> : selected === 'Base de datos' ? <Database /> : <Standards />}
+                        {selected === 'materials' ? <Materials /> : selected === 'operators' ? <Operators /> : selected === 'db' ? <Database /> : <Standards />}
                     </div>
                 </Content>
             </Layout>

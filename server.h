@@ -8,10 +8,10 @@
 #include "dbmanager.h"
 
 class Server : public QObject {
+    QSharedPointer<DBManager> myDB;
     QHttpServer* httpServer;
     QHostAddress myAddress;
     uint myPort;
-    QSharedPointer<DBManager> myDB;
 
     public:
         Server(const QHostAddress path = QHostAddress::LocalHost, const uint port = 9090);

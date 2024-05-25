@@ -68,12 +68,12 @@ void Server::start() {
         }
 
         {
-            Database::API(*this->httpServer,             "/database",        this->myDB);
-            Database::ConnectDatabase(*this->httpServer, "/connectDatabase", this->myDB);
+            Database::API(*this->httpServer,             "/database");
+            Database::ConnectDatabase(*this->httpServer, "/connectDatabase");
             Database::TestDatabase(*this->httpServer,    "/testDatabase");
         }
         {
-            Operator::API(*this->httpServer,             "/operator", this->myDB);
+            Operator::API(*this->httpServer,             "/operator");
         }
 
 

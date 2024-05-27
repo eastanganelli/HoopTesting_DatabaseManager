@@ -60,6 +60,7 @@ void DBManager::test(const QString hostname, const uint port, const QString user
     dbTest.open();
     bool state = dbTest.isOpen();
     if(state) {
+        QSqlDatabase::removeDatabase("TestConnection");
         dbTest.close();
         return;
     }

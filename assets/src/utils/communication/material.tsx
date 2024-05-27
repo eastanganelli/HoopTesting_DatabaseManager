@@ -2,11 +2,23 @@ import type { materialType, specificationType, configurationType } from '../../i
 import { basePath } from '../basePath';
 
 const materialCommunication = {
+    get: (): Promise<materialType[]> => {
+        return new Promise<materialType[]>((resolve, reject) => {
+            fetch(`${basePath}/material`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' }
+            }).then((response) => {
+                response.json().then((data: materialType[]) => {
+                    resolve(data);
+                });
+            }).catch((error) => { reject(error); })
+        });
+    },
     add: (inputData: materialType): Promise<materialType> => {
         return new Promise<materialType>((resolve, reject) => {
             fetch(`${basePath}/material`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { id: number }) => {
@@ -20,7 +32,7 @@ const materialCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/material`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve(true);
@@ -31,7 +43,7 @@ const materialCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/material`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify({ id: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
@@ -45,7 +57,7 @@ const specificationCommunication = {
         return new Promise<specificationType>((resolve, reject) => {
             fetch(`${basePath}/specification`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { id: number }) => {
@@ -59,7 +71,7 @@ const specificationCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/specification`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve(true);
@@ -70,7 +82,7 @@ const specificationCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/specification`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify({ id: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
@@ -84,7 +96,7 @@ const configurationCommunication = {
         return new Promise<configurationType>((resolve, reject) => {
             fetch(`${basePath}/configuration`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { id: number }) => {
@@ -98,7 +110,7 @@ const configurationCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/configuration`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve(true);
@@ -109,7 +121,7 @@ const configurationCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/configuration`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify({ id: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);

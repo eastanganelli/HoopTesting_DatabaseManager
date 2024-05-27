@@ -91,7 +91,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
         QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
 
         try {
-            myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyname"].toString()));
+            myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON.value("dni").toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccess!") {
@@ -109,9 +109,25 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
     });
 
     myServer.route(apiPath, QHttpServerRequest::Method::Delete,[](const QHttpServerRequest &request) {
-        // resp.setHeader("Content-Type", "application/json");
-        // resp.writeHead(200);
-        // resp.end("Operator API");
-        return "Operator API";
+        QJsonObject responseJSON;
+        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
+
+        try {
+            myQuery.exec(QString("CALL deleteOperator(%1);").arg(bodyJSON["key"].toInt()));
+            myQuery.next();
+
+            if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccess!") {
+                qDebug() << myQuery.lastError().text();
+                std::string id = bodyJSON["key"].toString().toStdString();
+                throw std::exception(std::string("No se encontró operador con ID: " + id + "!" ).c_str());
+            }
+
+            responseJSON = { { "msg", myQuery.value("response").toString() } };
+            return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
+        } catch(std::exception& err) {
+            responseJSON = { { "msg", err.what() } };
+        }
+        return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 }

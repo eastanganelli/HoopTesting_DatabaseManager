@@ -13,7 +13,7 @@ const operatorCommunication = {
         return new Promise<operatorType>((resolve, reject) => {
             fetch(`${basePath}/operator`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { id: number }) => {
@@ -25,12 +25,14 @@ const operatorCommunication = {
     },
     update: (inputData: operatorType) => {
         return new Promise<Boolean>((resolve, reject) => {
+            console.log(inputData);
             fetch(`${basePath}/operator`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve(true);
+                else resolve(false);
             }).catch((error) => { reject(error); })
         });
     },
@@ -38,8 +40,8 @@ const operatorCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/operator`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })

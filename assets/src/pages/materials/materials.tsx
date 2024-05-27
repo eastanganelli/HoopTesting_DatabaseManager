@@ -38,12 +38,10 @@ const Materials = () => {
 		}
 	];
 
-    const handleGetMaterials = () => {
-        fetch('http://localhost:3000/materials').then(response => { response.json().then((data: materialType[]) => { setDataSource(data); }); }).catch((error) => { console.log(error); });
-    };
-
     useEffect(() => {
-        handleGetMaterials();
+        materialCommunication.get().then((data: materialType[]) => {
+			setDataSource(data);
+		}).catch((error) => { message.error('Se produjo un error al cargar los materiales!'); });
     }, []);
 
 	const handleDelete = (key: React.Key) => {
@@ -51,9 +49,9 @@ const Materials = () => {
 			if (status) {
 				const newData = [...dataSource];
 				setDataSource(newData.filter((item) => item.key !== key));
-				message.success('Material: eliminado correctamente!');
+				message.success('Material eliminado correctamente!');
 			}
-		}).catch((error) => { message.error('Material: se produjo un error al eliminarlo!'); });
+		}).catch((error) => { message.error('Se produjo un error al eliminar el material.'); });
 	};
 
 	const handleAdd = () => {
@@ -70,8 +68,8 @@ const Materials = () => {
 					materialCommunication.add(newData).then((response: materialType) => {
 						setDataSource([...dataSource, response]);
 						setCount(count + 1);
-						message.success('Material: agregado correctamente!');
-					}).catch((error) => { message.error('Material: se produjo un error al agregarlo!'); });
+						message.success('Material agregado correctamente!');
+					}).catch((error) => { message.error('Se produjo un error al agregar el material!'); });
 				}
 			},
 			cancelText: 'Cancelar',
@@ -87,8 +85,8 @@ const Materials = () => {
 			newData.splice(index, 1, { ...item, ...row });
 			setDataSource(newData);
 			materialCommunication.update(row).then((status: Boolean) => {
-                if (status) { message.success('Material: modificado correctamente!'); }
-            }).catch((error) => { message.error('Material: se produjo un error al modificarlo!'); });
+                if (status) { message.success('Material modificado correctamente!'); }
+            }).catch((error) => { message.error('Se produjo un error al modificar el material!'); });
 		}
 	};
 

@@ -24,9 +24,9 @@ const Operators = () => {
             if (status) {
 				console.log(key, dataSource.filter((item) => item.key !== key));
                 setDataSource(dataSource.filter((item) => item.key !== key));
-                message.success('Confiiguración: eliminada correctamente!');
+                message.success('Operador eliminadao correctamente!');
             }
-        }).catch((error) => { message.error('Configuracion: se produjo un error al eliminarlo!'); });
+        }).catch((error) => { message.error('Se produjo un error al eliminar el operador!'); });
     };
 
 	const handleAdd = () => {
@@ -43,8 +43,8 @@ const Operators = () => {
 					console.log(newData);
 					operatorCommunication.add(newData).then((response: operatorType) => {
 						setDataSource([...dataSource, response]);
-                        message.success('Configuración: agregada correctamente!');
-					}).catch((error) => { message.error('Configuracion: se produjo un error al agregarla!'); });
+                        message.success('Operador agregado correctamente!');
+					}).catch((error) => { message.error('Se produjo un error al agregar el operador!'); });
 				}
 			},
 			cancelText: 'Cancelar',
@@ -62,9 +62,9 @@ const Operators = () => {
 				if (status) {
 					newData.splice(index, 1, { ...item, ...row });
 					setDataSource(newData);
-					message.success('Configuración: modificado correctamente!');
+					message.success('Operador modificado correctamente!');
 				}
-			}).catch((error) => { message.error('Configuración: se produjo un error al modificarlo!'); });
+			}).catch((error) => { message.error('Se produjo un error al modificarlo!'); });
 		}
 	};
 

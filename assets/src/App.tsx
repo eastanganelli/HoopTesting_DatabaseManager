@@ -14,31 +14,33 @@ const { Content, Sider } = Layout;
 const App = () => {
     const [menuItems, setMenuItems] = React.useState<any[]>([]);
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-    const [selected, setSelected] = React.useState('');
+    const [selected, setSelected] = React.useState<any>({ key: 'db', label: 'Base de datos', icon: DatabaseOutlined, page: <Database />});
     
     useEffect(() => {
         // alert(window.location.href);
         ConnectDB().then(() => {
             let menuItemsAux = [
-                { key: 'standards', label: 'Estandares', icon: FormatPainterOutlined },
-                { key: 'materials', label: 'Materiales', icon: BookOutlined },
-                { key: 'operators', label: 'Operadores', icon: UserOutlined },
-                { key: 'db', label: 'Base de datos', icon: DatabaseOutlined }
+                { key: 'standards', label: 'Estandares', icon: FormatPainterOutlined, page: <Standards /> },
+                { key: 'materials', label: 'Materiales', icon: BookOutlined, page: <Materials /> },
+                { key: 'operators', label: 'Operadores', icon: UserOutlined, page: <Operators />},
+                { key: 'db', label: 'Base de datos', icon: DatabaseOutlined, page: <Database />}
             ];
             setMenuItems(menuItemsAux);
-            setSelected(menuItemsAux[0]['key']);
+            setSelected(menuItemsAux.at(0));
             message.success('Conexión exitosa');
         }).catch(() => {
-            setMenuItems([{ key: 'db', label: 'Base de datos', icon: DatabaseOutlined}]);
+            setMenuItems([{ key: 'db', label: 'Base de datos', icon: DatabaseOutlined, page: <Database />}]);
             message.error('Conexión fallida');
         });
-    }, []);
+    }, selected);
 
-    const items: MenuProps['items'] = menuItems.map((menuItem: { key: string; label: string; icon: any; }) => ({
+    const items: MenuProps['items'] = menuItems.map((menuItem: { key: string; label: string; icon: any; page: any }) => ({
         key: menuItem.key,
         icon: React.createElement(menuItem.icon),
-        label: menuItem.label
+        label: menuItem.label,
+        page: menuItem.page
     }));
+
 
     return (
         <Layout hasSider style={{ minWidth: '850px' }}>
@@ -46,15 +48,20 @@ const App = () => {
                 <Menu
                     theme="dark"
                     mode="inline"
-                    defaultSelectedKeys={[selected]}
+                    defaultSelectedKeys={[selected?.key]}
                     items={items}
-                    onSelect={(value) => setSelected(value.key)}
+                    onSelect={(value) => {
+                            let item = items.filter(item => { if(value?.key == item?.key) return item; });
+                            setSelected(item[0]);
+                            console.log(selected);
+                        }
+                    }
                 />
             </Sider>
             <Layout style={{ overflow: 'auto', marginLeft: 200 }}>
                 <Content style={{ margin: '24px', overflow: 'initial', minHeight: "95vh", textAlign: 'center' }}>
                     <div style={{ padding: 24, textAlign: 'center', minHeight: "95vh", background: colorBgContainer, borderRadius: borderRadiusLG }} >
-                        {selected === 'materials' ? <Materials /> : selected === 'operators' ? <Operators /> : selected === 'db' ? <Database /> : <Standards />}
+                        {selected?.page}
                     </div>
                 </Content>
             </Layout>

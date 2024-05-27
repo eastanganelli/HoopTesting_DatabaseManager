@@ -14,7 +14,7 @@ class Server : public QObject {
     uint myPort;
 
     public:
-        Server(const QHostAddress path = QHostAddress::LocalHost, const uint port = 9090);
+    Server(const QHostAddress path = QHostAddress::LocalHost, const uint port = 9090);
         ~Server();
 
         void start();

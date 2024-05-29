@@ -79,6 +79,10 @@ void Server::start() {
         }
 
         {
+            Material::API(*this->httpServer,             "/material");
+        }
+
+        {
             Operator::API(*this->httpServer,             "/operator");
         }
 
@@ -93,6 +97,5 @@ void Server::changePort(const uint port) {
 }
 
 QString Server::URL() const {
-    qDebug() << "http://" + this->myAddress.toString() + ":" + QString::number(this->myPort);
     return "http://" + this->myAddress.toString() + ":" + QString::number(this->myPort);
 }

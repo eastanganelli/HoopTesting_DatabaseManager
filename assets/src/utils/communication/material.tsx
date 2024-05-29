@@ -4,12 +4,12 @@ import { basePath } from '../basePath';
 const materialCommunication = {
     get: (): Promise<materialType[]> => {
         return new Promise<materialType[]>((resolve, reject) => {
-            fetch(`${basePath}/material`, {
+            fetch(`${basePath}/materials`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' }
             }).then((response) => {
-                response.json().then((data: materialType[]) => {
-                    resolve(data);
+                response.json().then((data: any) => {
+                    resolve(data.materials);
                 });
             }).catch((error) => { reject(error); })
         });

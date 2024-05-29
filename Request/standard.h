@@ -10,27 +10,27 @@
 
 class Standard {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 class EndCap {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 class Enviroment {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 class ConditionalPeriod {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 class Material {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 #endif // STANDARD_H

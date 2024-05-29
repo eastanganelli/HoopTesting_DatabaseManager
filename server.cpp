@@ -6,6 +6,7 @@
 
 #include "Request/database.h"
 #include "Request/operator.h"
+#include "Request/standard.h"
 
 Server::Server(const QHostAddress path, const uint port) {
     this->httpServer = new QHttpServer();
@@ -72,6 +73,11 @@ void Server::start() {
             Database::ConnectDatabase(*this->httpServer, "/connectDatabase");
             Database::TestDatabase(*this->httpServer,    "/testDatabase");
         }
+
+        {
+            Standard::API(*this->httpServer,             "/standard");
+        }
+
         {
             Operator::API(*this->httpServer,             "/operator");
         }

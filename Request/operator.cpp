@@ -15,24 +15,12 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
 
         try {
-            myQuery.exec("CALL selectOperators();");
+            myQuery.exec("CALL selectOperatorsJSON();");
 
-            if(!myQuery.lastError().text().isEmpty()) {
-                throw std::exception("No se encontró operadores!");
-            }
-
-            QJsonArray responseArray;
-
-            while (myQuery.next()) {
-                QJsonObject element = {
-                    { "key", myQuery.value("key").toInt() },
-                    { "dni", myQuery.value("dni").toString() },
-                    { "name", myQuery.value("name").toString() },
-                    { "familyName", myQuery.value("familyname").toString() }
-                };
-                responseArray.push_back(element);
-            }
-            responseJSON = { { "operators", responseArray } };
+            if(!myQuery.lastError().text().isEmpty()) { throw std::exception("No se encontró operadores!"); }
+            myQuery.next();
+            QJsonArray aux = QJsonDocument::fromJson(myQuery.value("standards").toByteArray()).array();
+            responseJSON = { { "standards", aux } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
@@ -40,16 +28,16 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 
-    myServer.route(apiPath, QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
-        QJsonObject responseJSON;
+    // myServer.route(apiPath, QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
+    //     QJsonObject responseJSON;
 
-        try {
-            QSqlQuery myQuery("CALL selectOperators()", QSqlDatabase::database("DB_Static"));
-        } catch(...) {
+    //     try {
+    //         QSqlQuery myQuery("CALL selectOperators()", QSqlDatabase::database("DB_Static"));
+    //     } catch(...) {
 
-        }
-        return "Operator API";
-    });
+    //     }
+    //     return "Operator API";
+    // });
 
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;

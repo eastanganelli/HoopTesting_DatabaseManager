@@ -10,17 +10,17 @@
 
 class Material {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 class Specification {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 class Configuration {
 public:
-    static void API(QHttpServer &myServer, const QString& apiPath, QSharedPointer<DBManager> myDB);
+    static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
 #endif // MATERIAL_H

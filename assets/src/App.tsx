@@ -12,9 +12,9 @@ import { ConnectDB } from './utils/communication/database';
 const { Content, Sider } = Layout;
 
 const App = () => {
+    const [selected,  setSelected]  = React.useState<any>({ key: 'db', label: 'Base de datos', icon: DatabaseOutlined, page: <Database />});
     const [menuItems, setMenuItems] = React.useState<any[]>([]);
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
-    const [selected, setSelected] = React.useState<any>({ key: 'db', label: 'Base de datos', icon: DatabaseOutlined, page: <Database />});
     
     useEffect(() => {
         // alert(window.location.href);
@@ -32,7 +32,7 @@ const App = () => {
             setMenuItems([{ key: 'db', label: 'Base de datos', icon: DatabaseOutlined, page: <Database />}]);
             message.error('Conexión fallida');
         });
-    }, selected);
+    }, []);
 
     const items: MenuProps['items'] = menuItems.map((menuItem: { key: string; label: string; icon: any; page: any }) => ({
         key: menuItem.key,
@@ -53,7 +53,6 @@ const App = () => {
                     onSelect={(value) => {
                             let item = items.filter(item => { if(value?.key == item?.key) return item; });
                             setSelected(item[0]);
-                            console.log(selected);
                         }
                     }
                 />

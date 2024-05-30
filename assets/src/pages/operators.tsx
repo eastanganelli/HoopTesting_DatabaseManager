@@ -16,13 +16,12 @@ const Operators = () => {
     // const [count, setCount] = useState(2);
 
 	useEffect(() => {
-			operatorCommunication.get().then((data: operatorType[]) => { setDataSource(data); }).catch((error) => { message.error('Configuracion: se produjo un error al obtenerla!'); });
+			operatorCommunication.get().then((data: operatorType[]) => { console.log(data); setDataSource(data); }).catch((error) => { message.error('Configuracion: se produjo un error al obtenerla!'); });
 	}, []);
 
     const handleDelete = (key: React.Key) => {
         operatorCommunication.remove(Number(key)).then((status: Boolean) => {
             if (status) {
-				console.log(key, dataSource.filter((item) => item.key !== key));
                 setDataSource(dataSource.filter((item) => item.key !== key));
                 message.success('Operador eliminadao correctamente!');
             }

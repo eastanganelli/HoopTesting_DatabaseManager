@@ -32,6 +32,7 @@ void Material::API(QHttpServer &myServer, const QString &apiPath) {
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 
+
 }
 
 void Specification::API(QHttpServer &myServer, const QString &apiPath) {

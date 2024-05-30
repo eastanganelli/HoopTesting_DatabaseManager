@@ -21,9 +21,8 @@ const materialCommunication = {
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { material: materialType } ) => {
+                    resolve(data['material']);
                 });
             }).catch((error) => { reject(error); })
         });
@@ -60,9 +59,8 @@ const specificationCommunication = {
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { specification: specificationType } ) => {
+                    resolve(data['specification']);
                 });
             }).catch((error) => { reject(error); })
         });
@@ -99,9 +97,8 @@ const configurationCommunication = {
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { configuration: configurationType } ) => { 
+                    resolve(data['configuration']);
                 });
             }).catch((error) => { reject(error); })
         });

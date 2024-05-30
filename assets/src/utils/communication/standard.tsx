@@ -21,9 +21,8 @@ const standardCommunication = {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(inputData)
                 }).then((response) => {
-                    response.json().then((data: { key: number }) => {
-                        inputData['key'] = data['key'];
-                        resolve(inputData);
+                    response.json().then((data: { standard: standardType } ) => {
+                        resolve(data['standard']);
                     });
                 }).catch((error) => { reject(error); })
             });

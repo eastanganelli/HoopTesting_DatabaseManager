@@ -5,7 +5,7 @@ const operatorCommunication = {
     get: (): Promise<operatorType[]> => {
         return new Promise<operatorType[]>((resolve, reject) => {
             fetch(`${basePath}/operators`).then((response) => {
-                response.json().then(data => { resolve(data.operators); });
+                response.json().then((data: any) => { resolve(data.operators); });
             }).catch((error) => { reject(error); });
         });
     },
@@ -16,9 +16,8 @@ const operatorCommunication = {
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: any) => {
+                    resolve(data.operator);
                 });
             }).catch((error) => { reject(error); })
         });

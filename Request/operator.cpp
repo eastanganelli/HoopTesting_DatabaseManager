@@ -19,8 +19,8 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
             if(!myQuery.lastError().text().isEmpty()) { throw std::exception("No se encontró operadores!"); }
             myQuery.next();
-            QJsonArray aux = QJsonDocument::fromJson(myQuery.value("standards").toByteArray()).array();
-            responseJSON = { { "standards", aux } };
+            QJsonArray aux = QJsonDocument::fromJson(myQuery.value("operators").toByteArray()).array();
+            responseJSON = { { "operators", aux } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
@@ -44,8 +44,10 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
         QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
 
+        qDebug() << QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString());
+
         try {
-            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
+            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty()) {
@@ -58,7 +60,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
                 throw std::exception(std::string("El operador que desea ingresar ya existe!" ).c_str());
             } else {
                 QJsonObject op= {
-                    { "key",        myQuery.value("id").toInt() },
+                    { "key",        myQuery.value("key").toInt() },
                     { "dni",        myQuery.value("dni").toInt() },
                     { "name",       myQuery.value("name").toString() },
                     { "familyname", myQuery.value("familyName").toString() }

@@ -72,17 +72,8 @@ void Server::start() {
             Database::API(*this->httpServer,             "/database");
             Database::ConnectDatabase(*this->httpServer, "/connectDatabase");
             Database::TestDatabase(*this->httpServer,    "/testDatabase");
-        }
-
-        {
             Standard::API(*this->httpServer,             "/standard");
-        }
-
-        {
             Material::API(*this->httpServer,             "/material");
-        }
-
-        {
             Operator::API(*this->httpServer,             "/operator");
         }
 

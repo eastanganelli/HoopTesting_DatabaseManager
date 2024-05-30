@@ -27,7 +27,7 @@ const App = () => {
             ];
             setMenuItems(menuItemsAux);
             setSelected(menuItemsAux.at(0));
-            message.success('Conexión exitosa');
+            message.success('Conexión exitósa');
         }).catch(() => {
             setMenuItems([{ key: 'db', label: 'Base de datos', icon: DatabaseOutlined, page: <Database />}]);
             message.error('Conexión fallida');
@@ -41,14 +41,13 @@ const App = () => {
         page: menuItem.page
     }));
 
-
     return (
         <Layout hasSider style={{ minWidth: '850px' }}>
             <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }} >
                 <Menu
                     theme="dark"
                     mode="inline"
-                    defaultSelectedKeys={[selected?.key]}
+                    //defaultSelectedKeys={[ menuItems[0]['key'] ]}
                     items={items}
                     onSelect={(value) => {
                             let item = items.filter(item => { if(value?.key == item?.key) return item; });

@@ -2,16 +2,27 @@ import type { materialType, specificationType, configurationType } from '../../i
 import { basePath } from '../basePath';
 
 const materialCommunication = {
+    get: (): Promise<materialType[]> => {
+        return new Promise<materialType[]>((resolve, reject) => {
+            fetch(`${basePath}/materials`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' }
+            }).then((response) => {
+                response.json().then((data: any) => {
+                    resolve(data.materials);
+                });
+            }).catch((error) => { reject(error); })
+        });
+    },
     add: (inputData: materialType): Promise<materialType> => {
         return new Promise<materialType>((resolve, reject) => {
             fetch(`${basePath}/material`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { material: materialType } ) => {
+                    resolve(data['material']);
                 });
             }).catch((error) => { reject(error); })
         });
@@ -20,7 +31,7 @@ const materialCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/material`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve(true);
@@ -31,8 +42,8 @@ const materialCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/material`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })
@@ -45,12 +56,11 @@ const specificationCommunication = {
         return new Promise<specificationType>((resolve, reject) => {
             fetch(`${basePath}/specification`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { specification: specificationType } ) => {
+                    resolve(data['specification']);
                 });
             }).catch((error) => { reject(error); })
         });
@@ -59,7 +69,7 @@ const specificationCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/specification`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve(true);
@@ -70,8 +80,8 @@ const specificationCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/specification`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })
@@ -84,12 +94,11 @@ const configurationCommunication = {
         return new Promise<configurationType>((resolve, reject) => {
             fetch(`${basePath}/configuration`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { configuration: configurationType } ) => { 
+                    resolve(data['configuration']);
                 });
             }).catch((error) => { reject(error); })
         });
@@ -98,7 +107,7 @@ const configurationCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/configuration`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve(true);
@@ -109,8 +118,8 @@ const configurationCommunication = {
         return new Promise<Boolean>((resolve, reject) => {
             fetch(`${basePath}/configuration`, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })

@@ -28,12 +28,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
         static.qrc
         assets.qrc
-        server.h server.cpp
-        mainwindow.h mainwindow.cpp mainwindow.ui
-        windowing.h windowing.cpp
-        myreactpage.h myreactpage.cpp
-        dbmanager.h dbmanager.cpp
-        simplecrypt.cpp simplecrypt.h
+
+        server.h        server.cpp
+        windowing.h     windowing.cpp
+        myreactpage.h   myreactpage.cpp
+        dbmanager.h     dbmanager.cpp
+        simplecrypt.h   simplecrypt.cpp
+
         Request/database.h Request/database.cpp
         Request/material.h Request/material.cpp
         Request/standard.h Request/standard.cpp

@@ -6,10 +6,16 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-class DBManager : public QSqlDatabase {
+class DBManager {
+    QSqlDatabase db;
+
 public:
     DBManager();
-    void loadConfiguration();
+    DBManager(const QSqlDatabase &db);
+    ~DBManager();
+    void load();
+    bool open();
+    bool close();
 
     static void test(const QString hostname, const uint port, const QString username, const QString password);
     static void read(QString& hostname, uint& port, QString& username, QString& password);
@@ -36,6 +42,5 @@ public:
         return "Base de datos no configurada!";
     }
 };
-
 
 #endif // DBMANAGER_H

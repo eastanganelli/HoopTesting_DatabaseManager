@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
         myServer->moveToThread(myWorkerServer.data());
         myWorkerServer->start();
         myServer->start();
-        windowing.newWindow("STEL - Administrador de Base de Datos", QUrl(myServer->URL()));
+        windowing.newWindow("Administrador de Base de Datos", QUrl(myServer->URL()));
 
     } catch(...) {
         qDebug() << "Error al crear la nueva ventana";

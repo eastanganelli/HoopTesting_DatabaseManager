@@ -3,8 +3,8 @@
 
 #include "database.h"
 
-void Database::APIDatabase(QHttpServer &myServer, const QString &apiPath, QSharedPointer<DBManager> myDB) {
-    myServer.route(apiPath, QHttpServerRequest::Method::Get, [myDB]() {
+void Database::API(QHttpServer &myServer, const QString &apiPath) {
+    myServer.route(apiPath, QHttpServerRequest::Method::Get, []() {
         QJsonObject responseJSON;
         try {
             QString hostname = "", username = "", password = "";
@@ -31,7 +31,7 @@ void Database::APIDatabase(QHttpServer &myServer, const QString &apiPath, QShare
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 
-    myServer.route(apiPath, QHttpServerRequest::Method::Post, [myDB](const QHttpServerRequest& request) {
+    myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest& request) {
         QJsonObject responseJSON;
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
@@ -52,12 +52,14 @@ void Database::APIDatabase(QHttpServer &myServer, const QString &apiPath, QShare
     });
 }
 
-void Database::ConnectDatabase(QHttpServer &myServer, const QString &apiPath, QSharedPointer<DBManager> myDB) {
-    myServer.route(apiPath, QHttpServerRequest::Method::Get, [myDB]() {
+void Database::ConnectDatabase(QHttpServer &myServer, const QString &apiPath) {
+    myServer.route(apiPath, QHttpServerRequest::Method::Get, []() {
         QJsonObject responseJSON;
+        DBManager myDB(QSqlDatabase::database("DB_Static"));
+
         try {
-            myDB->loadConfiguration();
-            if(myDB->open()) {
+            myDB.load();
+            if(myDB.open()) {
                 responseJSON = { {"msg", "Conectado"} };
                 QHttpServerResponse response(responseJSON, QHttpServerResponse::StatusCode::Ok);
                 response.setHeader("Content-Type", "application/json");

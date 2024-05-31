@@ -2,6 +2,18 @@ import type { conditionalPeriodType, endCapType, enviromentType, standardHasMate
 import { basePath } from '../basePath';
 
 const standardCommunication = {
+        get: (): Promise<standardType[]> => {
+            return new Promise<standardType[]>((resolve, reject) => {
+                fetch(`${basePath}/standards`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                }).then((response) => {
+                    response.json().then((data: any) => {
+                        resolve(data['standards']);
+                    });
+                }).catch((error) => { reject(error); })
+            });
+        },
         add: (inputData: standardType): Promise<standardType> => {
             return new Promise<standardType>((resolve, reject) => {
                 fetch(`${basePath}/standard`, {
@@ -9,9 +21,8 @@ const standardCommunication = {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(inputData)
                 }).then((response) => {
-                    response.json().then((data: { id: number }) => {
-                        inputData['id'] = data['id'];
-                        resolve(inputData);
+                    response.json().then((data: { standard: standardType } ) => {
+                        resolve(data['standard']);
                     });
                 }).catch((error) => { reject(error); })
             });
@@ -32,7 +43,7 @@ const standardCommunication = {
                 fetch(`${basePath}/standard`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id })
+                    body: JSON.stringify({ key: id })
                 }).then((response) => {
                     if (response.status == 200) resolve(true);
                 }).catch((error) => { reject(error); })
@@ -49,7 +60,7 @@ const endCapCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { id: number }) => {
-                    inputData['id'] = data['id'];
+                    inputData['key'] = data['id'];
                     resolve(inputData);
                 });
             }).catch((error) => { reject(error); })
@@ -71,7 +82,7 @@ const endCapCommunication = {
             fetch(`${basePath}/endcap`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })
@@ -88,7 +99,7 @@ const enviromentCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { id: number }) => {
-                    inputData['id'] = data['id'];
+                    inputData['key'] = data['id'];
                     resolve(inputData);
                 });
             }).catch((error) => { reject(error); })
@@ -127,7 +138,7 @@ const conditionalPeriodCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { id: number }) => {
-                    inputData['id'] = data['id'];
+                    inputData['key'] = data['id'];
                     resolve(inputData);
                 });
             }).catch((error) => { reject(error); })
@@ -166,7 +177,7 @@ const materialCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { id: number }) => {
-                    inputData['id'] = data['id'];
+                    inputData['key'] = data['id'];
                     resolve(inputData);
                 });
             }).catch((error) => { reject(error); })

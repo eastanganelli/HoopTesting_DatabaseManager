@@ -45,8 +45,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            qDebug() << QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString());
-            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
+            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty()) {

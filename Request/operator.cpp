@@ -45,26 +45,22 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
+            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
 
-            if(!myQuery.lastError().text().isEmpty()) {
-                std::string id = bodyJSON["key"].toString().toStdString();
-                throw std::exception(std::string("El operador con ID: " + id + "ya existe!" ).c_str());
+            if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exists!") {
+                std::string msg = "El operador con DNI " + bodyJSON["dni"].toString().toStdString() + " ya existe!";
+                throw std::exception(msg.c_str());
             }
 
-            if(myQuery.record().count() < 2) {
-                throw std::exception(std::string("El operador que desea ingresar ya existe!" ).c_str());
-            } else {
-                QJsonObject op= {
-                    { "key",        myQuery.value("key").toInt() },
-                    { "dni",        myQuery.value("dni").toInt() },
-                    { "name",       myQuery.value("name").toString() },
-                    { "familyName", myQuery.value("familyName").toString() }
-                };
+            QJsonObject op= {
+                { "key",        myQuery.value("key").toInt() },
+                { "dni",        myQuery.value("dni").toInt() },
+                { "name",       myQuery.value("name").toString() },
+                { "familyName", myQuery.value("familyName").toString() }
+            };
 
-                responseJSON = { { "operator", op } };
-            }
+            responseJSON = { { "operator", op } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
@@ -78,12 +74,12 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON.value("dni").toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
+            myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccessful Updated!") {
-                std::string id = bodyJSON["key"].toString().toStdString();
-                throw std::exception(std::string("No se encontró operador con ID: " + id + "!" ).c_str());
+                std::string msg = "No se pudo actualizar el operador con DNI " + bodyJSON["dni"].toString().toStdString() + "!";
+                throw std::exception(msg.c_str());
             }
 
             responseJSON = { { "msg", myQuery.value("response").toString() } };
@@ -103,10 +99,9 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
             myQuery.exec(QString("CALL deleteOperator(%1);").arg(bodyJSON["key"].toInt()));
             myQuery.next();
 
-            if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccess!") {
-                qDebug() << myQuery.lastError().text();
-                std::string id = bodyJSON["key"].toString().toStdString();
-                throw std::exception(std::string("No se encontró operador con ID: " + id + "!" ).c_str());
+            if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccessful Deleted!") {
+                std::string msg = "No se pudo eliminar el operador!";
+                throw std::exception(msg.c_str());
             }
 
             responseJSON = { { "msg", myQuery.value("response").toString() } };

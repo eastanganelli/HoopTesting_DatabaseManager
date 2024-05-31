@@ -6,8 +6,6 @@
 #include <QHttpServerResponse>
 #include <QSharedPointer>
 
-#include "../dbmanager.h"
-
 class Material {
 public:
     static void API(QHttpServer &myServer, const QString& apiPath);

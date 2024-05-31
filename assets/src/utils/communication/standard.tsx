@@ -43,7 +43,7 @@ const standardCommunication = {
                 fetch(`${basePath}/standard`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: id })
+                    body: JSON.stringify({ key: id })
                 }).then((response) => {
                     if (response.status == 200) resolve(true);
                 }).catch((error) => { reject(error); })
@@ -82,7 +82,7 @@ const endCapCommunication = {
             fetch(`${basePath}/endcap`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })

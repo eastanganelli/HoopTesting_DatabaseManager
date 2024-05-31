@@ -4,9 +4,10 @@
 #include <QDirIterator>
 #include <QtWebEngineWidgets/QWebEngineView>
 
+#include "Request/standard.h"
+#include "Request/material.h"
 #include "Request/database.h"
 #include "Request/operator.h"
-#include "Request/standard.h"
 
 Server::Server(const QHostAddress path, const uint port) {
     this->httpServer = new QHttpServer();
@@ -72,8 +73,13 @@ void Server::start() {
             Database::API(*this->httpServer,             "/database");
             Database::ConnectDatabase(*this->httpServer, "/connectDatabase");
             Database::TestDatabase(*this->httpServer,    "/testDatabase");
+
             Standard::API(*this->httpServer,             "/standard");
+
             Material::API(*this->httpServer,             "/material");
+            Specification::API(*this->httpServer,        "/specification");
+            Configuration::API(*this->httpServer,        "/configuration");
+
             Operator::API(*this->httpServer,             "/operator");
         }
 

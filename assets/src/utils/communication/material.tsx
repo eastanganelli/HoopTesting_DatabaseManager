@@ -43,7 +43,7 @@ const materialCommunication = {
             fetch(`${basePath}/material`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })
@@ -81,7 +81,7 @@ const specificationCommunication = {
             fetch(`${basePath}/specification`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })
@@ -119,7 +119,7 @@ const configurationCommunication = {
             fetch(`${basePath}/configuration`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve(true);
             }).catch((error) => { reject(error); })

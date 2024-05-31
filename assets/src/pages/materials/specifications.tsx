@@ -64,9 +64,8 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 				if(newData != null) {
 					specificationCommunication.add(newData).then((response: specificationType) => {
 						setDataSource([...dataSource, response]);
-						setCount(count + 1);
-						message.success('Especificación: agregada correctamente!');
-					}).catch((error) => { message.error('Especificación: se produjo un error al agregarla!'); });
+						message.success('Especificación agregada correctamente!');
+					}).catch((error) => { message.error('Se produjo un error al agregar la especificación!'); });
 				}
 			},
 			cancelText: 'Cancelar',
@@ -83,9 +82,9 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 					const item = newData[index];
 					newData.splice(index, 1, { ...item, ...row });
 					setDataSource(newData);
-					message.success('Especificación: actualizada correctamente!');
+					message.success('Especificación actualizada correctamente!');
 				}
-			}).catch((error) => { message.error('Especificación: se produjo un error al actualizarla!'); })
+			}).catch((error) => { message.error('Se produjo un error al actualizar la especificación!'); })
 		}
 	};
 

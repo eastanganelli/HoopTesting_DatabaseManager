@@ -67,7 +67,7 @@ const Materials = () => {
 				if(newData != null) {
 					materialCommunication.add(newData).then((response: materialType) => {
 						setDataSource([...dataSource, response]);
-						setCount(count + 1);
+						console.log(response);
 						message.success('Material agregado correctamente!');
 					}).catch((error) => { message.error('Se produjo un error al agregar el material!'); });
 				}

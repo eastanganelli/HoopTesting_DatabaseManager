@@ -23,6 +23,7 @@ const ModalSpecification: FunctionComponent<Props> = (Props: Props) => {
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1500 }}>
             <Form.Item label="Especificación" name="inputSpecification" rules={[{ required: true, message: 'Especificación es requerido!' }]}>
                 <Input
+                    maxLength={20}
                     onChange={(value) => {
                         setSpecification({ ...specification, specification: value.target.value });
                         Props.newToAdd(specification);
@@ -31,6 +32,7 @@ const ModalSpecification: FunctionComponent<Props> = (Props: Props) => {
             </Form.Item>
             <Form.Item label="Descripción" name="inputDescription">
                 <Input
+                    maxLength={120}
                     onChange={(value) => {
                         setSpecification({ ...specification, description: value.target.value });
                         Props.newToAdd(specification);

@@ -21,16 +21,18 @@ const ModalMaterial: FunctionComponent<Props> = (Props: Props) => {
 
     return (
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Material"   name="inputMaterial" rules={[{ required: true, message: 'Material es requerido!' }]}>
+            <Form.Item label="Material" name="inputMaterial" rules={[{ required: true, message: 'Material es requerido!' }]}>
                 <Input
+                    maxLength={20}
                     onChange={(value) => {
                         setMaterial({ ...material, material: value.target.value });
                         Props.newToAdd(material);
                     }}
                 />
             </Form.Item>
-            <Form.Item label="Descripción"   name="inputDescription">
+            <Form.Item label="Descripción" name="inputDescription">
                 <Input
+                    maxLength={120}
                     onChange={(value) => {
                         setMaterial({ ...material, description: value.target.value });
                         Props.newToAdd(material);

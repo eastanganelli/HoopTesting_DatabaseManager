@@ -42,16 +42,14 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-        QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-
-        qDebug() << QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString());
 
         try {
-            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
+            QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
+            qDebug() << QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString());
+            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty()) {
-                qDebug() << myQuery.lastError().text();
                 std::string id = bodyJSON["key"].toString().toStdString();
                 throw std::exception(std::string("El operador con ID: " + id + "ya existe!" ).c_str());
             }
@@ -63,7 +61,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
                     { "key",        myQuery.value("key").toInt() },
                     { "dni",        myQuery.value("dni").toInt() },
                     { "name",       myQuery.value("name").toString() },
-                    { "familyname", myQuery.value("familyName").toString() }
+                    { "familyName", myQuery.value("familyName").toString() }
                 };
 
                 responseJSON = { { "operator", op } };
@@ -78,14 +76,13 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath, QHttpServerRequest::Method::Put, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-        QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
 
         try {
-            myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON.value("dni").toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
+            QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
+            myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON.value("dni").toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
 
-            if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccess!") {
-                qDebug() << myQuery.lastError().text();
+            if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccessful Updated!") {
                 std::string id = bodyJSON["key"].toString().toStdString();
                 throw std::exception(std::string("No se encontró operador con ID: " + id + "!" ).c_str());
             }
@@ -101,9 +98,9 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath, QHttpServerRequest::Method::Delete,[](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-        QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
 
         try {
+            QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL deleteOperator(%1);").arg(bodyJSON["key"].toInt()));
             myQuery.next();
 

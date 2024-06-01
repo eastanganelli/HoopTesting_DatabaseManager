@@ -3,12 +3,12 @@ import { Key } from 'react';
 interface EditableRowProps { index: number; }
 
 interface EditableCellProps<T> {
-	title: React.ReactNode;
-	editable: boolean;
-	children: React.ReactNode;
-	dataIndex: keyof T;
-	record: T;
-	handleSave: (record: T) => void;
+    title: React.ReactNode;
+    editable: boolean;
+    children: React.ReactNode;
+    dataIndex: keyof T;
+    record: T;
+    handleSave: (record: T) => void;
 }
 
 interface enviromentType {

@@ -52,7 +52,7 @@ const materialCommunication = {
 };
 
 const specificationCommunication = {
-    add: (inputData: specificationType): Promise<specificationType> => {
+    add: (inputData: { idMaterial: number; specification: string; description: string; }): Promise<specificationType> => {
         return new Promise<specificationType>((resolve, reject) => {
             fetch(`${basePath}/specification`, {
                 method: 'POST',
@@ -90,7 +90,7 @@ const specificationCommunication = {
 };
 
 const configurationCommunication = {
-    add: (inputData: configurationType): Promise<configurationType> => {
+    add: (inputData: { idSpecification: number; time: number; type: string; temperature: number; }): Promise<configurationType> => {
         return new Promise<configurationType>((resolve, reject) => {
             fetch(`${basePath}/configuration`, {
                 method: 'POST',

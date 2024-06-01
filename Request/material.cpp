@@ -51,7 +51,7 @@ void Material::API(QHttpServer &myServer, const QString &apiPath) {
                 { "key",            myQuery.value("key").toInt() },
                 { "material",       myQuery.value("material").toString() },
                 { "description",    myQuery.value("description").toString() },
-                { "specifications", myQuery.value("specifications").toString() }
+                { "specifications", QJsonArray() }
             };
             responseJSON = { { "material", op } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
@@ -112,7 +112,7 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL insertSpecification('%1', '%2');").arg(bodyJSON["specification"].toString()).arg(bodyJSON["description"].toString()));
+            myQuery.exec(QString("CALL insertSpecification(%1, '%2', '%3');").arg(bodyJSON["idMaterial"].toInt()).arg(bodyJSON["specification"].toString()).arg(bodyJSON["description"].toString()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exists!") {
@@ -122,9 +122,9 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
 
             QJsonObject op = {
                 { "key",            myQuery.value("key").toInt() },
-                { "specification",  myQuery.value("specification").toInt() },
+                { "specification",  myQuery.value("specification").toString() },
                 { "description",    myQuery.value("description").toString() },
-                { "configurations", myQuery.value("configurations").toString() }
+                { "configurations", QJsonArray() }
             };
             responseJSON = { { "specification", op } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
@@ -162,11 +162,11 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL deleteSpecification(%1);").arg(bodyJSON["key"].toString()));
+            myQuery.exec(QString("CALL deleteSpecification(%1);").arg(bodyJSON["key"].toInt()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Deleted!") {
-                std::string msg = "No se pudo eliminar la especificación " + bodyJSON["key"].toString().toStdString() + "!";
+                std::string msg = "No se pudo eliminar la especificación " + QString::number(bodyJSON["key"].toInt()).toStdString() + "!";
                 throw std::exception(msg.c_str());
             }
 
@@ -179,14 +179,13 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
 }
 
 void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
-
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL insertConfiguration('%1', '%2');").arg(bodyJSON["configuration"].toInt()).arg(bodyJSON["description"].toString()));
+            myQuery.exec(QString("CALL insertConfiguration(%1, %2, '%3', %4);").arg(bodyJSON["idSpecification"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exists!") {
@@ -195,10 +194,10 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
             }
 
             QJsonObject op = {
-                { "key",            myQuery.value("key").toInt() },
-                { "material",       myQuery.value("material").toInt() },
-                { "description",    myQuery.value("description").toString() },
-                { "specifications", myQuery.value("specifications").toString() }
+                { "key",         myQuery.value("key").toInt() },
+                { "time",        myQuery.value("time").toInt() },
+                { "type",        myQuery.value("timeType").toString() },
+                { "temperature", myQuery.value("temperature").toInt() }
             };
             responseJSON = { { "configuration", op } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
@@ -213,11 +212,12 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL updateConfiguration(%1, '%2', '%3');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["material"].toString()).arg(bodyJSON["description"].toString()));
+            myQuery.exec(QString("CALL updateConfiguration(%1, %2, '%3', %4);").arg(bodyJSON["idSpecification"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
             myQuery.next();
 
-            if(!myQuery.lastError().text().isEmpty()) {
-                throw std::exception("No se pudo actualizar la configuración!");
+            if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Updated!") {
+                std::string msg = "No se pudo actualizar la configuración " + bodyJSON["configuration"].toString().toStdString() + "!";
+                throw std::exception(msg.c_str());
             }
 
             responseJSON = { { "msg",  myQuery.value("response").toString() } };
@@ -235,7 +235,7 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL deleteConfiguration(%1);").arg(bodyJSON["key"].toString()));
+            myQuery.exec(QString("CALL deleteConfiguration(%1);").arg(bodyJSON["key"].toInt()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Deleted!") {

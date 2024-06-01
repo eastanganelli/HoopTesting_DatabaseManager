@@ -34,7 +34,8 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 			width: 550,
 			onOk: () => {
 				if(newData != null) {
-					configurationCommunication.add(newData).then((response: configurationType) => {
+                    const newConfiguration = { idSpecification: Props['idSpecification'], time: newData['time'], type: newData['type'], temperature: newData['temperature'] };
+					configurationCommunication.add(newConfiguration).then((response: configurationType) => {
 						setDataSource([...dataSource, response]);
 						setCount(count + 1);
                         message.success('Configuración: agregada correctamente!');

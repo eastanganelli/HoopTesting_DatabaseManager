@@ -62,7 +62,8 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 			width: 550,
 			onOk: () => {
 				if(newData != null) {
-					specificationCommunication.add(newData).then((response: specificationType) => {
+					const newSpecification = { idMaterial: Props['idMaterial'], specification: newData['specification'], description: newData['description'] };
+					specificationCommunication.add(newSpecification).then((response: specificationType) => {
 						setDataSource([...dataSource, response]);
 						message.success('Especificación agregada correctamente!');
 					}).catch((error) => { message.error('Se produjo un error al agregar la especificación!'); });

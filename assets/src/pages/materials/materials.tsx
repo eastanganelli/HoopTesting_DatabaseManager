@@ -3,10 +3,10 @@ import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, FloatButton, Button, Modal, message } from 'antd';
 
 import type { materialType } from '../../interfaces/table';
-import type { ColumnTypes } from '../../components/editableCell';
+import type { ColumnTypes }  from '../../components/editableCell';
 import { EditableRow, EditableCell } from '../../components/editableCell';
 
-import ModalMaterial from '../../components/materialModal/material';
+import ModalMaterial  from '../../components/materialModal/material';
 import Specifications from './specifications';
 import { materialCommunication } from '../../utils/communication/material';
 
@@ -14,7 +14,6 @@ const { confirm } = Modal;
 
 const Materials = () => {
 	const [dataSource, setDataSource] = useState<materialType[]>([]);
-	const [count, setCount] = useState(2);
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
 		{
@@ -99,7 +98,15 @@ const Materials = () => {
 
 	return (
 		<>
-			<Table components={components} pagination={{ position: ['bottomCenter'] }} size='small' tableLayout='fixed' dataSource={dataSource} columns={columns as ColumnTypes} expandable={{ expandedRowRender: (record: materialType | any) => (<Specifications idMaterial={record['key']} Data={record['specifications']} />) }}/>
+			<Table
+				components={components}
+				pagination={{ position: ['bottomCenter'] }}
+				size='small'
+				tableLayout='fixed'
+				dataSource={dataSource}
+				columns={columns as ColumnTypes}
+				expandable={{ expandedRowRender: (record: materialType | any) => (<Specifications idMaterial={record['key']} Data={record['specifications']} />) }}
+			/>
 			<FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
 		</>
 	);

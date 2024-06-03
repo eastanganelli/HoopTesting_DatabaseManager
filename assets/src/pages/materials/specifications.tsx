@@ -2,11 +2,11 @@ import React, { FunctionComponent, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, Button, Modal, message } from 'antd';
 
-import type { specificationType } from '../../interfaces/table';
-import type { ColumnTypes } from '../../components/editableCell';
+import type { specificationType }    from '../../interfaces/table';
+import type { ColumnTypes }          from '../../components/editableCell';
 import { EditableRow, EditableCell } from '../../components/editableCell';
 
-import Configurations from './configurations';
+import Configurations     from './configurations';
 import ModalSpecification from '../../components/materialModal/specification';
 import { specificationCommunication } from '../../utils/communication/material';
 
@@ -16,7 +16,6 @@ const { confirm } = Modal;
 
 const Specifications: FunctionComponent<Props> = (Props : Props) => {
 	const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
-	const [count, setCount] = useState(2);
 	const handleDelete = (key: React.Key) => {
 		specificationCommunication.remove(Number(key)).then((status: Boolean) => {
 			if (status) {
@@ -99,7 +98,16 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 	return (
 		<>
 			<Button style={{ marginLeft: '0.85em' }} onClick={handleAdd} icon={<PlusOutlined />}>{`Agregar Especificación`}</Button>
-			<Table style={{ border: '1px solid black', borderRadius: '5px', margin: '1em 1em 1em 1em' }} dataSource={dataSource} pagination={{ position: ['bottomCenter'] }} components={components} size='small' tableLayout='fixed' expandable={{ expandedRowRender: (record) => (<Configurations idSpecification={record['id']} Data={record['configurations']} />) }} columns={columns as ColumnTypes}/>
+			<Table
+				style={{ border: '1px solid black', borderRadius: '5px', margin: '1em 1em 1em 1em' }}
+				dataSource={dataSource}
+				pagination={{ position: ['bottomCenter'] }}
+				components={components}
+				size='small'
+				tableLayout='fixed'
+				expandable={{ expandedRowRender: (record) => (<Configurations idSpecification={record['key']} Data={record['configurations']} />) }}
+				columns={columns as ColumnTypes}
+			/>
 		</>
 	);
 };

@@ -30,7 +30,6 @@ const ModalConfiguration: FunctionComponent<Props | PropsExtended> = (Props: Pro
                 auxConfig['type'] = value;
                 setConfiguration(auxConfig);
                 Props.newToAdd(auxConfig);
-                console.log(auxConfig);
             }}
         >
             <Option value="h">Horas</Option>

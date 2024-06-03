@@ -10,7 +10,6 @@
 
 #include "material.h"
 
-
 void Material::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath+"s", QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
@@ -185,7 +184,7 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL insertConfiguration(%1, %2, '%3', %4);").arg(bodyJSON["idSpecification"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
+            myQuery.exec(QString("CALL insertSpecification_Configuration(%1, %2, '%3', %4);").arg(bodyJSON["idSpecification"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exists!") {
@@ -212,7 +211,7 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL updateConfiguration(%1, %2, '%3', %4);").arg(bodyJSON["idSpecification"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
+            myQuery.exec(QString("CALL updateSpecification_Configuration(%1, %2, '%3', %4);").arg(bodyJSON["key"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Updated!") {
@@ -235,7 +234,7 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL deleteConfiguration(%1);").arg(bodyJSON["key"].toInt()));
+            myQuery.exec(QString("CALL deleteSpecification_Configuration(%1);").arg(bodyJSON["key"].toInt()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Deleted!") {

@@ -24,7 +24,6 @@ const operatorCommunication = {
     },
     update: (inputData: operatorType) => {
         return new Promise<Boolean>((resolve, reject) => {
-            console.log(inputData);
             fetch(`${basePath}/operator`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },

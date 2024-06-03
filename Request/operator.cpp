@@ -45,7 +45,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
+            myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exists!") {
@@ -53,7 +53,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
                 throw std::exception(msg.c_str());
             }
 
-            QJsonObject op= {
+            QJsonObject op = {
                 { "key",        myQuery.value("key").toInt() },
                 { "dni",        myQuery.value("dni").toInt() },
                 { "name",       myQuery.value("name").toString() },

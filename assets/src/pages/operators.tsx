@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Popconfirm, FloatButton, message, Modal } from 'antd';
+import { Table, Button, Popconfirm, FloatButton, message, Modal, Form } from 'antd';
 
 import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
 import type { ColumnTypes } from '../components/editableCell';
@@ -13,10 +13,11 @@ const { confirm } = Modal;
 
 const Operators = () => {
 	const [dataSource, setDataSource] = useState<operatorType[]>([]);
+	const [newOperator] = Form.useForm();
     // const [count, setCount] = useState(2);
 
 	useEffect(() => {
-			operatorCommunication.get().then((data: operatorType[]) => { console.log(data); setDataSource(data); }).catch((error) => { message.error('Configuracion: se produjo un error al obtenerla!'); });
+			operatorCommunication.get().then((data: operatorType[]) => { setDataSource(data); }).catch(() => { message.error('De produjo un error al obtener los operadores!'); });
 	}, []);
 
     const handleDelete = (key: React.Key) => {
@@ -29,22 +30,19 @@ const Operators = () => {
     };
 
 	const handleAdd = () => {
-		let newData: operatorType | null = null;
-		const setConfiguration = (myData: operatorType) => { newData = myData; };
-
 		confirm({
 			title: 'Nuevo Operador',
-			content: ( <ModalOperator newToAdd={setConfiguration} /> ),
+			content: ( <ModalOperator myForm={newOperator} /> ),
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
-				if(newData != null) {
-					console.log(newData);
-					operatorCommunication.add(newData).then((response: operatorType) => {
+				newOperator.validateFields().then((values) => {
+					const newOperator: operatorType = { key: 0, dni: values['dni'], name: values['name'], familyName: values['familyName'] };
+					operatorCommunication.add(newOperator).then((response: operatorType) => {
 						setDataSource([...dataSource, response]);
-                        message.success('Operador agregado correctamente!');
-					}).catch((error) => { message.error('Se produjo un error al agregar el operador!'); });
-				}
+						message.success('Operador agregado correctamente!');
+					}).catch(() => { message.error('Se produjo un error al agregar el operador!'); });
+				}).catch(() => { message.error('Se produjo un error al validar los campos!'); });
 			},
 			cancelText: 'Cancelar',
 			onCancel: () => { }

@@ -58,9 +58,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                 const newData = [...dataSource];
                 const index = newData.findIndex((item) => row.key === item.key);
                 const item = newData[index];
-                console.log(editData, row);
 				if(editData['temperature'] !== row['temperature'] || editData['time'] !== row['time'] || editData['type'] !== row['type']) {
-                    console.log(editData);
 					configurationCommunication.update(editData).then((status: Boolean) => {                      
                         if (status) {
                             newData.splice(index, 1, { ...item, ...editData });

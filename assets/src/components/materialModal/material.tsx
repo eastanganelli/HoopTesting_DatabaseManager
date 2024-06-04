@@ -1,9 +1,7 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Form, Input } from "antd";
 
-import { materialType } from "../../interfaces/table";
-
-interface Props { newToAdd: (myData: materialType) => void; }
+interface Props { myForm: any; }
 
 const formItemLayout = {
     labelCol: {
@@ -17,27 +15,15 @@ const formItemLayout = {
 };
 
 const ModalMaterial: FunctionComponent<Props> = (Props: Props) => {
-    const [material, setMaterial] = useState<materialType>({ key: 0, material: '', description: '', specifications: [] });
+    const {myForm} = Props;
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Material" name="inputMaterial" rules={[{ required: true, message: 'Material es requerido!' }]}>
-                <Input
-                    maxLength={20}
-                    onChange={(value) => {
-                        setMaterial({ ...material, material: value.target.value });
-                        Props.newToAdd(material);
-                    }}
-                />
+        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1000 }}>
+            <Form.Item label="Material" name="material" rules={[{ required: true, message: 'Material es requerido!' }]}>
+                <Input maxLength={15}/>
             </Form.Item>
-            <Form.Item label="Descripción" name="inputDescription">
-                <Input
-                    maxLength={120}
-                    onChange={(value) => {
-                        setMaterial({ ...material, description: value.target.value });
-                        Props.newToAdd(material);
-                    }}
-                />
+            <Form.Item label="Descripción" name="description">
+                <Input maxLength={120} defaultValue={"Sin Descripción"}/>
             </Form.Item>
         </Form>
     );

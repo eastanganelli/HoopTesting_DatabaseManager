@@ -13,8 +13,7 @@ const { confirm } = Modal;
 
 const Operators = () => {
 	const [dataSource, setDataSource] = useState<operatorType[]>([]);
-	const [newOperator] = Form.useForm();
-    // const [count, setCount] = useState(2);
+	const [newOperatorForm] = Form.useForm();
 
 	useEffect(() => {
 			operatorCommunication.get().then((data: operatorType[]) => { setDataSource(data); }).catch(() => { message.error('De produjo un error al obtener los operadores!'); });
@@ -32,20 +31,26 @@ const Operators = () => {
 	const handleAdd = () => {
 		confirm({
 			title: 'Nuevo Operador',
-			content: ( <ModalOperator myForm={newOperator} /> ),
+			content: ( <ModalOperator myForm={newOperatorForm} /> ),
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
-				newOperator.validateFields().then((values) => {
-					const newOperator: operatorType = { key: 0, dni: values['dni'], name: values['name'], familyName: values['familyName'] };
-					operatorCommunication.add(newOperator).then((response: operatorType) => {
+				newOperatorForm.validateFields().then((values) => {
+					operatorCommunication.add({ key: 0, dni: values['dni'], name: values['name'], familyName: values['familyName'] }).then((response: operatorType) => {
 						setDataSource([...dataSource, response]);
 						message.success('Operador agregado correctamente!');
-					}).catch(() => { message.error('Se produjo un error al agregar el operador!'); });
-				}).catch(() => { message.error('Se produjo un error al validar los campos!'); });
+						newOperatorForm.resetFields();
+					}).catch(() => {
+						message.error('Se produjo un error al agregar el operador!');
+						newOperatorForm.resetFields();
+					});
+				}).catch(() => {
+					message.error('Se produjo un error al validar los campos!');
+					newOperatorForm.resetFields();
+				});
 			},
 			cancelText: 'Cancelar',
-			onCancel: () => { }
+			onCancel: () => { newOperatorForm.resetFields(); }
 		});
     };
 
@@ -54,7 +59,6 @@ const Operators = () => {
 		const index = newData.findIndex((item) => row.key === item.key);
 		const item = newData[index];
 		if(item['dni'] !== row['dni'] || item['name'] !== row['name'] || item['familyName'] !== row['familyName']) {
-			console.log(row);
 			operatorCommunication.update(row).then((status: Boolean) => {                      
 				if (status) {
 					newData.splice(index, 1, { ...item, ...row });

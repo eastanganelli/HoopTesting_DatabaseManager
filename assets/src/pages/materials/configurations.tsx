@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, Button, Modal, TableColumnsType, message } from 'antd';
+import { Popconfirm, Table, Button, Modal, Form, TableColumnsType, message } from 'antd';
 
 import type { configurationType } from '../../interfaces/table';
 import ModalConfiguration from '../../components/materialModal/configuration';
@@ -12,6 +12,7 @@ const { confirm } = Modal;
 
 const Configurations: FunctionComponent<Props> = (Props: Props) => {
     const [dataSource, setDataSource] = useState<configurationType[]>(Props['Data']);
+    const [newConfigurationForm] = Form.useForm();
 
     const handleDelete = (key: React.Key) => {
         configurationCommunication.remove(Number(key)).then((status: Boolean) => {
@@ -23,50 +24,60 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
     };
 
 	const handleAdd = () => {
-		let newData: configurationType | null = null;
-		const setConfiguration = (myData: configurationType) => { newData = myData; };
-
 		confirm({
 			title: 'Nueva Configuración',
-			content: ( <ModalConfiguration newToAdd={setConfiguration} /> ),
+			content: ( <ModalConfiguration myForm={newConfigurationForm} /> ),
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
-				if(newData != null) {
-                    const newConfiguration = { idSpecification: Props['idSpecification'], time: newData['time'], type: newData['type'], temperature: newData['temperature'] };
-                    configurationCommunication.add(newConfiguration).then((response: configurationType) => {
+				newConfigurationForm.validateFields().then((values) => {
+                    configurationCommunication.add({ idSpecification: Props['idSpecification'], time: values['time'], type: values['type'], temperature: values['temperature'] }).then((response: configurationType) => {
 						setDataSource([...dataSource, response]);
                         message.success('Configuración agregada correctamente!');
-					}).catch((error) => { message.error('Se produjo un error al agregar la configuración!'); });
-				}
+                        newConfigurationForm.resetFields();
+					}).catch((error) => { 
+                        message.error('Se produjo un error al agregar la configuración!');
+                        newConfigurationForm.resetFields();
+                    });
+                }).catch((error) => {
+                    message.error('Por favor, complete todos los campos!');
+                    newConfigurationForm.resetFields();
+                });
 			},
 			cancelText: 'Cancelar',
-			onCancel: () => { }
+			onCancel: () => { newConfigurationForm.resetFields(); }
 		});
 	};
 
     const handleEdit = (row: configurationType) => {
-		let editData: configurationType = {...row};
-		const setConfiguration = (myData: configurationType) => { editData = myData; };
-
+        newConfigurationForm.setFieldsValue({ time: row['time'], type: row['type'], temperature: row['temperature'] });
 		confirm({
 			title: 'Modificar Configuración',
-			content: ( <ModalConfiguration data={editData} newToAdd={setConfiguration} /> ),
+			content: ( <ModalConfiguration myForm={newConfigurationForm} /> ),
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
-                const newData = [...dataSource];
-                const index = newData.findIndex((item) => row.key === item.key);
-                const item = newData[index];
-				if(editData['temperature'] !== row['temperature'] || editData['time'] !== row['time'] || editData['type'] !== row['type']) {
-					configurationCommunication.update(editData).then((status: Boolean) => {                      
-                        if (status) {
-                            newData.splice(index, 1, { ...item, ...editData });
-                            setDataSource(newData);
-                            message.success('Configuración modificada correctamente!');
-                        }
-                    }).catch((error) => { message.error('Se produjo un error al modificar la configuración!'); });
-                }
+                newConfigurationForm.validateFields().then((values) => {
+                    const newData = [...dataSource];
+                    const index = newData.findIndex((item) => row.key === item.key);
+                    const item = newData[index];
+                    if(values['temperature'] !== row['temperature'] || values['time'] !== row['time'] || values['type'] !== row['type']) {
+                    	configurationCommunication.update({ key: row['key'], time: values['time'], type: values['type'], temperature: values['temperature'] }).then((status: Boolean) => {                      
+                            if (status) {
+                                newData.splice(index, 1, { ...item, ...values });
+                                setDataSource(newData);
+                                message.success('Configuración modificada correctamente!');
+                                newConfigurationForm.resetFields();
+                            }
+                        }).catch((error) => {
+                            message.error('Se produjo un error al modificar la configuración!');
+                            newConfigurationForm.resetFields();
+                        });
+                    }
+                }).catch((error) => {
+                    message.error('Por favor, complete todos los campos!');
+                    newConfigurationForm.resetFields();
+                });
             },
 			cancelText: 'Cancelar',
 			onCancel: () => { }

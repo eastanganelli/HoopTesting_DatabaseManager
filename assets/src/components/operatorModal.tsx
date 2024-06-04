@@ -1,7 +1,5 @@
-import React, { FunctionComponent, Key, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Form, Input } from "antd";
-
-import { operatorType } from "../interfaces/table";
 
 interface Props { myForm: any; }
 

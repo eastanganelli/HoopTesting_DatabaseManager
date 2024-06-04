@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, Button, Modal, message } from 'antd';
+import { Popconfirm, Table, Button, Modal, Form, message } from 'antd';
 
 import type { specificationType }    from '../../interfaces/table';
 import type { ColumnTypes }          from '../../components/editableCell';
@@ -16,6 +16,8 @@ const { confirm } = Modal;
 
 const Specifications: FunctionComponent<Props> = (Props : Props) => {
 	const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
+	const [newSpecificationForm] = Form.useForm();
+
 	const handleDelete = (key: React.Key) => {
 		specificationCommunication.remove(Number(key)).then((status: Boolean) => {
 			if (status) {
@@ -50,26 +52,28 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 		}
 	];
 
-	const handleAdd = () => {
-		let newData: specificationType | null = null;
-		const setSpecification = (myData: specificationType) => { newData = myData; };
-
-		confirm({
+	const handleAdd = () => {confirm({
 			title: 'Nueva Especificación',
-			content: ( <ModalSpecification newToAdd={setSpecification} /> ),
+			content: ( <ModalSpecification myForm={newSpecificationForm} /> ),
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
-				if(newData != null) {
-					const newSpecification = { idMaterial: Props['idMaterial'], specification: newData['specification'], description: newData['description'] };
-					specificationCommunication.add(newSpecification).then((response: specificationType) => {
+				newSpecificationForm.validateFields().then((values) => {
+					specificationCommunication.add({ idMaterial: Props['idMaterial'], specification: values['specification'], description: values['description'] }).then((response: specificationType) => {
 						setDataSource([...dataSource, response]);
 						message.success('Especificación agregada correctamente!');
-					}).catch((error) => { message.error('Se produjo un error al agregar la especificación!'); });
-				}
+						newSpecificationForm.resetFields();
+					}).catch(() => {
+						message.error('Se produjo un error al agregar la especificación!');
+						newSpecificationForm.resetFields();
+					});
+				}).catch(() => {
+					message.error('Se produjo un error al validar los campos!');
+					newSpecificationForm.resetFields();
+				});
 			},
 			cancelText: 'Cancelar',
-			onCancel: () => { }
+			onCancel: () => { newSpecificationForm.resetFields(); }
 		});
 	};
 

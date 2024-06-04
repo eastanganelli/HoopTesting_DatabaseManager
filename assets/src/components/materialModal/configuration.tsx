@@ -1,8 +1,5 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Form, FormInstance, InputNumber, Select } from "antd";
-
-// interface Props { newToAdd: (myData: configurationType) => void; }
-// interface PropsExtended { data: configurationType; newToAdd: (myData: configurationType) => void; }
 
 interface Props { myForm: FormInstance<{ time: number; type: string; temperature: number; }>; }
 
@@ -19,10 +16,8 @@ const formItemLayout = {
     },
 };
 
-// const ModalConfiguration: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
 const ModalConfiguration: FunctionComponent<Props> = (Props: Props) => {
     const { myForm } = Props;
-    const [myOption, setMyOption] = useState('h');
 
     return (
         <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1440 }}>
@@ -31,8 +26,8 @@ const ModalConfiguration: FunctionComponent<Props> = (Props: Props) => {
                     min={0}
                     addonAfter={
                         <Select
-                            defaultValue={myForm.getFieldValue('type') === 'h' ? 'h' : myForm.getFieldValue('type') === 'm' ? 'm' : 's'}
-                            onSelect={(value) => setMyOption(value)}
+                            defaultValue={myForm.getFieldValue('type') === 's' ? 's' : myForm.getFieldValue('type') === 'm' ? 'm' : 'h'}
+                            onSelect={(value) => myForm.setFieldValue('type', value) }
                         >
                             <Option value="h">Horas</Option>
                             <Option value="m">Minutos</Option>

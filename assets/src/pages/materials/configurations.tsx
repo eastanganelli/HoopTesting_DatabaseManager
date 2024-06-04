@@ -58,6 +58,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 			width: 550,
 			onOk: () => {
                 newConfigurationForm.validateFields().then((values) => {
+                    console.log(values, row)
                     const newData = [...dataSource];
                     const index = newData.findIndex((item) => row.key === item.key);
                     const item = newData[index];

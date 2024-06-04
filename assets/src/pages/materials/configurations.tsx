@@ -31,7 +31,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 			width: 550,
 			onOk: () => {
 				newConfigurationForm.validateFields().then((values) => {
-                    configurationCommunication.add({ idSpecification: Props['idSpecification'], time: values['time'], type: values['type'], temperature: values['temperature'] }).then((response: configurationType) => {
+                    configurationCommunication.add({ idSpecification: Props['idSpecification'], time: values['time'], type: newConfigurationForm.getFieldValue('type'), temperature: values['temperature'] }).then((response: configurationType) => {
 						setDataSource([...dataSource, response]);
                         message.success('Configuración agregada correctamente!');
                         newConfigurationForm.resetFields();
@@ -58,14 +58,14 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 			width: 550,
 			onOk: () => {
                 newConfigurationForm.validateFields().then((values) => {
-                    console.log(values, row)
                     const newData = [...dataSource];
                     const index = newData.findIndex((item) => row.key === item.key);
                     const item = newData[index];
                     if(values['temperature'] !== row['temperature'] || values['time'] !== row['time'] || values['type'] !== row['type']) {
-                    	configurationCommunication.update({ key: row['key'], time: values['time'], type: values['type'], temperature: values['temperature'] }).then((status: Boolean) => {                      
+                        const updatedData = { key: row['key'], time: values['time'], type: newConfigurationForm.getFieldValue('type'), temperature: values['temperature'] };
+                    	configurationCommunication.update(updatedData).then((status: Boolean) => {                      
                             if (status) {
-                                newData.splice(index, 1, { ...item, ...values });
+                                newData.splice(index, 1, { ...item, ...updatedData });
                                 setDataSource(newData);
                                 message.success('Configuración modificada correctamente!');
                                 newConfigurationForm.resetFields();

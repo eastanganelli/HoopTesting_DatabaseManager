@@ -1,10 +1,7 @@
-import React, { FunctionComponent, useState } from "react";
-import { Form, InputNumber, Select } from "antd";
+import React, { FunctionComponent } from "react";
+import { Form, FormInstance, InputNumber, Select } from "antd";
 
-import { configurationType } from "../../interfaces/table";
-
-interface Props { newToAdd: (myData: configurationType) => void; }
-interface PropsExtended { data: configurationType; newToAdd: (myData: configurationType) => void; }
+interface Props { myForm: FormInstance<{ time: number; type: string; temperature: number; }>; }
 
 const { Option } = Select;
 
@@ -19,49 +16,27 @@ const formItemLayout = {
     },
 };
 
-const ModalConfiguration: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
-    const [configuration, setConfiguration] = useState<configurationType>(((Props as PropsExtended)['data'] !== undefined ? (Props as PropsExtended)['data'] : { key: 0, time: 0, type: 'h', temperature: 0 }));
-
-    const selectTimeType = (
-        <Select
-            defaultValue={configuration['type'] !== undefined ? configuration['type'] : 'h'}
-            onSelect={(value) => {
-                let auxConfig: configurationType = {...configuration};
-                auxConfig['type'] = value;
-                setConfiguration(auxConfig);
-                Props.newToAdd(auxConfig);
-                console.log(auxConfig);
-            }}
-        >
-            <Option value="h">Horas</Option>
-            <Option value="m">Minutos</Option>
-            <Option value="s">Segundos</Option>
-        </Select>
-    );
+const ModalConfiguration: FunctionComponent<Props> = (Props: Props) => {
+    const { myForm } = Props;
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1440 }} initialValues={{ inputTime: configuration['time'], inputTemperature: configuration['temperature'] }}>
-            <Form.Item label="Tiempo " name="inputTime" rules={[{ required: true, message: 'Tiempo es requerido!' }]}>
+        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1440 }}>
+            <Form.Item label="Tiempo " name="time" rules={[{ required: true, message: 'Tiempo es requerido!' }]}>
                 <InputNumber
-                    addonAfter={selectTimeType}
-                    onChange={(value) => {
-                        let auxConfig: configurationType = {...configuration};
-                        auxConfig['time'] = Number(value);
-                        setConfiguration(auxConfig);
-                        Props.newToAdd(auxConfig);
-                    }}
+                    min={0}
+                    addonAfter={
+                        <Select
+                            defaultValue={myForm.getFieldValue('type') === 's' ? 's' : myForm.getFieldValue('type') === 'm' ? 'm' : 'h'}
+                            onSelect={(value) => myForm.setFieldValue('type', value) }
+                        >
+                            <Option value="h">Horas</Option>
+                            <Option value="m">Minutos</Option>
+                            <Option value="s">Segundos</Option>
+                        </Select>}
                 />
             </Form.Item>
-            <Form.Item label="Temperatura" name="inputTemperature" rules={[{ required: true, message: 'Temperatura es requerido!' }]}>
-                <InputNumber
-                    onChange={(value) => {
-                        let auxConfig: configurationType = {...configuration};
-                        auxConfig['temperature'] = Number(value);
-                        setConfiguration(auxConfig);
-                        Props.newToAdd(auxConfig);
-                    }}
-                    addonAfter="°C"
-                />
+            <Form.Item label="Temperatura" name="temperature" rules={[{ required: true, message: 'Temperatura es requerido!' }]}>
+                <InputNumber min={0} addonAfter="°C" />
             </Form.Item>
         </Form>
     );

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
-import { Popconfirm, Table, FloatButton, Button, Modal, message } from 'antd';
+import { Popconfirm, Table, FloatButton, Button, Modal, Form, message } from 'antd';
 
 import type { materialType } from '../../interfaces/table';
-import type { ColumnTypes } from '../../components/editableCell';
+import type { ColumnTypes }  from '../../components/editableCell';
 import { EditableRow, EditableCell } from '../../components/editableCell';
 
-import ModalMaterial from '../../components/materialModal/material';
+import ModalMaterial  from '../../components/materialModal/material';
 import Specifications from './specifications';
 import { materialCommunication } from '../../utils/communication/material';
 
@@ -14,7 +14,7 @@ const { confirm } = Modal;
 
 const Materials = () => {
 	const [dataSource, setDataSource] = useState<materialType[]>([]);
-	const [count, setCount] = useState(2);
+	const [newMaterialForm] = Form.useForm();
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
 		{
@@ -55,25 +55,28 @@ const Materials = () => {
 	};
 
 	const handleAdd = () => {
-		let newData: materialType | null = null;
-		const setMaterial = (myData: materialType) => { newData = myData; };
-
 		confirm({
 			title: 'Nuevo Material',
-			content: ( <ModalMaterial newToAdd={setMaterial} /> ),
+			content: ( <ModalMaterial myForm={newMaterialForm} /> ),
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
-				if(newData != null) {
-					materialCommunication.add(newData).then((response: materialType) => {
+				newMaterialForm.validateFields().then((values) => {
+					materialCommunication.add({ key: 0, material: values['material'], description: values['description'], specifications: [] }).then((response: materialType) => {
 						setDataSource([...dataSource, response]);
-						console.log(response);
 						message.success('Material agregado correctamente!');
-					}).catch((error) => { message.error('Se produjo un error al agregar el material!'); });
-				}
+						newMaterialForm.resetFields();
+					}).catch((error) => {
+						message.error('Se produjo un error al agregar el material!');
+						newMaterialForm.resetFields();
+					});
+				}).catch((error) => {
+					message.error('Por favor, complete todos los campos!');
+					newMaterialForm.resetFields();
+				});
 			},
 			cancelText: 'Cancelar',
-			onCancel: () => { }
+			onCancel: () => { newMaterialForm.resetFields(); }
 		});
 	};
 
@@ -99,7 +102,15 @@ const Materials = () => {
 
 	return (
 		<>
-			<Table components={components} pagination={{ position: ['bottomCenter'] }} size='small' tableLayout='fixed' dataSource={dataSource} columns={columns as ColumnTypes} expandable={{ expandedRowRender: (record: materialType | any) => (<Specifications idMaterial={record['key']} Data={record['specifications']} />) }}/>
+			<Table
+				components={components}
+				pagination={{ position: ['bottomCenter'] }}
+				size='small'
+				tableLayout='fixed'
+				dataSource={dataSource}
+				columns={columns as ColumnTypes}
+				expandable={{ expandedRowRender: (record: materialType | any) => (<Specifications idMaterial={record['key']} Data={record['specifications']} />) }}
+			/>
 			<FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
 		</>
 	);

@@ -1,9 +1,7 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import { Form, Input } from "antd";
 
-import { specificationType } from "../../interfaces/table";
-
-interface Props { newToAdd: (myData: specificationType) => void; }
+interface Props { myForm: any; }
 
 const formItemLayout = {
     labelCol: {
@@ -17,27 +15,15 @@ const formItemLayout = {
 };
 
 const ModalSpecification: FunctionComponent<Props> = (Props: Props) => {
-    const [specification, setSpecification] = useState<specificationType>({ key: 0, specification: '', description: '', configurations: [] });
+    const {myForm} = Props;
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1500 }}>
-            <Form.Item label="Especificación" name="inputSpecification" rules={[{ required: true, message: 'Especificación es requerido!' }]}>
-                <Input
-                    maxLength={20}
-                    onChange={(value) => {
-                        setSpecification({ ...specification, specification: value.target.value });
-                        Props.newToAdd(specification);
-                    }}
-                />
+        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1500 }}>
+            <Form.Item label="Especificación" name="specification" rules={[{ required: true, message: 'Especificación es requerida!' }]}>
+                <Input maxLength={15}/>
             </Form.Item>
-            <Form.Item label="Descripción" name="inputDescription">
-                <Input
-                    maxLength={120}
-                    onChange={(value) => {
-                        setSpecification({ ...specification, description: value.target.value });
-                        Props.newToAdd(specification);
-                    }}
-                />
+            <Form.Item label="Descripción" name="description">
+                <Input maxLength={120} defaultValue={"Sin Descripción"}/>
             </Form.Item>
         </Form>
     );

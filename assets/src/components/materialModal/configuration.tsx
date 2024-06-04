@@ -27,7 +27,7 @@ const ModalConfiguration: FunctionComponent<Props> = (Props: Props) => {
                     addonAfter={
                         <Select
                             defaultValue={myForm.getFieldValue('type') === 's' ? 's' : myForm.getFieldValue('type') === 'm' ? 'm' : 'h'}
-                            onSelect={(value) => myForm.setFieldValue('type', value) }
+                            onSelect={(value) => { Props['myForm']?.setFieldValue('type', value); } }
                         >
                             <Option value="h">Horas</Option>
                             <Option value="m">Minutos</Option>

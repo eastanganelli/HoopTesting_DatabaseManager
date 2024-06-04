@@ -138,14 +138,12 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
 
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL updateSpecification(%1, '%2', '%3');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["configuration"].toString()).arg(bodyJSON["description"].toString()));
+            myQuery.exec(QString("CALL updateSpecification(%1, '%2', '%3');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["specification"].toString()).arg(bodyJSON["description"].toString()));
             myQuery.next();
-
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Updated!") {
                 std::string msg = "No se pudo actualizar la especificación " + bodyJSON["specification"].toString().toStdString() + "!";
                 throw std::exception(msg.c_str());
             }
-
             responseJSON = { { "msg",  myQuery.value("response").toString() } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) {

@@ -1,9 +1,7 @@
-import React, { FunctionComponent, useState } from "react";
-import { Form, Input } from "antd";
+import React, { FunctionComponent } from "react";
+import { Form, FormInstance, Input } from "antd";
 
-import { standardType } from "../../interfaces/table";
-
-interface Props { newToAdd: (myData: standardType) => void; }
+interface Props { myForm: FormInstance<{ standard: string; }> }
 
 const formItemLayout = {
     labelCol: {
@@ -17,17 +15,12 @@ const formItemLayout = {
 };
 
 const modalStandard: FunctionComponent<Props> = (Props: Props) => {
-    const [standard, setStandard] = useState<standardType>({ id: 0, standard: '', materials: [], conditionalPeriods: [], enviroments: [], endCaps: [] });
+    const {myForm} = Props;
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Estandard"   name="inputEstandard"   rules={[{ required: true, message: 'Estandard es requerido!' }]}>
-                <Input
-                    onChange={(value) => {
-                        setStandard({ ...standard, standard: value.target.value });
-                        Props.newToAdd(standard);
-                    }}
-                />
+        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1000 }}>
+            <Form.Item label="Estandard" name="standard" rules={[{ required: true, message: 'Estandard es requerido!' }]}>
+                <Input maxLength={60}/>
             </Form.Item>
         </Form>
     );

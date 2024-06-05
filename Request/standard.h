@@ -31,4 +31,9 @@ public:
     static void API(QHttpServer &myServer, const QString& apiPath);
 };
 
+class TestType {
+public:
+    static void API(QHttpServer &myServer, const QString& apiPath);
+};
+
 #endif // STANDARD_H

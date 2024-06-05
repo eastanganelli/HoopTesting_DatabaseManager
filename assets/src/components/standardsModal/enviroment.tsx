@@ -24,6 +24,7 @@ const ModalEnviroment: FunctionComponent<Props | PropsExtended> = (Props: Props 
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }} initialValues={{ inputInsertFluid: enviroment.insertFluid.toString(), inputOutsideFluid: enviroment.outsideFluid.toString() }}>
             <Form.Item label="Medio interno" name="inputInsertFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
                 <Input
+                maxLength={15}
                     onChange={(value) => {
                         enviroment['insertFluid'] = value.target.value;
                         setEnviroment(enviroment);
@@ -33,6 +34,7 @@ const ModalEnviroment: FunctionComponent<Props | PropsExtended> = (Props: Props 
             </Form.Item>
             <Form.Item label="Medio externo" name="inputOutsideFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
                 <Input
+                maxLength={15}
                     onChange={(value) => {
                         enviroment['outsideFluid'] = value.target.value;
                         setEnviroment(enviroment);

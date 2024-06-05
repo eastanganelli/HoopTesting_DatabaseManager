@@ -19,7 +19,6 @@ const { confirm } = Modal;
 const Standards = () => {
     const { token } = theme.useToken();
     const [dataSource, setDataSource] = useState<standardType[]>([]);
-    const [count, setCount] = useState(2);
 
     const tagPlusStyle: React.CSSProperties = {
         background: token.colorBgContainer,
@@ -59,7 +58,6 @@ const Standards = () => {
                     if (newData !== null) {
                         standardCommunication.add(newData).then((response: standardType) => {
                             setDataSource([...dataSource, response]);
-                            setCount(count + 1);
                         });
                     }
                 },

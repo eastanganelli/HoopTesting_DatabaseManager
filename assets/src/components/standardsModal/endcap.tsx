@@ -24,6 +24,7 @@ const ModalEndCap: FunctionComponent<Props | PropsExtended> = (Props: Props | Pr
         <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }} initialValues={{ inputEndCap: endCap.endcap.toString() }}>
             <Form.Item label="Tapa" name="inputEndCap" rules={[{ required: true, message: 'Tapa es requerida!' }]}>
                 <Input
+                    maxLength={15}
                     onChange={(value) => {
                         endCap['endcap'] = value.target.value;
                         setEndCap(endCap);

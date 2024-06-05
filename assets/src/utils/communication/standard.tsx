@@ -14,7 +14,7 @@ const standardCommunication = {
                 }).catch((error) => { reject(error); })
             });
         },
-        add: (inputData: standardType): Promise<standardType> => {
+        add: (inputData: { standard: string; }): Promise<standardType> => {
             return new Promise<standardType>((resolve, reject) => {
                 fetch(`${basePath}/standard`, {
                     method: 'POST',

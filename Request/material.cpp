@@ -108,17 +108,14 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL insertSpecification(%1, '%2', '%3');").arg(bodyJSON["idMaterial"].toInt()).arg(bodyJSON["specification"].toString()).arg(bodyJSON["description"].toString()));
             myQuery.next();
-
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exists!") {
                 std::string msg = "La especificación " + bodyJSON["specification"].toString().toStdString() + " ya existe!";
                 throw std::exception(msg.c_str());
             }
-
             QJsonObject op = {
                 { "key",            myQuery.value("key").toInt() },
                 { "specification",  myQuery.value("specification").toString() },
@@ -128,14 +125,12 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
             responseJSON = { { "specification", op } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) { responseJSON = { { "msg", err.what() } }; }
-
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 
     myServer.route(apiPath, QHttpServerRequest::Method::Put, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL updateSpecification(%1, '%2', '%3');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["specification"].toString()).arg(bodyJSON["description"].toString()));
@@ -149,28 +144,23 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
         }
-
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 
     myServer.route(apiPath, QHttpServerRequest::Method::Delete, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL deleteSpecification(%1);").arg(bodyJSON["key"].toInt()));
             myQuery.next();
-
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Deleted!") {
                 std::string msg = "No se pudo eliminar la especificación " + QString::number(bodyJSON["key"].toInt()).toStdString() + "!";
                 throw std::exception(msg.c_str());
             }
-
             responseJSON = { { "msg", myQuery.value("response").toString() } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) { responseJSON = { { "msg", err.what() } }; }
-
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 }
@@ -179,17 +169,14 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL insertSpecification_Configuration(%1, %2, '%3', %4);").arg(bodyJSON["idSpecification"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
             myQuery.next();
-
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exists!") {
                 std::string msg = "La configuración " + bodyJSON["configuration"].toString().toStdString() + " ya existe!";
                 throw std::exception(msg.c_str());
             }
-
             QJsonObject op = {
                 { "key",         myQuery.value("key").toInt() },
                 { "time",        myQuery.value("time").toInt() },
@@ -199,51 +186,42 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
             responseJSON = { { "configuration", op } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) { responseJSON = { { "msg", err.what() } }; }
-
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 
     myServer.route(apiPath, QHttpServerRequest::Method::Put, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL updateSpecification_Configuration(%1, %2, '%3', %4);").arg(bodyJSON["key"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
             myQuery.next();
-
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Updated!") {
                 std::string msg = "No se pudo actualizar la configuración " + bodyJSON["configuration"].toString().toStdString() + "!";
                 throw std::exception(msg.c_str());
             }
-
             responseJSON = { { "msg",  myQuery.value("response").toString() } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
         }
-
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 
     myServer.route(apiPath, QHttpServerRequest::Method::Delete, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
-
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL deleteSpecification_Configuration(%1);").arg(bodyJSON["key"].toInt()));
             myQuery.next();
-
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Deleted!") {
                 std::string msg = "No se pudo eliminar la configuración " + bodyJSON["key"].toString().toStdString() + "!";
                 throw std::exception(msg.c_str());
             }
-
             responseJSON = { { "msg", myQuery.value("response").toString() } };
             return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
         } catch(std::exception& err) { responseJSON = { { "msg", err.what() } }; }
-
         return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
     });
 }

@@ -11,6 +11,10 @@ interface EditableCellProps<T> {
     handleSave: (record: T) => void;
 }
 
+/**
+ * Standard Interface
+ */
+
 interface enviromentType {
     key: Key;
     insertFluid: string;
@@ -33,7 +37,6 @@ interface standardHasMaterialType {
     key: Key;
     idMaterial: Key;
     material: string;
-    description: string;
 }
 
 interface standardType {
@@ -44,6 +47,10 @@ interface standardType {
     endCaps: endCapType[];
     conditionalPeriods: conditionalPeriodType[];
 }
+
+/**
+ * Material Interface
+ */
 
 interface configurationType {
     key: Key;
@@ -65,6 +72,10 @@ interface materialType {
     description: string;
     specifications: specificationType[]  // Change to an array of objects
 }
+
+/**
+ * Operator Interface
+ */
 
 interface operatorType {
     key: Key;

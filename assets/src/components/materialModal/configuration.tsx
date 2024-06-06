@@ -20,7 +20,7 @@ const ModalConfiguration: FunctionComponent<Props> = (Props: Props) => {
     const { myForm } = Props;
 
     return (
-        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1440 }}>
+        <Form {...formItemLayout} form={myForm} layout="vertical" variant="filled">
             <Form.Item label="Tiempo " name="time" rules={[{ required: true, message: 'Tiempo es requerido!' }]}>
                 <InputNumber
                     min={0}

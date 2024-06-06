@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useState } from "react";
 import { Form, Space, InputNumber, Select, FormInstance } from "antd";
 
 interface Props { myForm: FormInstance<{ aproxTime: number; aproxType: string; maxWall: number; minWall: number; time: number; timeType: string; }> }
@@ -19,16 +19,17 @@ const optionsSelect: { value: string; label: string }[] = [{ value: 'h', label: 
 
 const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
     const { myForm } = Props;
+    const [minMaxWall, setMinMaxWall] = useState<number>(0);
 
     return (
         <Form form={myForm} layout="vertical" variant="filled">
             <Form.Item label="Grosor Pared">
                 <Space>
                     <Form.Item name="minWall" rules={[{ required: true }]}>
-                        <InputNumber min={0} addonBefore="Mínimo" addonAfter="mm" />
+                        <InputNumber min={0} onChange={(value: number | null) => { setMinMaxWall(value == null ? 0 : value); }} addonBefore="Mínimo" addonAfter="mm" />
                     </Form.Item>
                     <Form.Item name="maxWall" rules={[{ required: true }]}>
-                        <InputNumber min={myForm.getFieldValue("minWall") + 1} addonBefore="Máximo" addonAfter="mm" />
+                        <InputNumber min={minMaxWall} addonBefore="Máximo" addonAfter="mm" />
                     </Form.Item>
                 </Space>
             </Form.Item>
@@ -37,8 +38,8 @@ const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
                     <Form.Item name="time" rules={[{ required: true }]}>
                         <InputNumber min={0} />
                     </Form.Item>
-                    <Form.Item name="timeType">
-                        <Select onChange={(value) => { myForm.setFieldValue("timeType", value["value"]); }} defaultValue={{ value: 'h', label: 'h' }} options={optionsSelect} />
+                    <Form.Item name="timeType" style={{ width: "5vw" }}>
+                        <Select onSelect={(element) => { console.log(Props['myForm']?.getFieldValue("timeType")); Props['myForm']?.setFieldValue("timeType", element); }} defaultValue={{ value: 'h', label: 'h' }} options={optionsSelect} />
                     </Form.Item>
                     <Form.Item>
                         <span>{'  ±  '}</span>
@@ -46,8 +47,8 @@ const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
                     <Form.Item name="aproxTime" rules={[{ required: true }]}>
                         <InputNumber min={0} />
                     </Form.Item>
-                    <Form.Item name="aproxType">
-                        <Select onChange={(value) => { myForm.setFieldValue("aproxType", value["value"]); }} defaultValue={{ value: 'min', label: 'min' }} options={optionsSelect} />
+                    <Form.Item name="aproxType" style={{ width: "vw" }}>
+                        <Select onChange={(element) => { console.log(Props['myForm']?.getFieldValue("timeType")); Props['myForm']?.setFieldValue("aproxType", element); }} defaultValue={{ value: 'min', label: 'min' }} options={optionsSelect} />
                     </Form.Item>
                 </Space>
             </Form.Item>

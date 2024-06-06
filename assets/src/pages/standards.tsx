@@ -155,7 +155,6 @@ const Standards = () => {
                 onOk: () => {
                     newConditionalPeriodForm.validateFields().then(values => {
                         const aux = { idStandard: record['key'], aproxTime: values['aproxTime'], aproxType: values['aproxType'], maxWall: values['maxWall'], minWall: values['minWall'], time: values['time'], timeType: values['timeType'] };
-                        console.log(values);
                         conditionalPeriodCommunication.add(aux).then(response => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
                             dataSource[myIndex]['conditionalPeriods'].push(response['data']);

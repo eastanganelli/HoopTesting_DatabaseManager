@@ -18,7 +18,7 @@ const ModalSpecification: FunctionComponent<Props> = (Props: Props) => {
     const {myForm} = Props;
 
     return (
-        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1500 }}>
+        <Form {...formItemLayout} form={myForm} layout="vertical" variant="filled">
             <Form.Item label="Especificación" name="specification" rules={[{ required: true, message: 'Especificación es requerida!' }]}>
                 <Input maxLength={15}/>
             </Form.Item>

@@ -15,6 +15,8 @@ import ModalEnviroment from '../components/standardsModal/enviroment';
 import ModalEndCap from '../components/standardsModal/endcap';
 import { FormMsgsError } from '../utils/msgs';
 
+const widthMaxForm = Math.floor(window.innerWidth/2.0);
+
 const { confirm } = Modal;
 
 const Standards = () => {
@@ -58,7 +60,7 @@ const Standards = () => {
             confirm({
                 title: 'Nuevo Estandard',
                 content: (<ModalStandard myForm={newStandardForm} />),
-                width: 600,
+                width: widthMaxForm,
                 okText: 'Agregar',
                 onOk: () => {
                     newStandardForm.validateFields().then((values) => {
@@ -85,55 +87,50 @@ const Standards = () => {
 
     const EndCap = {
         new: (record: any) => {
-            let newData: endCapType | null = null;
-            const newToAdd = (myData: endCapType) => { newData = myData; }
-
+            newEndCapForm.resetFields();
             confirm({
                 title: 'Nuevo Ambiente',
-                content: (<ModalEndCap newToAdd={newToAdd} />),
-                width: 550,
+                content: (<ModalEndCap myForm={newEndCapForm} />),
+                width: widthMaxForm,
                 okText: 'Agregar',
                 onOk: () => {
-                    if (newData !== null) {
-                        endCapCommunication.add(Number(record['key']), newData).then((response: endCapType) => {
+                    newEndCapForm.validateFields().then((values) => {
+                        endCapCommunication.add({ idStandard: record['key'], endcap: values['endCap'] }).then(response => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
-                            dataSource[myIndex]['endCaps'].push(response);
+                            dataSource[myIndex]['endCaps'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
-                            message.success('Tapa agregada correctamente!');
-                        }).catch((error) => { message.error('Se produjo un error al agregar la tapa!'); });
-                    }
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
-                onCancel: () => { console.log('Cancel'); },
-
+                onCancel: () => { },
             });
         },
         delete: (key: number) => {
-            endCapCommunication.remove(key).then((response: Boolean) => {
-                if (response) { message.success('Tapa eliminada correctamente!'); }
-            }).catch((error) => { message.error('Se produjo un error al eliminar la tapa!'); });
+            endCapCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); });
         }
     };
 
     const Enviroment = {
         new: (record: any) => {
-            let newData: enviromentType | null = null;
-            const newToAdd = (myData: enviromentType) => { newData = myData; }
-
+            newEnviromentForm.resetFields();
             confirm({
                 title: 'Nuevo Ambiente',
-                content: (<ModalEnviroment newToAdd={newToAdd} />),
-                width: 600,
+                content: (<ModalEnviroment myForm={newEnviromentForm} />),
+                width: widthMaxForm,
                 okText: 'Agregar',
                 onOk: () => {
-                    if (newData !== null) {
-                        enviromentCommunication.add(Number(record['key']), newData).then((response: enviromentType) => {
+                    newEnviromentForm.validateFields().then(values => {
+                        enviromentCommunication.add({ idStandard: record['key'], insideFluid: values['insideFluid'], outsideFluid: values['outsideFluid'] }).then(response => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
-                            dataSource[myIndex]['enviroments'].push(response);
+                            dataSource[myIndex]['enviroments'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
-                            message.success('Ambiente agregado correctamente!');
-                        });
-                    }
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { console.log('Cancel'); },
@@ -141,31 +138,31 @@ const Standards = () => {
             });
         },
         delete: (key: number) => {
-            enviromentCommunication.remove(key).then((response: Boolean) => {
-                if (response) { message.success('Ambiente eliminado correctamente!'); }
-            }).catch((error) => { message.error('Se produjo un error al eliminar el ambiente!'); });
+            enviromentCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); });
         }
     };
 
     const ConditionalPeriod = {
         new: (record: any) => {
-            let newData: conditionalPeriodType | null = null;
-            const newMaterialToAdd = (myData: conditionalPeriodType) => { newData = myData; }
-
+            newConditionalPeriodForm.resetFields();
             confirm({
                 title: 'Nuevo Período Condicional',
-                content: (<ModalConditionalPeriod newToAdd={newMaterialToAdd} />),
-                width: 800,
+                content: (<ModalConditionalPeriod myForm={newConditionalPeriodForm} />),
+                width: widthMaxForm,
                 okText: 'Agregar',
                 onOk: () => {
-                    if (newData !== null) {
-                        conditionalPeriodCommunication.add(Number(record['key']), newData).then((response: conditionalPeriodType) => {
+                    newConditionalPeriodForm.validateFields().then(values => {
+                        const aux = { idStandard: record['key'], aproxTime: values['aproxTime'], aproxType: values['aproxType'], maxWall: values['maxWall'], minWall: values['minWall'], time: values['time'], timeType: values['timeType'] };
+                        console.log(values);
+                        conditionalPeriodCommunication.add(aux).then(response => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
-                            dataSource[myIndex]['conditionalPeriods'].push(response);
+                            dataSource[myIndex]['conditionalPeriods'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
-                            message.success('Período Condicional agregado correctamente!');
-                        });
-                    }
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { console.log('Cancel'); },
@@ -173,9 +170,9 @@ const Standards = () => {
             });
         },
         delete: (key: number) => {
-            conditionalPeriodCommunication.remove(key).then((response: Boolean) => {
-                if (response) { message.success('Periodo Condicionamiento eliminado correctamente!'); }
-            }).catch((error) => { message.error('Se produjo un error al eliminar el periodo condicional!'); })
+            conditionalPeriodCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); })
         }
     };
 
@@ -186,7 +183,7 @@ const Standards = () => {
                 confirm({
                     title: 'Nuevo Material Relacionado',
                     content: (<ModalMaterial myForm={newMaterialForm} materialList={response['data']} />),
-                    width: 600,
+                    width: widthMaxForm,
                     okText: 'Agregar',
                     onOk: () => {
                         newMaterialForm.validateFields().then((values: { idMaterial: number; }) => {
@@ -236,7 +233,7 @@ const Standards = () => {
             dataIndex: 'enviroments',
             render: (enviroment: enviromentType[], record, index) =>
                 <>
-                    {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['key']}`} closeIcon onClose={() => Enviroment.delete(Number(value['key']))}>{`${value['insertFluid']} en ${value['outsideFluid']}`}</Tag>)}
+                    {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['key']}`} closeIcon onClose={() => Enviroment.delete(Number(value['key']))}>{`${value['insideFluid']} en ${value['outsideFluid']}`}</Tag>)}
                     <Tag key={`new_enviroment_${index}`} onClick={() => Enviroment.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },

@@ -75,117 +75,84 @@ const standardCommunication = {
 };
 
 const endCapCommunication = {
-    add: (idStandard: number, inputData: endCapType): Promise<endCapType> => {
-        return new Promise<endCapType>((resolve, reject) => {
+    add: (inputData: { idStandard: number; endcap: string; }): Promise<responseTypeData<endCapType>> => {
+        return new Promise<responseTypeData<endCapType>>((resolve, reject) => {
             fetch(`${basePath}/endcap`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { endCap: endCapType }) => {
+                    resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['endCap'] });
                 });
             }).catch((error) => { reject(error); })
         });
     },
-    update: (idStandard: number, inputData: endCapType): Promise<Boolean> => {
-        return new Promise<Boolean>((resolve, reject) => {
-            fetch(`${basePath}/endcap`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ idStandard: idStandard, data: inputData })
-            }).then((response) => {
-                if (response.status == 200) resolve(true);
-            }).catch((error) => { reject(error); })
-        });
-    },
-    remove: (id: number): Promise<Boolean> => {
-        return new Promise<Boolean>((resolve, reject) => {
+    remove: (inputData: { key: number }): Promise<responseTypeStatus> => {
+        return new Promise<responseTypeStatus>((resolve, reject) => {
             fetch(`${basePath}/endcap`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: id })
+                body: JSON.stringify(inputData)
             }).then((response) => {
-                if (response.status == 200) resolve(true);
+                if (response.status == 200) resolve({ status: true, msg: StandardMsgs['success']['delete'] });
+                else reject(StandardMsgs['error']['delete']);
             }).catch((error) => { reject(error); })
         });
     }
 };
 
 const enviromentCommunication = {
-    add: (idStandard: number, inputData: enviromentType) => {
-        return new Promise<enviromentType>((resolve, reject) => {
-            fetch(`${basePath}/enviroment`, {
+    add: (inputData: { idStandard: number; insideFluid: string; outsideFluid: string; }): Promise<responseTypeData<enviromentType>> => {
+        return new Promise<responseTypeData<enviromentType>>((resolve, reject) => {
+            fetch(`${basePath}/standard/enviroment`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { enviroment: enviromentType }) => {
+                    resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['enviroment'] });
                 });
             }).catch((error) => { reject(error); })
         });
     },
-    update: (idStandard: number, inputData: enviromentType): Promise<Boolean> => {
-        return new Promise<Boolean>((resolve, reject) => {
-            fetch(`${basePath}/enviroment`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: idStandard, data: inputData })
-            }).then((response) => {
-                if (response.status == 200) resolve(true);
-            }).catch((error) => { reject(error); })
-        });
-    },
-    remove: (id: number): Promise<Boolean> => {
-        return new Promise<Boolean>((resolve, reject) => {
-            fetch(`${basePath}/enviroment`, {
+    remove: (inputData: { key: number; }): Promise<responseTypeStatus> => {
+        return new Promise<responseTypeStatus>((resolve, reject) => {
+            fetch(`${basePath}/standard/enviroment`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify(inputData)
             }).then((response) => {
-                if (response.status == 200) resolve(true);
+                if (response.status == 200) resolve({ status: true, msg: StandardMsgs['success']['delete'] });
+                else reject(StandardMsgs['error']['delete']);
             }).catch((error) => { reject(error); })
         });
     }
 };
 
 const conditionalPeriodCommunication = {
-    add: (idStandard: number, inputData: conditionalPeriodType) => {
-        return new Promise<conditionalPeriodType>((resolve, reject) => {
-            fetch(`${basePath}/conditionalperiod`, {
+    add: (inputData: { idStandard: number; aproxTime: number; aproxType: string; maxWall: number; minWall: number; time: number; timeType: string; }): Promise<responseTypeData<conditionalPeriodType>> => {
+        return new Promise<responseTypeData<conditionalPeriodType>>((resolve, reject) => {
+            fetch(`${basePath}/standard/conditionalperiod`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { id: number }) => {
-                    inputData['key'] = data['id'];
-                    resolve(inputData);
+                response.json().then((data: { conditionalPeriod: conditionalPeriodType }) => {
+                    resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['conditionalPeriod']});
                 });
             }).catch((error) => { reject(error); })
         });
     },
-    update: (idStandard: number, inputData: conditionalPeriodType): Promise<Boolean> => {
-        return new Promise<Boolean>((resolve, reject) => {
-            fetch(`${basePath}/conditionalperiod`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: idStandard, data: inputData})
-            }).then((response) => {
-                if (response.status == 200) resolve(true);
-            }).catch((error) => { reject(error); })
-        });
-    },
-    remove: (id: number): Promise<Boolean> => {
-        return new Promise<Boolean>((resolve, reject) => {
-            fetch(`${basePath}/conditionalperiod`, {
+    remove: (inputData: { key: number; }): Promise<responseTypeStatus> => {
+        return new Promise<responseTypeStatus>((resolve, reject) => {
+            fetch(`${basePath}/standard/conditionalperiod`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: id })
+                body: JSON.stringify(inputData)
             }).then((response) => {
-                if (response.status == 200) resolve(true);
+                if (response.status == 200) resolve({ status: true, msg: StandardMsgs['success']['delete'] });
+                else reject(StandardMsgs['error']['delete']);
             }).catch((error) => { reject(error); })
         });
     }

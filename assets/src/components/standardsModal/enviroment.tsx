@@ -1,10 +1,7 @@
-import React, { FunctionComponent, useState } from "react";
-import { Form, Input } from "antd";
+import React, { FunctionComponent } from "react";
+import { Form, FormInstance, Input } from "antd";
 
-import { enviromentType } from "../../interfaces/table";
-
-interface Props { newToAdd: (myData: enviromentType) => void; }
-interface PropsExtended { data: enviromentType; newToAdd: (myData: enviromentType) => void; }
+interface Props { myForm: FormInstance<{ insideFluid: string; outsideFluid: string; }> }
 
 const formItemLayout = {
     labelCol: {
@@ -17,30 +14,16 @@ const formItemLayout = {
     },
 };
 
-const ModalEnviroment: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
-    const [enviroment, setEnviroment] = useState<enviromentType>(((Props as PropsExtended)['data'] !== undefined ? (Props as PropsExtended)['data'] : { id: 0, insertFluid: '', outsideFluid: '' }));
+const ModalEnviroment: FunctionComponent<Props> = (Props: Props) => {
+    const { myForm } = Props;
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }} initialValues={{ inputInsertFluid: enviroment.insertFluid.toString(), inputOutsideFluid: enviroment.outsideFluid.toString() }}>
-            <Form.Item label="Medio interno" name="inputInsertFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
-                <Input
-                maxLength={15}
-                    onChange={(value) => {
-                        enviroment['insertFluid'] = value.target.value;
-                        setEnviroment(enviroment);
-                        Props.newToAdd(enviroment);
-                    }}
-                />
+        <Form form={myForm} layout="vertical" variant="filled">
+            <Form.Item label="Medio interno" name="insideFluid" rules={[{ required: true }]}>
+                <Input maxLength={15}/>
             </Form.Item>
-            <Form.Item label="Medio externo" name="inputOutsideFluid" rules={[{ required: true, message: 'El fluido insertado es requerido' }]}>
-                <Input
-                maxLength={15}
-                    onChange={(value) => {
-                        enviroment['outsideFluid'] = value.target.value;
-                        setEnviroment(enviroment);
-                        Props.newToAdd(enviroment);
-                    }}
-                />
+            <Form.Item label="Medio externo" name="outsideFluid" rules={[{ required: true }]}>
+                <Input maxLength={15}/>
             </Form.Item>
         </Form>
     );

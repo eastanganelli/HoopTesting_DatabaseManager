@@ -18,8 +18,8 @@ const modalStandard: FunctionComponent<Props> = (Props: Props) => {
     const {myForm} = Props;
 
     return (
-        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Estandard" name="standard" rules={[{ required: true, message: 'Estandard es requerido!' }]}>
+        <Form form={myForm} layout="vertical" variant="filled">
+            <Form.Item label="Estandard" name="standard" rules={[{ required: true }]}>
                 <Input maxLength={60}/>
             </Form.Item>
         </Form>

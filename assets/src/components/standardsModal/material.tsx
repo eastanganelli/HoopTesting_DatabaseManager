@@ -24,8 +24,8 @@ const ModalMaterial: FunctionComponent<Props> = (Props: Props) => {
     const {myForm, materialList} = Props;
 
     return (
-        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1000 }}>
-            <Form.Item label="Seleccionar" name="idMaterial" rules={[{ required: true, message: 'Debe elegir el material!' }]}>
+        <Form form={myForm} layout="vertical" variant="filled">
+            <Form.Item label="Seleccionar" name="idMaterial" rules={[{ required: true }]}>
                 <Select
                     showSearch
                     placeholder="Seleccione un material"

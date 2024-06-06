@@ -17,7 +17,7 @@ interface EditableCellProps<T> {
 
 interface enviromentType {
     key: Key;
-    insertFluid:  string;
+    insideFluid:  string;
     outsideFluid: string;
 }
 

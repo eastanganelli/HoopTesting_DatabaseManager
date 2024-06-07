@@ -16,6 +16,7 @@ import ModalEndCap from '../components/standardsModal/endcap';
 import { FormMsgsError } from '../utils/msgs';
 
 const widthMaxForm = Math.floor(window.innerWidth/2.0);
+const columnsWidth = Math.floor(window.innerWidth/5.0);
 
 const { confirm } = Modal;
 
@@ -76,7 +77,7 @@ const Standards = () => {
             });
         },
         delete: (key: React.Key) => {
-            standardCommunication.remove(Number(key)).then(response => {
+            standardCommunication.remove({ key: Number(key) }).then(response => {
                 if (response['status']) {
                     setDataSource(dataSource.filter((item) => item.key !== key));
                     message.success(response['msg']);
@@ -211,16 +212,20 @@ const Standards = () => {
             title: 'ID',
             dataIndex: 'key',
             width: 50,
+            fixed: true,
             editable: false,
         },
         {
             title: 'Estandard',
             dataIndex: 'standard',
+            fixed: true,
+            width: columnsWidth,
             editable: true
         },
         {
             title: 'Tapa',
             dataIndex: 'endCaps',
+            width: columnsWidth,
             render: (endCaps: endCapType[], record, index) => 
                 <>
                     { endCaps.map((value: endCapType) => <Tag key={`endcap_${value['key']}`} closeIcon onClose={(_) => EndCap.delete(Number(value['key']))}>{`${value['endcap']}`}</Tag>) }
@@ -230,6 +235,7 @@ const Standards = () => {
         {
             title: 'Entorno',
             dataIndex: 'enviroments',
+            width: columnsWidth,
             render: (enviroment: enviromentType[], record, index) =>
                 <>
                     {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['key']}`} closeIcon onClose={() => Enviroment.delete(Number(value['key']))}>{`${value['insideFluid']} en ${value['outsideFluid']}`}</Tag>)}
@@ -239,6 +245,7 @@ const Standards = () => {
         {
             title: 'Periodo Condicional',
             dataIndex: 'conditionalPeriods',
+            width: columnsWidth,
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
                     {conditionalPeriods.map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{`${value['time']}`}</Tag>)}
@@ -248,6 +255,7 @@ const Standards = () => {
         {
             title: 'Tipo de Prueba',
             dataIndex: 'testType',
+            width: columnsWidth,
             render: () =>
                 <>
                     <Tag>{'Aca va el tipo de prueba'}</Tag>
@@ -256,7 +264,7 @@ const Standards = () => {
         {
             title: 'Material',
             dataIndex: 'materials',
-            width: 150,
+            width: columnsWidth,
             render: (materials: standardHasMaterialType[], record, index) =>
                 <>
                     {materials.map((value: standardHasMaterialType) => <Tag key={`material_${value['key']}`} closeIcon onClose={() => Material.delete(Number(value['key']))}>{`${value['material']}`}</Tag>)}
@@ -285,7 +293,7 @@ const Standards = () => {
 
     return (
         <>
-            <Table components={components} size='small' tableLayout='fixed' dataSource={dataSource} columns={columns as ColumnTypes} />
+            <Table components={components} size='small' tableLayout='fixed' dataSource={dataSource} columns={columns as ColumnTypes} scroll={{ x: window.innerWidth * 1.2 }} />
             <FloatButton icon={<InsertRowBelowOutlined />} onClick={Standard.add} style={{ right: 24 }} />
         </>
     );

@@ -5,17 +5,6 @@ import { materialType } from "../../interfaces/table";
 
 interface Props { myForm: FormInstance<{ idMaterial: number; }>; materialList: materialType[]; }
 
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
-
 const onSearch = (value: string) => { console.log('search:', value); };
 
 const filterOption = (input: string, option?: { label: string; value: string }) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());

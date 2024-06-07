@@ -3,19 +3,7 @@ import { Form, Space, InputNumber, Select, FormInstance } from "antd";
 
 interface Props { myForm: FormInstance<{ aproxTime: number; aproxType: string; maxWall: number; minWall: number; time: number; timeType: string; }> }
 
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
-
 const optionsSelect: { value: string; label: string }[] = [{ value: 'h', label: 'h' }, { value: 'min', label: 'min' }];
-
 
 const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
     const { myForm } = Props;

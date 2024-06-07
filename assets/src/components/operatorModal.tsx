@@ -3,22 +3,11 @@ import { Form, Input } from "antd";
 
 interface Props { myForm: any; }
 
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
-
 const ModalOperator: FunctionComponent<Props> = (Props: Props) => {
     const { myForm } = Props;
 
     return (
-        <Form {...formItemLayout} form={myForm} variant="filled" style={{ maxWidth: 1000 }}>
+        <Form form={myForm} variant="filled" style={{ maxWidth: 1000 }}>
             <Form.Item label="DNI" name="dni" rules={[{ required: true, message: 'DNI requerido!' }]}>
                 <Input width={100}/>
             </Form.Item>

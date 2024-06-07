@@ -3,11 +3,11 @@ import { Key } from 'react';
 interface EditableRowProps { index: number; }
 
 interface EditableCellProps<T> {
-    title: React.ReactNode;
-    editable: boolean;
-    children: React.ReactNode;
+    title:     React.ReactNode;
+    editable:  boolean;
+    children:  React.ReactNode;
     dataIndex: keyof T;
-    record: T;
+    record:    T;
     handleSave: (record: T) => void;
 }
 
@@ -16,36 +16,42 @@ interface EditableCellProps<T> {
  */
 
 interface enviromentType {
-    key: Key;
+    key:          Key;
     insideFluid:  string;
     outsideFluid: string;
 }
 
 interface endCapType {
-    key: Key;
+    key:    Key;
     endcap: string;
 }
 
+interface testType {
+    key:      Key;
+    testtype: string;
+}
+
 interface conditionalPeriodType {
-    key: Key;
+    key:     Key;
     time:    string;
     minwall: number;
     maxwall: number;
 }
 
 interface standardHasMaterialType {
-    key: Key;
+    key:        Key;
     idMaterial: Key;
     material:   string;
 }
 
 interface standardType {
-    key: Key;
-    standard:    string;
-    materials:   standardHasMaterialType[];
-    enviroments: enviromentType[];
-    endCaps:     endCapType[];
+    key:                Key;
+    standard:           string;
+    materials:          standardHasMaterialType[];
+    enviroments:        enviromentType[];
+    endCaps:            endCapType[];
     conditionalPeriods: conditionalPeriodType[];
+    testTypes:          testType[];
 }
 
 /**
@@ -53,21 +59,21 @@ interface standardType {
  */
 
 interface configurationType {
-    key: Key;
-    time: number;
-    type: string;
+    key:         Key;
+    time:        number;
+    type:        string;
     temperature: number;
 }
 
 interface specificationType {
-    key: Key;
+    key:            Key;
     specification:  string;
     description:    string;
     configurations: configurationType[];
 }
 
 interface materialType {
-    key: Key;
+    key:            Key;
     material:       string;
     description:    string;
     specifications: specificationType[]  // Change to an array of objects
@@ -78,10 +84,23 @@ interface materialType {
  */
 
 interface operatorType {
-    key:  Key;
-    dni:  string;
-    name: string;
+    key:        Key;
+    dni:        string;
+    name:       string;
     familyName: string;
 }
 
-export type { EditableRowProps, EditableCellProps, standardType, standardHasMaterialType, enviromentType, endCapType, conditionalPeriodType, materialType, specificationType, configurationType, operatorType };
+export type {
+    EditableRowProps,
+    EditableCellProps,
+    standardType,
+    standardHasMaterialType,
+    enviromentType,
+    endCapType,
+    conditionalPeriodType,
+    materialType,
+    testType,
+    specificationType,
+    configurationType,
+    operatorType
+};

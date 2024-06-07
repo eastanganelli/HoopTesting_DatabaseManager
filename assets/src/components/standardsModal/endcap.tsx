@@ -1,10 +1,7 @@
-import React, { FunctionComponent, useState } from "react";
-import { Form, Input } from "antd";
+import React, { FunctionComponent } from "react";
+import { Form, FormInstance, Input } from "antd";
 
-import { endCapType } from "../../interfaces/table";
-
-interface Props { newToAdd: (myData: endCapType) => void; }
-interface PropsExtended { data: endCapType; newToAdd: (myData: endCapType) => void; }
+interface Props { myForm: FormInstance<{ idEndCap: number; }> };    
 
 const formItemLayout = {
     labelCol: {
@@ -17,20 +14,13 @@ const formItemLayout = {
     },
 };
 
-const ModalEndCap: FunctionComponent<Props | PropsExtended> = (Props: Props | PropsExtended) => {
-    const [endCap, setEndCap] = useState<endCapType>(((Props as PropsExtended)['data'] !== undefined ? (Props as PropsExtended)['data'] : { id: 0, endcap: '' }));
+const ModalEndCap: FunctionComponent<Props> = (Props: Props) => {
+    const {myForm} = Props;
 
     return (
-        <Form {...formItemLayout} variant="filled" style={{ maxWidth: 1000 }} initialValues={{ inputEndCap: endCap.endcap.toString() }}>
-            <Form.Item label="Tapa" name="inputEndCap" rules={[{ required: true, message: 'Tapa es requerida!' }]}>
-                <Input
-                    maxLength={15}
-                    onChange={(value) => {
-                        endCap['endcap'] = value.target.value;
-                        setEndCap(endCap);
-                        Props.newToAdd(endCap);
-                    }}
-                />
+        <Form form={myForm} layout="vertical" variant="filled">
+            <Form.Item label="Tapa" name="endCap" rules={[{ required: true }]}>
+                <Input maxLength={15}/>
             </Form.Item>
         </Form>
     );

@@ -70,17 +70,22 @@ void Server::start() {
         }
 
         {
-            Database::API(*this->httpServer,             "/database");
+            Database::API(            *this->httpServer, "/database");
             Database::ConnectDatabase(*this->httpServer, "/connectDatabase");
-            Database::TestDatabase(*this->httpServer,    "/testDatabase");
+            Database::TestDatabase(   *this->httpServer, "/testDatabase");
 
-            Standard::API(*this->httpServer,             "/standard");
+            Standard::API(            *this->httpServer, "/standard");
+            MaterialRelated::API(     *this->httpServer, "/standard");
+            EndCap::API(              *this->httpServer, "/standard");
+            Enviroment::API(          *this->httpServer, "/standard");
+            ConditionalPeriod::API(   *this->httpServer, "/standard");
+            // TestType::API(            *this->httpServer, "/testType");
 
-            Material::API(*this->httpServer,             "/material");
-            Specification::API(*this->httpServer,        "/specification");
-            Configuration::API(*this->httpServer,        "/configuration");
+            Material::API(            *this->httpServer, "/material");
+            Specification::API(       *this->httpServer, "/specification");
+            Configuration::API(       *this->httpServer, "/configuration");
 
-            Operator::API(*this->httpServer,             "/operator");
+            Operator::API(            *this->httpServer, "/operator");
         }
 
 

@@ -68,7 +68,7 @@ const Standards = () => {
                             setDataSource([...dataSource, response['data']]);
                             message.success(response['msg']);
                         }).catch((error) => { message.error(error); });
-                    }).catch((error) => { message.error(FormMsgsError); });
+                    }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { console.log('Cancel'); },
@@ -133,7 +133,7 @@ const Standards = () => {
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
-                onCancel: () => { console.log('Cancel'); },
+                onCancel: () => { },
 
             });
         },
@@ -164,7 +164,7 @@ const Standards = () => {
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
-                onCancel: () => { console.log('Cancel'); },
+                onCancel: () => { },
 
             });
         },
@@ -228,7 +228,7 @@ const Standards = () => {
                 </>
         },
         {
-            title: 'Ambiente',
+            title: 'Entorno',
             dataIndex: 'enviroments',
             render: (enviroment: enviromentType[], record, index) =>
                 <>

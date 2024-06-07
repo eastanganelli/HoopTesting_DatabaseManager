@@ -76,6 +76,10 @@ void Server::start() {
 
             Standard::API(            *this->httpServer, "/standard");
             MaterialRelated::API(     *this->httpServer, "/standard");
+            EndCap::API(              *this->httpServer, "/standard");
+            Enviroment::API(          *this->httpServer, "/standard");
+            ConditionalPeriod::API(   *this->httpServer, "/standard");
+            // TestType::API(            *this->httpServer, "/testType");
 
             Material::API(            *this->httpServer, "/material");
             Specification::API(       *this->httpServer, "/specification");

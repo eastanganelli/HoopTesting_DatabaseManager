@@ -77,7 +77,7 @@ const standardCommunication = {
 const endCapCommunication = {
     add: (inputData: { idStandard: number; endcap: string; }): Promise<responseTypeData<endCapType>> => {
         return new Promise<responseTypeData<endCapType>>((resolve, reject) => {
-            fetch(`${basePath}/endcap`, {
+            fetch(`${basePath}/standard/endcap`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
@@ -90,7 +90,7 @@ const endCapCommunication = {
     },
     remove: (inputData: { key: number }): Promise<responseTypeStatus> => {
         return new Promise<responseTypeStatus>((resolve, reject) => {
-            fetch(`${basePath}/endcap`, {
+            fetch(`${basePath}/standard/endcap`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)

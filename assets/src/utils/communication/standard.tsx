@@ -55,12 +55,12 @@ const standardCommunication = {
                 }).catch(() => { reject(StandardMsgs['error']['update']); })
             });
         },
-        remove: (key: number): Promise<responseTypeStatus> => {
+        remove: (inputData: {key: number}): Promise<responseTypeStatus> => {
             return new Promise<responseTypeStatus>((resolve, reject) => {
                 fetch(`${basePath}/standard`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(key)
+                    body: JSON.stringify(inputData)
                 }).then((response) => {
                     if (response.status == 200) {
                         resolve({

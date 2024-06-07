@@ -68,7 +68,6 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
         QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            qDebug() << QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString());
             myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
             myQuery.next();
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccessful Updated!") {

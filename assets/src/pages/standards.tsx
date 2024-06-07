@@ -76,7 +76,7 @@ const Standards = () => {
             });
         },
         delete: (key: React.Key) => {
-            standardCommunication.remove(Number(key)).then(response => {
+            standardCommunication.remove({ key: Number(key) }).then(response => {
                 if (response['status']) {
                     setDataSource(dataSource.filter((item) => item.key !== key));
                     message.success(response['msg']);

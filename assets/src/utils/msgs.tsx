@@ -79,3 +79,16 @@ export const MaterialRelatedMsgs = {
         delete: "Error al eliminar el material relacionado!"
     }
 };
+
+export const TestTypeMsgs = {
+    success: {
+        create: "Tipo de prueba creado con éxito!",
+        update: "Tipo de prueba actualizado con éxito!",
+        delete: "Tipo de prueba eliminado con éxito!"
+    },
+    error: {
+        create: "Error al crear el tipo de prueba!",
+        update: "Error al actualizar el tipo de prueba!",
+        delete: "Error al eliminar el tipo de prueba!"
+    }
+};

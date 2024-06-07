@@ -3,17 +3,6 @@ import { Form, FormInstance, Input } from "antd";
 
 interface Props { myForm: FormInstance<{ insideFluid: string; outsideFluid: string; }> }
 
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
-
 const ModalEnviroment: FunctionComponent<Props> = (Props: Props) => {
     const { myForm } = Props;
 

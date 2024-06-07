@@ -3,22 +3,11 @@ import { Form, Input } from "antd";
 
 interface Props { myForm: any; }
 
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 14 },
-    },
-};
-
 const ModalMaterial: FunctionComponent<Props> = (Props: Props) => {
     const {myForm} = Props;
 
     return (
-        <Form {...formItemLayout} form={myForm} layout="vertical" variant="filled">
+        <Form form={myForm} layout="vertical" variant="filled">
             <Form.Item label="Material" name="material" rules={[{ required: true, message: 'Material es requerido!' }]}>
                 <Input maxLength={15}/>
             </Form.Item>

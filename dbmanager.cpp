@@ -1,6 +1,6 @@
 #include <QSettings>
 #include <QApplication>
-
+#include <QSqlError>
 #include "dbmanager.h"
 #include "simplecrypt.h"
 
@@ -11,7 +11,7 @@ DBManager::DBManager() {
 
 DBManager::DBManager(const QSqlDatabase &db) {
     this->db = db;
-    this->db.setDatabaseName("stel_db_static");
+    this->db.setDatabaseName("static_db");
 }
 
 DBManager::~DBManager() {
@@ -43,6 +43,7 @@ void DBManager::load() {
 
 bool DBManager::open() {
     this->db.open();
+    qDebug() << this->db.lastError().text();
     return this->db.isOpen();
 }
 

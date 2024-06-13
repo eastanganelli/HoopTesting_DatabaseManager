@@ -7,25 +7,14 @@ const layout = { labelCol: { span: 8 }, wrapperCol: { span: 16 } };
 
 const tailLayout = { wrapperCol: { offset: 8, span: 16 } };
 
-const Operators = () => {
+const Database = () => {
 	const [form] = Form.useForm();
 
-	const onFinish = (values: database) => {
-		databaseCommunication.add(values).then((response) => {
-			message.success(response);
-		}).catch((error) => { message.error(error); });
-	};
+	const onFinish = (values: database) => { databaseCommunication.add(values).then((response) => { message.success(response['msg']); }).catch((error) => { message.error(error); }); };
 
-	const onTestConnection = () => {
-		TestConnection(form.getFieldsValue()).then((response) => {
-			message.success(response);
-		}).catch((error) => { message.error(error);});
-	};
+	const onTestConnection = () => { TestConnection(form.getFieldsValue()).then((response) => { message.success(response['msg']); }).catch((error) => { message.error(error);}); };
 
-	useEffect(() => {
-		databaseCommunication.get().then((data) => { form.setFieldsValue(data); }).catch((error) => { message.error(error); });
-		// fetch('http://localhost:3000/database').then((response) => { if (response.status == 200) { response.json().then((data) => { form.setFieldsValue(data); }); }});
-	}, []);
+	useEffect(() => { databaseCommunication.get().then((data) => { form.setFieldsValue(data['data']); }).catch((error) => { message.error(error); }); }, []);
 
 	return (
 		<>
@@ -40,7 +29,7 @@ const Operators = () => {
 					<Input placeholder="ej: usuario12345"/>
 				</Form.Item>
 				<Form.Item name="password" label="Contraseña" rules={[{ required: true, message: "La Contraseña es requerida!" }]}>
-					<Input type="password" placeholder="**************"/>
+					<Input.Password />
 				</Form.Item>
 				<Form.Item {...tailLayout}>
 					<Space>
@@ -50,10 +39,13 @@ const Operators = () => {
 						<Button type="primary" htmlType="submit">
 							Guardar
 						</Button>
+						<Button type="primary" onClick={() => { window.location.reload(); }}>
+							Conectar
+						</Button>
 					</Space>
 				</Form.Item>
 			</Form>
 		</>
 	);
 };
-export default Operators;
+export default Database;

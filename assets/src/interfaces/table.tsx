@@ -26,7 +26,7 @@ interface endCapType {
     endcap: string;
 }
 
-interface testType {
+interface testTypeType {
     key:      Key;
     testtype: string;
 }
@@ -51,7 +51,7 @@ interface standardType {
     enviroments:        enviromentType[];
     endCaps:            endCapType[];
     conditionalPeriods: conditionalPeriodType[];
-    testTypes:          testType[];
+    testTypes:          testTypeType[];
 }
 
 /**
@@ -99,7 +99,7 @@ export type {
     endCapType,
     conditionalPeriodType,
     materialType,
-    testType,
+    testTypeType,
     specificationType,
     configurationType,
     operatorType

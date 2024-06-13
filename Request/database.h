@@ -10,9 +10,9 @@
 
 class Database {
 public:
-    static void API(QHttpServer             &myServer, const QString& apiPath);
+    static void API(QHttpServer &myServer, const QString& apiPath);
     static void ConnectDatabase(QHttpServer &myServer, const QString& apiPath);
-    static void TestDatabase(QHttpServer    &myServer, const QString& apiPath);
+    static void TestDatabase(QHttpServer&myServer, const QString& apiPath);
 };
 
 #endif // DATABASE_H

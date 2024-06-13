@@ -6,6 +6,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
+#define STATIC_DB_NAME "static_db"
+
 class DBManager {
     QSqlDatabase db;
 

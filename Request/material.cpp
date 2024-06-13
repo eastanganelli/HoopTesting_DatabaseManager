@@ -9,11 +9,12 @@
 #include <QHttpServerResponse>
 
 #include "material.h"
+#include "../dbmanager.h"
 
 void Material::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath+"s", QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             myQuery.exec("CALL selectMaterialsJSON();");
             myQuery.next();
@@ -31,7 +32,7 @@ void Material::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL insertMaterial('%1', '%2');").arg(bodyJSON["material"].toString()).arg(bodyJSON["description"].toString()));
@@ -54,7 +55,7 @@ void Material::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Put, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL updateMaterial(%1, '%2', '%3');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["material"].toString()).arg(bodyJSON["description"].toString()));
@@ -73,7 +74,7 @@ void Material::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Delete, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL deleteMaterial(%1);").arg(bodyJSON["key"].toInt()));
@@ -92,7 +93,7 @@ void Material::API(QHttpServer &myServer, const QString &apiPath) {
 void Specification::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL insertSpecification(%1, '%2', '%3');").arg(bodyJSON["idMaterial"].toInt()).arg(bodyJSON["specification"].toString()).arg(bodyJSON["description"].toString()));
@@ -115,7 +116,7 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Put, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL updateSpecification(%1, '%2', '%3');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["specification"].toString()).arg(bodyJSON["description"].toString()));
@@ -134,7 +135,7 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Delete, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL deleteSpecification(%1);").arg(bodyJSON["key"].toInt()));
@@ -153,7 +154,7 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
 void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL insertSpecification_Configuration(%1, %2, '%3', %4);").arg(bodyJSON["idSpecification"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
@@ -176,7 +177,7 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Put, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL updateSpecification_Configuration(%1, %2, '%3', %4);").arg(bodyJSON["key"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["type"].toString()).arg(bodyJSON["temperature"].toInt()));
@@ -195,7 +196,7 @@ void Configuration::API(QHttpServer &myServer, const QString &apiPath)  {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Delete, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL deleteSpecification_Configuration(%1);").arg(bodyJSON["key"].toInt()));

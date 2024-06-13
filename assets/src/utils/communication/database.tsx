@@ -1,5 +1,6 @@
 import type { database } from '../../interfaces/data';
 import { basePath } from '../basePath';
+import { responseTypeStatus } from '../msgs';
 
 const databaseCommunication = {
     get: (): Promise<database> => {
@@ -34,20 +35,21 @@ const TestConnection = (inputData: database): Promise<any> => {
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
             body: JSON.stringify(inputData)
         }).then((response) => {
-            if (response.status === 200) resolve('Conexión exitosa');
-            else if (response.status === 400) reject('Conexión fallida');
+            if (response.status === 200) resolve('Conexión de prueba exitosa');
+            else if (response.status === 400) reject('Conexión de prueba fallida');
         }).catch((err) => { reject(err.msg); })
     });
 };
 
-const ConnectDB = (): Promise<Boolean> => {
-    return new Promise<Boolean>((resolve, reject) => {
+const ConnectDB = (): Promise<responseTypeStatus> => {
+    return new Promise<responseTypeStatus>((resolve, reject) => {
         fetch(`${basePath}/connectDatabase`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' }
         }).then((response) => {
-            if (response.status == 200) resolve(true);
-            else if (response.status === 204) reject(false);
+            if (response.status == 200) resolve({ status: true, msg: 'Conexión exitosa con la Base de Datos' });
+            else if (response.status === 204) reject({ status: false, msg: 'No se encontró la configuración de la Base de Datos!' });
+            else if (response.status === 404) reject({ status: false, msg: 'Error al conectar con la Base de Datos!' });
         }).catch((error) => { reject(error); })
     });
 }

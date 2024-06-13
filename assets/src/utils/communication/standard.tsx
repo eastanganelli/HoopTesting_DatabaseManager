@@ -1,4 +1,4 @@
-import type { conditionalPeriodType, endCapType, enviromentType, materialType, standardHasMaterialType, standardType, testType } from '../../interfaces/table';
+import type { conditionalPeriodType, endCapType, enviromentType, materialType, standardHasMaterialType, standardType, testTypeType } from '../../interfaces/table';
 import { basePath } from '../basePath';
 import { MaterialRelatedMsgs, StandardMsgs } from '../msgs';
 
@@ -207,14 +207,14 @@ const materialCommunication = {
 };
 
 const testTypeCommunication = {
-    add: (inputData: { idStandard: number; testtype: string; }): Promise<responseTypeData<testType>> => {
-        return new Promise<responseTypeData<testType>>((resolve, reject) => {
+    add: (inputData: { idStandard: number; testtype: string; }): Promise<responseTypeData<testTypeType>> => {
+        return new Promise<responseTypeData<testTypeType>>((resolve, reject) => {
             fetch(`${basePath}/standard/testtype`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { testType: testType }) => {
+                response.json().then((data: { testType: testTypeType }) => {
                     resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['testType'] });
                 });
             }).catch((error) => { reject(error); })
@@ -234,4 +234,4 @@ const testTypeCommunication = {
     }
 };
 
-export { standardCommunication, endCapCommunication, enviromentCommunication, conditionalPeriodCommunication, materialCommunication };
+export { standardCommunication, endCapCommunication, enviromentCommunication, conditionalPeriodCommunication, materialCommunication, testTypeCommunication };

@@ -5,7 +5,7 @@
 #include "simplecrypt.h"
 
 DBManager::DBManager() {
-    this->db = QSqlDatabase::addDatabase("QMYSQL", "DB_Static");
+    this->db = QSqlDatabase::addDatabase("QMYSQL", STATIC_DB_NAME);
     this->db.setDatabaseName("stel_db_static");
 }
 

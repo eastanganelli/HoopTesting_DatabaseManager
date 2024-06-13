@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal, Form, message } from 'antd';
 
-import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType } from '../interfaces/table';
+import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType, testTypeType } from '../interfaces/table';
 import type { ColumnTypes } from '../components/editableCell';
 
 import { EditableRow, EditableCell } from '../components/editableCell';
-import { standardCommunication, endCapCommunication, enviromentCommunication, conditionalPeriodCommunication, materialCommunication } from '../utils/communication/standard';
+import { standardCommunication, endCapCommunication, enviromentCommunication, conditionalPeriodCommunication, materialCommunication, testTypeCommunication } from '../utils/communication/standard';
 
 import ModalStandard from '../components/standardsModal/standard';
 import ModalMaterial from '../components/standardsModal/material';
@@ -14,6 +14,7 @@ import ModalConditionalPeriod from '../components/standardsModal/conditionalPeri
 import ModalEnviroment from '../components/standardsModal/enviroment';
 import ModalEndCap from '../components/standardsModal/endcap';
 import { FormMsgsError } from '../utils/msgs';
+import ModalTestType from '../components/standardsModal/testtype';
 
 const widthMaxForm = Math.floor(window.innerWidth/2.0);
 const columnsWidth = Math.floor(window.innerWidth/5.0);
@@ -176,6 +177,37 @@ const Standards = () => {
         }
     };
 
+    const TestType = {
+        new: (record: any) => {
+            newTestTypeForm.resetFields();
+            confirm({
+                title: 'Nuevo Tipo de Prueba',
+                content: (<ModalTestType myForm={newTestTypeForm} />),
+                width: widthMaxForm,
+                okText: 'Agregar',
+                onOk: () => {
+                    newTestTypeForm.validateFields().then(values => {
+                        const aux = { idStandard: record['key'], testtype: values['testtype'] };
+                        testTypeCommunication.add(aux).then(response => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
+                            dataSource[myIndex]['testTypes'].push(response['data']);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { },
+
+            });
+        },
+        delete: (key: number) => {
+            conditionalPeriodCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); })
+        }
+    };
+
     const Material = {
         new: (record: any) => {
             newMaterialForm.resetFields();
@@ -254,11 +286,12 @@ const Standards = () => {
         },
         {
             title: 'Tipo de Prueba',
-            dataIndex: 'testType',
-            width: columnsWidth,
-            render: () =>
+            dataIndex: 'testTypes',
+            width: columnsWidth * 1.5,
+            render: (testTypes: testTypeType[], record, index) =>
                 <>
-                    <Tag>{'Aca va el tipo de prueba'}</Tag>
+                    {testTypes.map((value: testTypeType) => <Tag key={`test_${value['key']}`} closeIcon onClose={() => TestType.delete(Number(value['key']))}>{`${value['testtype']}`}</Tag>)}
+                    <Tag key={`new_testtype_${index}`} onClick={() => TestType.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
         {
@@ -273,6 +306,7 @@ const Standards = () => {
         },
         {
             dataIndex: 'operation',
+            width: 70,
             render: (_, record) =>
                 dataSource.length >= 1 ? (
                     <>

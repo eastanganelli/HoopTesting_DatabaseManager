@@ -8,11 +8,12 @@
 #include <QHttpServerResponse>
 
 #include "operator.h"
+#include "../dbmanager.h"
 
 void Operator::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath+"s", QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             myQuery.exec("CALL selectOperatorsJSON();");
 
@@ -31,7 +32,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
     //     QJsonObject responseJSON;
 
     //     try {
-    //         QSqlQuery myQuery("CALL selectOperators()", QSqlDatabase::database("DB_Static"));
+    //         QSqlQuery myQuery("CALL selectOperators()", QSqlDatabase::database(STATIC_DB_NAME));
     //     } catch(...) {
 
     //     }
@@ -40,7 +41,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL insertOperator(%1, '%2', '%3');").arg(bodyJSON["dni"].toString()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
@@ -65,7 +66,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Put, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL updateOperator(%1, %2, '%3', '%4');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["dni"].toInt()).arg(bodyJSON["name"].toString()).arg(bodyJSON["familyName"].toString()));
@@ -84,7 +85,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Delete,[](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
-        QSqlQuery myQuery(QSqlDatabase::database("DB_Static"));
+        QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
             myQuery.exec(QString("CALL deleteOperator(%1);").arg(bodyJSON["key"].toInt()));

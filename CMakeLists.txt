@@ -26,6 +26,7 @@ set(PROJECT_SOURCES main.cpp )
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(DatabaseManager MANUAL_FINALIZATION ${PROJECT_SOURCES}
 
+        version.h
         static.qrc
         assets.qrc
 
@@ -39,6 +40,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Request/material.h Request/material.cpp
         Request/standard.h Request/standard.cpp
         Request/operator.h Request/operator.cpp
+        myresources.rc
 
     )
     add_dependencies(DatabaseManager react-compile)

@@ -10,11 +10,11 @@ const tailLayout = { wrapperCol: { offset: 8, span: 16 } };
 const Database = () => {
 	const [form] = Form.useForm();
 
-	const onFinish = (values: database) => { databaseCommunication.add(values).then((response) => { message.success(response); }).catch((error) => { message.error(error); }); };
+	const onFinish = (values: database) => { databaseCommunication.add(values).then((response) => { message.success(response['msg']); }).catch((error) => { message.error(error); }); };
 
-	const onTestConnection = () => { TestConnection(form.getFieldsValue()).then((response) => { message.success(response); }).catch((error) => { message.error(error);}); };
+	const onTestConnection = () => { TestConnection(form.getFieldsValue()).then((response) => { message.success(response['msg']); }).catch((error) => { message.error(error);}); };
 
-	useEffect(() => { databaseCommunication.get().then((data) => { form.setFieldsValue(data); }).catch((error) => { message.error(error); }); }, []);
+	useEffect(() => { databaseCommunication.get().then((data) => { form.setFieldsValue(data['data']); }).catch((error) => { message.error(error); }); }, []);
 
 	return (
 		<>

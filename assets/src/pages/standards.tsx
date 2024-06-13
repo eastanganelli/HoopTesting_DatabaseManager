@@ -202,7 +202,7 @@ const Standards = () => {
             });
         },
         delete: (key: number) => {
-            conditionalPeriodCommunication.remove({ key: key }).then(response => {
+            testTypeCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
             }).catch((error) => { message.error(error); })
         }

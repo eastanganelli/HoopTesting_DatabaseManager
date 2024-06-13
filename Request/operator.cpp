@@ -13,6 +13,7 @@
 void Operator::API(QHttpServer &myServer, const QString &apiPath) {
     myServer.route(apiPath+"s", QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
+        auto codeStatus = QHttpServerResponse::StatusCode::NoContent;
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             myQuery.exec("CALL selectOperatorsJSON();");
@@ -21,11 +22,12 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
             myQuery.next();
             QJsonArray aux = QJsonDocument::fromJson(myQuery.value("operators").toByteArray()).array();
             responseJSON = { { "operators", aux } };
-            return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
+            codeStatus = QHttpServerResponse::StatusCode::Ok;
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
+            codeStatus = QHttpServerResponse::StatusCode::NoContent;
         }
-        return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
+        return QHttpServerResponse(responseJSON, codeStatus);
     });
 
     // myServer.route(apiPath, QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
@@ -41,6 +43,7 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
 
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
+        auto codeStatus = QHttpServerResponse::StatusCode::NoContent;
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
@@ -57,15 +60,17 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
                 { "familyName", myQuery.value("familyName").toString() }
             };
             responseJSON = { { "operator", op } };
-            return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
+            codeStatus = QHttpServerResponse::StatusCode::Created;
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
+            codeStatus = QHttpServerResponse::StatusCode::NoContent;
         }
-        return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
+        return QHttpServerResponse(responseJSON, codeStatus);
     });
 
     myServer.route(apiPath, QHttpServerRequest::Method::Put, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
+        auto codeStatus = QHttpServerResponse::StatusCode::NoContent;
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
@@ -76,15 +81,17 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
                 throw std::exception(msg.c_str());
             }
             responseJSON = { { "msg", myQuery.value("response").toString() } };
-            return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
+            codeStatus = QHttpServerResponse::StatusCode::Ok;
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
+            codeStatus = QHttpServerResponse::StatusCode::NoContent;
         }
-        return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
+        return QHttpServerResponse(responseJSON, codeStatus);
     });
 
     myServer.route(apiPath, QHttpServerRequest::Method::Delete,[](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
+        auto codeStatus = QHttpServerResponse::StatusCode::NoContent;
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
@@ -95,10 +102,11 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
                 throw std::exception(msg.c_str());
             }
             responseJSON = { { "msg", myQuery.value("response").toString() } };
-            return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::Ok);
+            codeStatus = QHttpServerResponse::StatusCode::Ok;
         } catch(std::exception& err) {
             responseJSON = { { "msg", err.what() } };
+            codeStatus = QHttpServerResponse::StatusCode::NoContent;
         }
-        return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
+        return QHttpServerResponse(responseJSON, codeStatus);
     });
 }

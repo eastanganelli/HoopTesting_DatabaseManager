@@ -209,7 +209,7 @@ const materialCommunication = {
 const testTypeCommunication = {
     add: (inputData: { idStandard: number; testtype: string; }): Promise<responseTypeData<testTypeType>> => {
         return new Promise<responseTypeData<testTypeType>>((resolve, reject) => {
-            fetch(`${basePath}/standard/testtype`, {
+            fetch(`${basePath}/standard/testType`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
@@ -222,7 +222,7 @@ const testTypeCommunication = {
     },
     remove: (inputData: { key: number }): Promise<responseTypeStatus> => {
         return new Promise<responseTypeStatus>((resolve, reject) => {
-            fetch(`${basePath}/standard/testtype`, {
+            fetch(`${basePath}/standard/testType`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)

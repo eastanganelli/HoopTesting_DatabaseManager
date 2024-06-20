@@ -1,137 +1,99 @@
-import React, { FC, FunctionComponent, useContext, useEffect, useRef, useState } from 'react';
-import type { GetRef, InputRef } from 'antd';
-import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
+import { Popconfirm, Table, FloatButton, Button, Modal, Form, message } from 'antd';
 
-import type { EditableRowProps, materialType } from '../../interfaces/table';
+import type { materialType } from '../../interfaces/table';
+import type { ColumnTypes }  from '../../components/editableCell';
+import { EditableRow, EditableCell } from '../../components/editableCell';
+
+import ModalMaterial  from '../../components/materialModal/material';
 import Specifications from './specifications';
+import { materialCommunication } from '../../utils/communication/material';
 
-type FormInstance<T> = GetRef<typeof Form<T>>;
-type EditableTableProps = Parameters<typeof Table>[0];
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+const { confirm } = Modal;
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
-
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-	const [form] = Form.useForm();
-	return (
-		<Form form={form} component={false}>
-			<EditableContext.Provider value={form}>
-				<tr {...props} />
-			</EditableContext.Provider>
-		</Form>
-	);
-};
-
-interface EditableCellProps {
-	title: React.ReactNode;
-	editable: boolean;
-	children: React.ReactNode;
-	dataIndex: keyof materialType;
-	record: materialType;
-	handleSave: (record: materialType) => void;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
-	const [editing, setEditing] = useState(false);
-	const inputRef = useRef<InputRef>(null);
-	const form = useContext(EditableContext)!;
-
-	useEffect(() => { if (editing) { inputRef.current?.focus(); } }, [editing]);
-
-	const toggleEdit = () => {
-		setEditing(!editing);
-		form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-	};
-
-	const save = async () => {
-		try {
-			const values = await form.validateFields();
-
-			toggleEdit();
-			handleSave({ ...record, ...values });
-		} catch (errInfo) { console.log('Save failed:', errInfo); }
-	};
-
-	let childNode = children;
-
-	if (editable) {
-		childNode = editing ? (
-			<Form.Item
-				style={{ margin: 0 }}
-				name={dataIndex}
-				rules={[{ required: true, message: `${title} is required.` }]}
-			>
-				<Input ref={inputRef} onPressEnter={save} onBlur={save} />
-			</Form.Item>
-		) : (<div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>{children}</div>);
-	}
-
-	return <td {...restProps}>{childNode}</td>;
-};
-
-const Materials: FunctionComponent = () => {
-	const { token } = theme.useToken();
-	const [dataSource, setDataSource] = useState<materialType[]>([
-		{
-			key: 0,
-			material: 'PE',
-			description: 'Plastico rigido',
-			specifications: [{ key: 0, specification: "PE100", description: '', configurations: [{ key: 1, time: 1000, temperature: 20 }, { key: 5, time: 100, temperature: 90 }] }, { key: 1, specification: "PE50", description: '', configurations: [{ key: 2, time: 10, temperature: 150 }, { key: 3, time: 30, temperature: 50 }] }]
-		},
-		{
-			key: 1,
-			material: 'PBC',
-			description: 'Plastico semi rigido',
-			specifications: [{ key: 2, specification: "PBC-200", description: '', configurations: [{ key: 4, time: 60, temperature: 50 }] }]
-		},
-	]);
-
-	const [ids, setIds] = useState<{ id: number; type: string; }[]>([]);
-	const [count, setCount] = useState(2);
+const Materials = () => {
+	const [dataSource, setDataSource] = useState<materialType[]>([]);
+	const [newMaterialForm] = Form.useForm();
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
 		{
 			title: 'Material',
 			dataIndex: 'material',
-			width: 50,
+			key: 'material',
 			editable: true
 		},
 		{
 			title: 'Descripción',
 			dataIndex: 'description',
-			width: 150,
+			key: 'description',
 			editable: true
 		},
 		{
 			title: '',
 			dataIndex: 'operation',
-			width: 50,
-			render: (_, record) =>
+			key: 'operation',
+			render: (_, record: any) =>
 				dataSource.length >= 1 ? (<Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}><Button icon={<DeleteOutlined />} danger /></Popconfirm>) : null
-		},
+		}
 	];
 
+    useEffect(() => {
+        materialCommunication.get().then((data: materialType[]) => {
+			setDataSource(data);
+		}).catch((error) => { message.error('Se produjo un error al cargar los materiales!'); });
+    }, []);
+
 	const handleDelete = (key: React.Key) => {
-		const newData = dataSource.filter((item) => item.key !== key);
-		setDataSource(newData);
+		materialCommunication.remove(Number(key)).then((status: Boolean) => {
+			if (status) {
+				const newData = [...dataSource];
+				setDataSource(newData.filter((item) => item.key !== key));
+				message.success('Material eliminado correctamente!');
+			}
+		}).catch((error) => { message.error('Se produjo un error al eliminar el material.'); });
 	};
 
 	const handleAdd = () => {
-		const newData: materialType = { key: count + 1, material: `Nuevo Material`, description: '', specifications: [] };
-		setDataSource([...dataSource, newData]);
-		setCount(count + 1);
+		confirm({
+			title: 'Nuevo Material',
+			content: ( <ModalMaterial myForm={newMaterialForm} /> ),
+			okText: 'Guardar',
+			width: 550,
+			onOk: () => {
+				newMaterialForm.validateFields().then((values) => {
+					materialCommunication.add({ key: 0, material: values['material'], description: values['description'], specifications: [] }).then((response: materialType) => {
+						setDataSource([...dataSource, response]);
+						message.success('Material agregado correctamente!');
+						newMaterialForm.resetFields();
+					}).catch((error) => {
+						message.error('Se produjo un error al agregar el material!');
+						newMaterialForm.resetFields();
+					});
+				}).catch((error) => {
+					message.error('Por favor, complete todos los campos!');
+					newMaterialForm.resetFields();
+				});
+			},
+			cancelText: 'Cancelar',
+			onCancel: () => { newMaterialForm.resetFields(); }
+		});
 	};
 
 	const handleSave = (row: materialType) => {
 		const newData = [...dataSource];
 		const index = newData.findIndex((item) => row.key === item.key);
-		const item = newData[index];
-		newData.splice(index, 1, { ...item, ...row });
-		setDataSource(newData);
+		if(row['material'] !== dataSource[index]['material'] || row['description'] !== dataSource[index]['description']) {
+			const item = newData[index];
+			newData.splice(index, 1, { ...item, ...row });
+			setDataSource(newData);
+			materialCommunication.update(row).then((status: Boolean) => {
+                if (status) { message.success('Material modificado correctamente!'); }
+            }).catch((error) => { message.error('Se produjo un error al modificar el material!'); });
+		}
 	};
 
-	const components = { body: { row: EditableRow, cell: EditableCell } };
+ 	const components = { body: { row: EditableRow, cell: EditableCell } };
 
 	const columns = defaultColumns.map((col) => {
 		if (!col.editable) { return col; }
@@ -139,20 +101,18 @@ const Materials: FunctionComponent = () => {
 	});
 
 	return (
-		<div>
+		<>
 			<Table
 				components={components}
-				rowClassName={() => 'editable-row'}
-				scroll={{ x: 500 }}
+				pagination={{ position: ['bottomCenter'] }}
 				size='small'
-				bordered
+				tableLayout='fixed'
 				dataSource={dataSource}
-				expandable={{ expandedRowRender: (record) => (<Specifications />) }}
 				columns={columns as ColumnTypes}
+				expandable={{ expandedRowRender: (record: materialType | any) => (<Specifications idMaterial={record['key']} Data={record['specifications']} />) }}
 			/>
 			<FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
-			<FloatButton icon={<SaveOutlined />} style={{ right: 72 }} />
-		</div>
+		</>
 	);
 };
 

@@ -1,7 +1,7 @@
 import * as path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 
-let devConfig = {
+const devConfig = {
 	mode: "development",
 	entry: "./src/index.tsx",
 	devtool: "inline-source-map",
@@ -39,17 +39,13 @@ let devConfig = {
 	],
 };
 
-let prodConfig = {
+const prodConfig = {
 	mode: "production",
 	entry: "./src/index.tsx",
-	devtool: "inline-source-map",
 	output: {
-		path: path.resolve("D:\\ezequ\\Projects\\hooptesting_databasemanager\\build\\Desktop_Qt_6_7_0_MSVC2019_64bit-Debug", "dist"),
+		path: path.resolve("D:\\ezequ\\Projects\\HoopTesting_System\\HoopTesting_DatabaseManager", "dist"),
 		filename: "bundle.js",
 		clean: true,
-	},
-	devServer: {
-		port: 3030,
 	},
 	module: {
 		rules: [
@@ -77,4 +73,4 @@ let prodConfig = {
 	],
 };
 
-module.exports = [ /*prodConfig, */devConfig ];
+module.exports = [ devConfig, prodConfig ];

@@ -1,31 +1,27 @@
-#include "mainwindow.h"
-
 #include <QApplication>
-#include <QDir>
-#include <QtHttpServer/QHttpServer>
-#include <QtHttpServer/QHttpServerResponse>
+#include <QThread>
+#include <QSharedPointer>
+
+#include "server.h"
+#include "windowing.h"
 
 int main(int argc, char *argv[]) {
-
     QApplication a(argc, argv);
-    QHttpServer myServer;
-    MainWindow w;
+    Windowing windowing;
+    QSharedPointer<Server> myServer = QSharedPointer<Server>(new Server());
+    QSharedPointer<QThread> myWorkerServer = QSharedPointer<QThread>(new QThread());
 
+    try {
 
-    QDir assetsDir = QDir(QApplication::applicationDirPath() + "/dist");
-    const QString assetsRootDir = assetsDir.absolutePath();
+        myServer->moveToThread(myWorkerServer.data());
+        myWorkerServer->start();
+        myServer->start();
+        windowing.newWindow("Administrador de Base de Datos", QUrl(myServer->URL()));
 
-    myServer.route("/", [assetsRootDir]() {
-        qDebug() << "URL:::::: " << assetsRootDir + QStringLiteral("/index.html");
-        return QHttpServerResponse::fromFile(assetsRootDir + QStringLiteral("/index.html"));
-    });
-
-    const auto port = myServer.listen(QHostAddress::Any, 8300);
-    if (!port) {
-        qDebug() << QCoreApplication::translate(
-            "QHttpServerExample", "Server failed to listen on a port 8000");
-        return 0;
+    } catch(...) {
+        qDebug() << "Error al crear la nueva ventana";
     }
-    w.show();
+
+    myWorkerServer->quit();
     return a.exec();
 }

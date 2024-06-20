@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/assets">
+        <file>dist/bundle.js</file>
+        <file>dist/bundle.js.LICENSE.txt</file>
+        <file>dist/index.html</file>
+    </qresource>
+</RCC>

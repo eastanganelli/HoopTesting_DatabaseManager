@@ -1,179 +1,322 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import type { GetRef, InputRef } from 'antd';
-import { DeleteOutlined, InsertRowBelowOutlined, SaveOutlined, PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Popconfirm, Table, FloatButton, Button, Tag, theme } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-design/icons';
+import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal, Form, message } from 'antd';
 
-import type { standardType } from '../interfaces/table';
+import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType, testTypeType } from '../interfaces/table';
+import type { ColumnTypes } from '../components/editableCell';
 
-type FormInstance<T> = GetRef<typeof Form<T>>;
+import { EditableRow, EditableCell } from '../components/editableCell';
+import { standardCommunication, endCapCommunication, enviromentCommunication, conditionalPeriodCommunication, materialCommunication, testTypeCommunication } from '../utils/communication/standard';
 
-const EditableContext = React.createContext<FormInstance<any> | null>(null);
+import ModalStandard from '../components/standardsModal/standard';
+import ModalMaterial from '../components/standardsModal/material';
+import ModalConditionalPeriod from '../components/standardsModal/conditionalPeriod';
+import ModalEnviroment from '../components/standardsModal/enviroment';
+import ModalEndCap from '../components/standardsModal/endcap';
+import { FormMsgsError } from '../utils/msgs';
+import ModalTestType from '../components/standardsModal/testtype';
 
-interface EditableRowProps {
-    index: number;
-}
+const widthMaxForm = Math.floor(window.innerWidth/2.0);
+const columnsWidth = Math.floor(window.innerWidth/5.0);
 
-const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
-    const [form] = Form.useForm();
-    return (
-        <Form form={form} component={false}>
-            <EditableContext.Provider value={form}>
-                <tr {...props} />
-            </EditableContext.Provider>
-        </Form>
-    );
-};
-
-interface EditableCellProps {
-    title: React.ReactNode;
-    editable: boolean;
-    children: React.ReactNode;
-    dataIndex: keyof standardType;
-    record: standardType;
-    handleSave: (record: standardType) => void;
-}
-
-const EditableCell: React.FC<EditableCellProps> = ({ title, editable, children, dataIndex, record, handleSave, ...restProps }) => {
-    const [editing, setEditing] = useState(false);
-    const inputRef = useRef<InputRef>(null);
-    const form = useContext(EditableContext)!;
-
-    useEffect(() => { if (editing) { inputRef.current?.focus(); } }, [editing]);
-
-    const toggleEdit = () => {
-        setEditing(!editing);
-        form.setFieldsValue({ [dataIndex]: record[dataIndex] });
-    };
-
-    const save = async () => {
-        try {
-            const values = await form.validateFields();
-
-            toggleEdit();
-            handleSave({ ...record, ...values });
-        } catch (errInfo) { console.log('Save failed:', errInfo); }
-    };
-
-    let childNode = children;
-
-    if (editable) {
-        childNode = editing ? (
-            <Form.Item
-                style={{ margin: 0 }}
-                name={dataIndex}
-                rules={[{ required: true, message: `${title} is required.` }]}
-            >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-            </Form.Item>
-        ) : (<div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>{children}</div>);
-    }
-
-    return <td {...restProps}>{childNode}</td>;
-};
-
-type EditableTableProps = Parameters<typeof Table>[0];
-
-type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>;
+const { confirm } = Modal;
 
 const Standards = () => {
     const { token } = theme.useToken();
-    const [dataSource, setDataSource] = useState<standardType[]>([
-        {
-            key: 0,
-            standard: 'ISO 1995-1667',
-            materials: [{ id: 4, material: "PE" }],
-            enviroment: [{id: 1, insertFluid: "Agua", outsideFluid: "Agua"}, {id: 2, insertFluid: "Agua", outsideFluid: "Liquido"}, {id: 3, insertFluid: "Agua", outsideFluid: "Aire"}],
-            endCap: [{ id: 1, endcap: "Tipo A" }, { id: 2, endcap: "Tipo B" }]
-        },
-        {
-            key: 1,
-            standard: 'IRAM-1667-1995',
-            materials: [{ id: 5, material: "PBC" }],
-            enviroment: [],
-            endCap: []
-        },
-    ]);
-
-    const [ids, setIds] = useState<{ id: number; type: string; }[]>([]);
-    const [count, setCount] = useState(2);
+    const [dataSource, setDataSource] = useState<standardType[]>([]);
+    const [newStandardForm]   = Form.useForm();
+    const [newTestTypeForm] = Form.useForm();
+    const [newConditionalPeriodForm] = Form.useForm();
+    const [newEndCapForm]     = Form.useForm();
+    const [newMaterialForm]   = Form.useForm();
+    const [newEnviromentForm] = Form.useForm();
 
     const tagPlusStyle: React.CSSProperties = {
         background: token.colorBgContainer,
         borderStyle: 'dashed',
-      };
-
-    const handleDelete = (key: React.Key) => {
-        const newData = dataSource.filter((item) => item.key !== key);
-        setDataSource(newData);
     };
 
-    const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
-        {
-            title: 'Estandard',
-            dataIndex: 'standard',
-            width: 100,
-            editable: true
-        },
-        {
-            title: 'Materiales',
-            dataIndex: 'materials',
-            width: 150,
-            render: (materials: { id: number; material: string; }[]) =>
-                <>
-                    {materials.map(({ id, material }) => <Tag closeIcon onClose={() => console.log('ID_Standard',)}>{`${material}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
-                </>
-        },
-        {
-            title: 'Ambiente',
-            dataIndex: 'enviroment',
-            width: 150,
-            render: (enviroment: { id: number; insertFluid: string; outsideFluid: string; }[]) =>
-                <>
-                    {enviroment.map(({ id, insertFluid, outsideFluid }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${insertFluid} en ${outsideFluid}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
-                </>
-        },
-        {
-            title: 'Tapa',
-            dataIndex: 'endCap',
-            key: 'tags',
-            width: 150,
-            render: (endCap: { id: number; endcap: string; }[]) =>
-                <>
-                    {endCap.map(({ id, endcap }) => <Tag closeIcon onClose={() => console.log('ID_Standard', 1)}>{`${endcap}`}</Tag>)}
-                    <Tag onClick={() => console.log('adding new material')} style={tagPlusStyle}><PlusOutlined /></Tag>
-                </>
-        },
-        {
-            title: '',
-            dataIndex: 'operation',
-            width: 50,
-            render: (_, record) =>
-                dataSource.length >= 1 ? (
-                    <>
-                        {/* <Button icon={<FolderOpenOutlined />} type='primary' ghost /> */}
-                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
-                            <Button icon={<DeleteOutlined />} danger />
-                        </Popconfirm>
-                    </>
-                ) : null,
-        },
-    ];
-
-    const handleAdd = () => {
-        const newData: standardType = { key: count, standard: `Nuevo Estandard`, materials: [], enviroment: [], endCap: [] };
-        setDataSource([...dataSource, newData]);
-        setCount(count + 1);
-    };
+    useEffect(() => {
+        standardCommunication.get().then((response: {msg:string; data: standardType[];}) => {
+            setDataSource(response['data']);
+            message.success(response['msg']);
+        }).catch((error) => { message.error(error); });
+    }, []);
 
     const handleSave = (row: standardType) => {
         const newData = [...dataSource];
         const index = newData.findIndex((item) => row.key === item.key);
-        const item = newData[index];
-        newData.splice(index, 1, { ...item, ...row });
-        setDataSource(newData);
+        if (row['standard'] !== dataSource[index]['standard']) {
+            const item = newData[index];
+            newData.splice(index, 1, { ...item, ...row });
+            setDataSource(newData);
+            standardCommunication.update({ key: Number(row['key']), standard: row['standard'] }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); });
+        }
     };
+
+    const Standard = {
+        add: () => {
+            newStandardForm.resetFields();
+            confirm({
+                title: 'Nuevo Estandard',
+                content: (<ModalStandard myForm={newStandardForm} />),
+                width: widthMaxForm,
+                okText: 'Agregar',
+                onOk: () => {
+                    newStandardForm.validateFields().then((values) => {
+                        standardCommunication.add({ standard: values['standard'] }).then(response => {
+                            setDataSource([...dataSource, response['data']]);
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { console.log('Cancel'); },
+
+            });
+        },
+        delete: (key: React.Key) => {
+            standardCommunication.remove({ key: Number(key) }).then(response => {
+                if (response['status']) {
+                    setDataSource(dataSource.filter((item) => item.key !== key));
+                    message.success(response['msg']);
+                }
+            }).catch((error) => { message.error(error); });
+        }
+    };
+
+    const EndCap = {
+        new: (record: any) => {
+            newEndCapForm.resetFields();
+            confirm({
+                title: 'Nuevo Ambiente',
+                content: (<ModalEndCap myForm={newEndCapForm} />),
+                width: widthMaxForm,
+                okText: 'Agregar',
+                onOk: () => {
+                    newEndCapForm.validateFields().then((values) => {
+                        endCapCommunication.add({ idStandard: record['key'], endcap: values['endCap'] }).then(response => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
+                            dataSource[myIndex]['endCaps'].push(response['data']);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { },
+            });
+        },
+        delete: (key: number) => {
+            endCapCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); });
+        }
+    };
+
+    const Enviroment = {
+        new: (record: any) => {
+            newEnviromentForm.resetFields();
+            confirm({
+                title: 'Nuevo Ambiente',
+                content: (<ModalEnviroment myForm={newEnviromentForm} />),
+                width: widthMaxForm,
+                okText: 'Agregar',
+                onOk: () => {
+                    newEnviromentForm.validateFields().then(values => {
+                        enviromentCommunication.add({ idStandard: record['key'], insideFluid: values['insideFluid'], outsideFluid: values['outsideFluid'] }).then(response => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
+                            dataSource[myIndex]['enviroments'].push(response['data']);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { },
+
+            });
+        },
+        delete: (key: number) => {
+            enviromentCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); });
+        }
+    };
+
+    const ConditionalPeriod = {
+        new: (record: any) => {
+            newConditionalPeriodForm.resetFields();
+            confirm({
+                title: 'Nuevo Período Condicional',
+                content: (<ModalConditionalPeriod myForm={newConditionalPeriodForm} />),
+                width: widthMaxForm,
+                okText: 'Agregar',
+                onOk: () => {
+                    newConditionalPeriodForm.validateFields().then(values => {
+                        const aux = { idStandard: record['key'], aproxTime: values['aproxTime'], aproxType: values['aproxType'], maxWall: values['maxWall'], minWall: values['minWall'], time: values['time'], timeType: values['timeType'] };
+                        conditionalPeriodCommunication.add(aux).then(response => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
+                            dataSource[myIndex]['conditionalPeriods'].push(response['data']);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { },
+
+            });
+        },
+        delete: (key: number) => {
+            conditionalPeriodCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); })
+        }
+    };
+
+    const TestType = {
+        new: (record: any) => {
+            newTestTypeForm.resetFields();
+            confirm({
+                title: 'Nuevo Tipo de Prueba',
+                content: (<ModalTestType myForm={newTestTypeForm} />),
+                width: widthMaxForm,
+                okText: 'Agregar',
+                onOk: () => {
+                    newTestTypeForm.validateFields().then(values => {
+                        const aux = { idStandard: record['key'], testtype: values['testtype'] };
+                        testTypeCommunication.add(aux).then(response => {
+                            const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
+                            dataSource[myIndex]['testTypes'].push(response['data']);
+                            setDataSource(dataSource.splice(0, dataSource.length));
+                            message.success(response['msg']);
+                        }).catch((error) => { message.error(error); });
+                    }).catch(() => { message.error(FormMsgsError); });
+                },
+                cancelText: 'Cancelar',
+                onCancel: () => { },
+
+            });
+        },
+        delete: (key: number) => {
+            testTypeCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); })
+        }
+    };
+
+    const Material = {
+        new: (record: any) => {
+            newMaterialForm.resetFields();
+            materialCommunication.get().then(response => {
+                confirm({
+                    title: 'Nuevo Material Relacionado',
+                    content: (<ModalMaterial myForm={newMaterialForm} materialList={response['data']} />),
+                    width: widthMaxForm,
+                    okText: 'Agregar',
+                    onOk: () => {
+                        newMaterialForm.validateFields().then((values: { idMaterial: number; }) => {
+                            materialCommunication.add({ idStandard: record['key'], idMaterial: Number(values['idMaterial']) }).then(response  => {
+                                const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
+                                dataSource[myIndex]['materials'].push(response['data']);
+                                setDataSource(dataSource.splice(0, dataSource.length));
+                                message.success(response['msg']);
+                            }).catch((error) => { message.error(error); });
+                        }).catch(() => { message.error(FormMsgsError); });
+                    },
+                    cancelText: 'Cancelar',
+                    onCancel: () => { },
+                });
+            }).catch((error) => { message.error(error); });
+        },
+        delete: (key: number) => {
+            materialCommunication.remove({ key: key }).then(response => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error); })
+        }
+    };
+
+    const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
+        {
+            title: 'ID',
+            dataIndex: 'key',
+            width: 50,
+            fixed: true,
+            editable: false,
+        },
+        {
+            title: 'Estandard',
+            dataIndex: 'standard',
+            fixed: true,
+            width: columnsWidth,
+            editable: true
+        },
+        {
+            title: 'Tapa',
+            dataIndex: 'endCaps',
+            width: columnsWidth,
+            render: (endCaps: endCapType[], record, index) => 
+                <>
+                    { endCaps.map((value: endCapType) => <Tag key={`endcap_${value['key']}`} closeIcon onClose={(_) => EndCap.delete(Number(value['key']))}>{`${value['endcap']}`}</Tag>) }
+                    <Tag key={`new_endcap_${index}`} onClick={() => EndCap.new(record)} style={tagPlusStyle} ><PlusOutlined /></Tag>
+                </>
+        },
+        {
+            title: 'Entorno',
+            dataIndex: 'enviroments',
+            width: columnsWidth,
+            render: (enviroment: enviromentType[], record, index) =>
+                <>
+                    {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['key']}`} closeIcon onClose={() => Enviroment.delete(Number(value['key']))}>{`${value['insideFluid']} en ${value['outsideFluid']}`}</Tag>)}
+                    <Tag key={`new_enviroment_${index}`} onClick={() => Enviroment.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
+                </>
+        },
+        {
+            title: 'Periodo Condicional',
+            dataIndex: 'conditionalPeriods',
+            width: columnsWidth,
+            render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
+                <>
+                    {conditionalPeriods.map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{`${value['time']}`}</Tag>)}
+                    <Tag key={`new_conditionalperiod_${index}`} onClick={() => ConditionalPeriod.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
+                </>
+        },
+        {
+            title: 'Tipo de Prueba',
+            dataIndex: 'testTypes',
+            width: columnsWidth * 1.5,
+            render: (testTypes: testTypeType[], record, index) =>
+                <>
+                    {testTypes.map((value: testTypeType) => <Tag key={`test_${value['key']}`} closeIcon onClose={() => TestType.delete(Number(value['key']))}>{`${value['testtype']}`}</Tag>)}
+                    <Tag key={`new_testtype_${index}`} onClick={() => TestType.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
+                </>
+        },
+        {
+            title: 'Material',
+            dataIndex: 'materials',
+            width: columnsWidth,
+            render: (materials: standardHasMaterialType[], record, index) =>
+                <>
+                    {materials.map((value: standardHasMaterialType) => <Tag key={`material_${value['key']}`} closeIcon onClose={() => Material.delete(Number(value['key']))}>{`${value['material']}`}</Tag>)}
+                    <Tag key={`new_material_${index}`} onClick={() => Material.new(record)} style={tagPlusStyle} ><PlusOutlined /></Tag>
+                </>
+        },
+        {
+            dataIndex: 'operation',
+            width: 70,
+            render: (_, record) =>
+                dataSource.length >= 1 ? (
+                    <>
+                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => Standard.delete(record['key'])}>
+                            <Button icon={<DeleteOutlined />} danger />
+                        </Popconfirm>
+                    </>
+                ) : null
+        },
+    ];
 
     const components = { body: { row: EditableRow, cell: EditableCell } };
 
@@ -183,11 +326,10 @@ const Standards = () => {
     });
 
     return (
-        <div>
-            <Table components={components} rowClassName={() => 'editable-row'} scroll={{ x: 500 }} size='small' bordered dataSource={dataSource} columns={columns as ColumnTypes} />
-            <FloatButton icon={<InsertRowBelowOutlined />} onClick={handleAdd} style={{ right: 24 }} />
-            <FloatButton icon={<SaveOutlined />} style={{ right: 72 }} />
-        </div>
+        <>
+            <Table components={components} size='small' tableLayout='fixed' dataSource={dataSource} columns={columns as ColumnTypes} scroll={{ x: window.innerWidth * 1.2 }} />
+            <FloatButton icon={<InsertRowBelowOutlined />} onClick={Standard.add} style={{ right: 24 }} />
+        </>
     );
 };
 

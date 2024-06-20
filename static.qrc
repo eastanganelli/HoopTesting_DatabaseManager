@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/static/css"/>
+    <qresource prefix="/static/js"/>
+    <qresource prefix="/static/media"/>
+</RCC>

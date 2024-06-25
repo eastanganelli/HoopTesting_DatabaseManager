@@ -32,10 +32,10 @@ interface testTypeType {
 }
 
 interface conditionalPeriodType {
-    key:     Key;
-    time:    string;
-    minwall: number;
-    maxwall: number;
+    key:        Key;
+    condPeriod: number;
+    minwall:    number;
+    maxwall:    number;
 }
 
 interface standardHasMaterialType {

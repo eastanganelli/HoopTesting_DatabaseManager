@@ -11,6 +11,9 @@ export interface responseTypeStatus {
 
 export const FormMsgsError = "Por favor, completar todos los campos!";
 
+/**
+ * Standard Messages
+ */
 export const StandardMsgs = {
     success: {
         select: "Estandardes seleccionados con éxito!",
@@ -41,14 +44,14 @@ export const EndCapMsgs = {
 
 export const EnviromentMsgs = {
     success: {
-        create: "Ambiente creado con éxito!",
-        update: "Ambiente actualizado con éxito!",
-        delete: "Ambiente eliminado con éxito!"
+        create: "Entorno creado con éxito!",
+        update: "Entorno actualizado con éxito!",
+        delete: "Entorno eliminado con éxito!"
     },
     error: {
-        create: "Error al crear el ambiente!",
-        update: "Error al actualizar el ambiente!",
-        delete: "Error al eliminar el ambiente!"
+        create: "Error al crear el entorno!",
+        update: "Error al actualizar el entorno!",
+        delete: "Error al eliminar el entorno!"
     }
 };
 
@@ -90,5 +93,67 @@ export const TestTypeMsgs = {
         create: "Error al crear el tipo de prueba!",
         update: "Error al actualizar el tipo de prueba!",
         delete: "Error al eliminar el tipo de prueba!"
+    }
+};
+
+/*
+* Material Messages
+*/
+export const MaterialMsgs = {
+    success: {
+        select: "Materiales seleccionados con éxito!",
+        create: "Material creado con éxito!",
+        update: "Material actualizado con éxito!",
+        delete: "Material eliminado con éxito!"
+    },
+    error: {
+        select: "Error al seleccionar los materiales!",
+        create: "Error al crear el material!",
+        update: "Error al actualizar el material!",
+        delete: "Error al eliminar el material!"
+    }
+};
+
+export const SpecificationMsgs = {
+    success: {
+        create: "Especificación creada con éxito!",
+        update: "Especificación actualizada con éxito!",
+        delete: "Especificación eliminada con éxito!"
+    },
+    error: {
+        create: "Error al crear la especificación!",
+        update: "Error al actualizar la especificación!",
+        delete: "Error al eliminar la especificación!"
+    }
+};
+
+export const ConfigurationMsgs = {
+    success: {
+        create: "Configuración creada con éxito!",
+        update: "Configuración actualizada con éxito!",
+        delete: "Configuración eliminada con éxito!"
+    },
+    error: {
+        create: "Error al crear la configuración!",
+        update: "Error al actualizar la configuración!",
+        delete: "Error al eliminar la configuración!"
+    }
+};
+
+/**
+ * Operator Messages
+ */
+export const OperatorMsgs = {
+    success: {
+        select: "Operadores seleccionados con éxito!",
+        create: "Operador creado con éxito!",
+        update: "Operador actualizado con éxito!",
+        delete: "Operador eliminado con éxito!"
+    },
+    error: {
+        select: "Error al seleccionar los operadores!",
+        create: "Error al crear el operador!",
+        update: "Error al actualizar el operador!",
+        delete: "Error al eliminar el operador!"
     }
 };

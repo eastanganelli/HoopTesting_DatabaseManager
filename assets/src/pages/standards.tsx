@@ -16,7 +16,7 @@ import ModalEndCap from '../components/standardsModal/endcap';
 import { FormMsgsError } from '../utils/msgs';
 import ModalTestType from '../components/standardsModal/testtype';
 
-const widthMaxForm = Math.floor(window.innerWidth/2.0);
+const widthMaxForm = Math.floor(window.innerWidth);
 const columnsWidth = Math.floor(window.innerWidth/5.0);
 
 const { confirm } = Modal;
@@ -36,13 +36,6 @@ const Standards = () => {
         borderStyle: 'dashed',
     };
 
-    useEffect(() => {
-        standardCommunication.get().then((response: {msg:string; data: standardType[];}) => {
-            setDataSource(response['data']);
-            message.success(response['msg']);
-        }).catch((error) => { message.error(error); });
-    }, []);
-
     const handleSave = (row: standardType) => {
         const newData = [...dataSource];
         const index = newData.findIndex((item) => row.key === item.key);
@@ -52,7 +45,7 @@ const Standards = () => {
             setDataSource(newData);
             standardCommunication.update({ key: Number(row['key']), standard: row['standard'] }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error); });
+            }).catch((error) => { message.error(error['msg'] | error); });
         }
     };
 
@@ -61,6 +54,7 @@ const Standards = () => {
             newStandardForm.resetFields();
             confirm({
                 title: 'Nuevo Estandard',
+                centered: true,
                 content: (<ModalStandard myForm={newStandardForm} />),
                 width: widthMaxForm,
                 okText: 'Agregar',
@@ -69,7 +63,7 @@ const Standards = () => {
                         standardCommunication.add({ standard: values['standard'] }).then(response => {
                             setDataSource([...dataSource, response['data']]);
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error); });
+                        }).catch((error) => { message.error(error['msg'] | error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -83,7 +77,7 @@ const Standards = () => {
                     setDataSource(dataSource.filter((item) => item.key !== key));
                     message.success(response['msg']);
                 }
-            }).catch((error) => { message.error(error); });
+            }).catch((error) => { message.error(error['msg'] | error); });
         }
     };
 
@@ -91,7 +85,8 @@ const Standards = () => {
         new: (record: any) => {
             newEndCapForm.resetFields();
             confirm({
-                title: 'Nuevo Ambiente',
+                title: 'Nuevo Tapa',
+                centered: true,
                 content: (<ModalEndCap myForm={newEndCapForm} />),
                 width: widthMaxForm,
                 okText: 'Agregar',
@@ -102,7 +97,7 @@ const Standards = () => {
                             dataSource[myIndex]['endCaps'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error); });
+                        }).catch((error) => { message.error(error['msg'] | error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -112,7 +107,7 @@ const Standards = () => {
         delete: (key: number) => {
             endCapCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error); });
+            }).catch((error) => { message.error(error['msg'] | error); });
         }
     };
 
@@ -120,7 +115,8 @@ const Standards = () => {
         new: (record: any) => {
             newEnviromentForm.resetFields();
             confirm({
-                title: 'Nuevo Ambiente',
+                title: 'Nuevo Entorno',
+                centered: true,
                 content: (<ModalEnviroment myForm={newEnviromentForm} />),
                 width: widthMaxForm,
                 okText: 'Agregar',
@@ -131,7 +127,7 @@ const Standards = () => {
                             dataSource[myIndex]['enviroments'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error); });
+                        }).catch((error) => { message.error(error['msg'] | error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -142,27 +138,28 @@ const Standards = () => {
         delete: (key: number) => {
             enviromentCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error); });
+            }).catch((error) => { message.error(error['msg'] | error); });
         }
     };
 
     const ConditionalPeriod = {
         new: (record: any) => {
             newConditionalPeriodForm.resetFields();
+            newConditionalPeriodForm.setFieldsValue({ timeType: 'h', aproxType: 'min' });
             confirm({
                 title: 'Nuevo Período Condicional',
+                centered: true,
                 content: (<ModalConditionalPeriod myForm={newConditionalPeriodForm} />),
                 width: widthMaxForm,
                 okText: 'Agregar',
                 onOk: () => {
-                    newConditionalPeriodForm.validateFields().then(values => {
-                        const aux = { idStandard: record['key'], aproxTime: values['aproxTime'], aproxType: values['aproxType'], maxWall: values['maxWall'], minWall: values['minWall'], time: values['time'], timeType: values['timeType'] };
-                        conditionalPeriodCommunication.add(aux).then(response => {
+                    newConditionalPeriodForm.validateFields().then((values: { aproxTime: number; aproxType: string; maxWall: number; minWall: number; time: number; timeType: string; }) => {
+                        conditionalPeriodCommunication.add({ idStandard: record['key'], maxWall: values['maxWall'], minWall: values['minWall'], time: values['time'], timeType: values['timeType'], aproxTime: values['aproxTime'], aproxType: values['aproxType']}).then(response => {
                             const myIndex = dataSource.findIndex((item: standardType) => item['key'] === record['key']);
                             dataSource[myIndex]['conditionalPeriods'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error); });
+                        }).catch((error) => { message.error(error['msg'] | error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -173,7 +170,7 @@ const Standards = () => {
         delete: (key: number) => {
             conditionalPeriodCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error); })
+            }).catch((error) => { message.error(error['msg'] | error); })
         }
     };
 
@@ -182,6 +179,7 @@ const Standards = () => {
             newTestTypeForm.resetFields();
             confirm({
                 title: 'Nuevo Tipo de Prueba',
+                centered: true,
                 content: (<ModalTestType myForm={newTestTypeForm} />),
                 width: widthMaxForm,
                 okText: 'Agregar',
@@ -193,7 +191,7 @@ const Standards = () => {
                             dataSource[myIndex]['testTypes'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error); });
+                        }).catch((error) => { message.error(error['msg'] | error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -204,7 +202,7 @@ const Standards = () => {
         delete: (key: number) => {
             testTypeCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error); })
+            }).catch((error) => { message.error(error['msg'] | error); })
         }
     };
 
@@ -214,6 +212,7 @@ const Standards = () => {
             materialCommunication.get().then(response => {
                 confirm({
                     title: 'Nuevo Material Relacionado',
+                    centered: true,
                     content: (<ModalMaterial myForm={newMaterialForm} materialList={response['data']} />),
                     width: widthMaxForm,
                     okText: 'Agregar',
@@ -224,18 +223,18 @@ const Standards = () => {
                                 dataSource[myIndex]['materials'].push(response['data']);
                                 setDataSource(dataSource.splice(0, dataSource.length));
                                 message.success(response['msg']);
-                            }).catch((error) => { message.error(error); });
+                            }).catch((error) => { message.error(error['msg'] | error); });
                         }).catch(() => { message.error(FormMsgsError); });
                     },
                     cancelText: 'Cancelar',
                     onCancel: () => { },
                 });
-            }).catch((error) => { message.error(error); });
+            }).catch((error) => { message.error(error['msg'] | error); });
         },
         delete: (key: number) => {
             materialCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error); })
+            }).catch((error) => { message.error(error['msg'] | error); })
         }
     };
 
@@ -251,7 +250,7 @@ const Standards = () => {
             title: 'Estandard',
             dataIndex: 'standard',
             fixed: true,
-            width: columnsWidth,
+            width: columnsWidth * 0.75,
             editable: true
         },
         {
@@ -277,10 +276,10 @@ const Standards = () => {
         {
             title: 'Periodo Condicional',
             dataIndex: 'conditionalPeriods',
-            width: columnsWidth,
+            width: columnsWidth * 1.5,
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
-                    {conditionalPeriods.map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{`${value['time']}`}</Tag>)}
+                    {conditionalPeriods.sort((a, b) => a['minwall'] < b['minwall'] ? -1 : 1).map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{`${value['condPeriod']}`}</Tag>)}
                     <Tag key={`new_conditionalperiod_${index}`} onClick={() => ConditionalPeriod.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
@@ -306,17 +305,22 @@ const Standards = () => {
         },
         {
             dataIndex: 'operation',
-            width: 70,
+            width: 40,
             render: (_, record) =>
-                dataSource.length >= 1 ? (
-                    <>
-                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => Standard.delete(record['key'])}>
-                            <Button icon={<DeleteOutlined />} danger />
-                        </Popconfirm>
-                    </>
-                ) : null
-        },
+                <>
+                    <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => Standard.delete(record['key'])}>
+                        <Button icon={<DeleteOutlined />} danger />
+                    </Popconfirm>
+                </>
+        }
     ];
+
+    useEffect(() => {
+        standardCommunication.get().then((response: {msg:string; data: standardType[];}) => {
+            setDataSource(response['data']);
+            // message.success(response['msg']);
+        }).catch((error) => { message.error(error['msg'] | error); });
+    }, []);
 
     const components = { body: { row: EditableRow, cell: EditableCell } };
 

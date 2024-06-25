@@ -1,6 +1,6 @@
 import type { conditionalPeriodType, endCapType, enviromentType, materialType, standardHasMaterialType, standardType, testTypeType } from '../../interfaces/table';
 import { basePath } from '../basePath';
-import { MaterialRelatedMsgs, StandardMsgs } from '../msgs';
+import { ConditionalPeriodMsgs, EndCapMsgs, EnviromentMsgs, MaterialRelatedMsgs, StandardMsgs, TestTypeMsgs } from '../msgs';
 
 import { responseTypeData, responseTypeStatus } from '../msgs';
 
@@ -83,7 +83,7 @@ const endCapCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { endCap: endCapType }) => {
-                    resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['endCap'] });
+                    resolve({ status: true, msg: EndCapMsgs['success']['create'], data: data['endCap'] });
                 });
             }).catch((error) => { reject(error); })
         });
@@ -95,8 +95,8 @@ const endCapCommunication = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                if (response.status == 200) resolve({ status: true, msg: StandardMsgs['success']['delete'] });
-                else reject(StandardMsgs['error']['delete']);
+                if (response.status == 200) resolve({ status: true, msg: EndCapMsgs['success']['delete'] });
+                else reject(EndCapMsgs['error']['delete']);
             }).catch((error) => { reject(error); })
         });
     }
@@ -111,7 +111,7 @@ const enviromentCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { enviroment: enviromentType }) => {
-                    resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['enviroment'] });
+                    resolve({ status: true, msg: EnviromentMsgs['success']['create'], data: data['enviroment'] });
                 });
             }).catch((error) => { reject(error); })
         });
@@ -123,15 +123,15 @@ const enviromentCommunication = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                if (response.status == 200) resolve({ status: true, msg: StandardMsgs['success']['delete'] });
-                else reject(StandardMsgs['error']['delete']);
+                if (response.status == 200) resolve({ status: true, msg: EnviromentMsgs['success']['delete'] });
+                else reject(EnviromentMsgs['error']['delete']);
             }).catch((error) => { reject(error); })
         });
     }
 };
 
 const conditionalPeriodCommunication = {
-    add: (inputData: { idStandard: number; aproxTime: number; aproxType: string; maxWall: number; minWall: number; time: number; timeType: string; }): Promise<responseTypeData<conditionalPeriodType>> => {
+    add: (inputData: { idStandard: number; maxWall: number; minWall: number; time: number; timeType: string; aproxTime: number; aproxType: string; }): Promise<responseTypeData<conditionalPeriodType>> => {
         return new Promise<responseTypeData<conditionalPeriodType>>((resolve, reject) => {
             fetch(`${basePath}/standard/conditionalperiod`, {
                 method: 'POST',
@@ -139,7 +139,7 @@ const conditionalPeriodCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { conditionalPeriod: conditionalPeriodType }) => {
-                    resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['conditionalPeriod']});
+                    resolve({ status: true, msg: ConditionalPeriodMsgs['success']['create'], data: data['conditionalPeriod']});
                 });
             }).catch((error) => { reject(error); })
         });
@@ -151,8 +151,8 @@ const conditionalPeriodCommunication = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                if (response.status == 200) resolve({ status: true, msg: StandardMsgs['success']['delete'] });
-                else reject(StandardMsgs['error']['delete']);
+                if (response.status == 200) resolve({ status: true, msg: ConditionalPeriodMsgs['success']['delete'] });
+                else reject(ConditionalPeriodMsgs['error']['delete']);
             }).catch((error) => { reject(error); })
         });
     }
@@ -215,7 +215,7 @@ const testTypeCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { testType: testTypeType }) => {
-                    resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['testType'] });
+                    resolve({ status: true, msg: TestTypeMsgs['success']['create'], data: data['testType'] });
                 });
             }).catch((error) => { reject(error); })
         });
@@ -227,8 +227,8 @@ const testTypeCommunication = {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                if (response.status == 200) resolve({ status: true, msg: StandardMsgs['success']['delete'] });
-                else reject(StandardMsgs['error']['delete']);
+                if (response.status == 200) resolve({ status: true, msg: TestTypeMsgs['success']['delete'] });
+                else reject(TestTypeMsgs['error']['delete']);
             }).catch((error) => { reject(error); })
         });
     }

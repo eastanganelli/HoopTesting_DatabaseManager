@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, Button, Modal, Form, message } from 'antd';
 
@@ -9,22 +9,64 @@ import { EditableRow, EditableCell } from '../../components/editableCell';
 import Configurations     from './configurations';
 import ModalSpecification from '../../components/materialModal/specification';
 import { specificationCommunication } from '../../utils/communication/material';
+import { FormMsgsError } from '../../utils/msgs';
 
 interface Props { Data: specificationType[]; idMaterial: number }
 
 const { confirm } = Modal;
 
 const Specifications: FunctionComponent<Props> = (Props : Props) => {
-	const [dataSource, setDataSource] = useState<specificationType[]>(Props['Data']);
+	const {Data, idMaterial} = Props;
+	const [dataSource, setDataSource] = useState<specificationType[]>(Data);
 	const [newSpecificationForm] = Form.useForm();
 
+	const handleAdd = () => {confirm({
+			title: 'Nueva Especificación',
+			content: ( <ModalSpecification myForm={newSpecificationForm} /> ),
+			okText: 'Guardar',
+			width: 550,
+			onOk: () => {
+				newSpecificationForm.validateFields().then((values) => {
+					specificationCommunication.add({ idMaterial: idMaterial, specification: values['specification'], description: values['description'] }).then((response) => {
+						setDataSource([...dataSource, response['data']]);
+						message.success(response['msg']);
+						newSpecificationForm.resetFields();
+					}).catch((error) => {
+						message.error(error['msg'] | error);
+						newSpecificationForm.resetFields();
+					});
+				}).catch(() => {
+					message.error(FormMsgsError);
+					newSpecificationForm.resetFields();
+				});
+			},
+			cancelText: 'Cancelar',
+			onCancel: () => { newSpecificationForm.resetFields(); }
+		});
+	};
+
+	const handleSave = (row: specificationType) => {
+		const newData = [...dataSource];
+		const index = newData.findIndex((item) => row.key === item.key);
+		if(row['specification'] !== dataSource[index]['specification'] || row['description'] !== dataSource[index]['description']) {
+			specificationCommunication.update(row).then((response) => {
+				if (response['status']) {
+					const item = newData[index];
+					newData.splice(index, 1, { ...item, ...row });
+					setDataSource(newData);
+					message.success(response['msg']);
+				}
+			}).catch((error) => { message.error(error['msg'] | error); })
+		}
+	};
+
 	const handleDelete = (key: React.Key) => {
-		specificationCommunication.remove(Number(key)).then((status: Boolean) => {
-			if (status) {
+		specificationCommunication.remove(Number(key)).then((response) => {
+			if (response['status']) {
 				setDataSource(dataSource.filter((item) => item.key !== key));
-				message.success('Especificación: eliminada correctamente!');
+				message.success(response['msg']);
 			}
-		}).catch((error) => { message.error('Especificación: se produjo un error al eliminarla!'); });
+		}).catch((error) => { message.error(error['msg'] | error); });
 	};
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -42,55 +84,13 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 			title: '',
 			dataIndex: 'operation',
 			render: (_, record) =>
-				dataSource.length >= 1 ? (
-					<>
-						<Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
-							<Button icon={<DeleteOutlined />} danger />
-						</Popconfirm>
-					</>
-				) : null,
+				<>
+					<Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
+						<Button icon={<DeleteOutlined />} danger />
+					</Popconfirm>
+				</>
 		}
 	];
-
-	const handleAdd = () => {confirm({
-			title: 'Nueva Especificación',
-			content: ( <ModalSpecification myForm={newSpecificationForm} /> ),
-			okText: 'Guardar',
-			width: 550,
-			onOk: () => {
-				newSpecificationForm.validateFields().then((values) => {
-					specificationCommunication.add({ idMaterial: Props['idMaterial'], specification: values['specification'], description: values['description'] }).then((response: specificationType) => {
-						setDataSource([...dataSource, response]);
-						message.success('Especificación agregada correctamente!');
-						newSpecificationForm.resetFields();
-					}).catch(() => {
-						message.error('Se produjo un error al agregar la especificación!');
-						newSpecificationForm.resetFields();
-					});
-				}).catch(() => {
-					message.error('Se produjo un error al validar los campos!');
-					newSpecificationForm.resetFields();
-				});
-			},
-			cancelText: 'Cancelar',
-			onCancel: () => { newSpecificationForm.resetFields(); }
-		});
-	};
-
-	const handleSave = (row: specificationType) => {
-		const newData = [...dataSource];
-		const index = newData.findIndex((item) => row.key === item.key);
-		if(row['specification'] !== dataSource[index]['specification'] || row['description'] !== dataSource[index]['description']) {
-			specificationCommunication.update(row).then((status: Boolean) => {
-				if (status) {
-					const item = newData[index];
-					newData.splice(index, 1, { ...item, ...row });
-					setDataSource(newData);
-					message.success('Especificación actualizada correctamente!');
-				}
-			}).catch((error) => { message.error('Se produjo un error al actualizar la especificación!'); })
-		}
-	};
 
 	const components = { body: { row: EditableRow, cell: EditableCell } };
 

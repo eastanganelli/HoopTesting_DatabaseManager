@@ -1,26 +1,28 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, Button, Modal, Form, TableColumnsType, message } from 'antd';
 
 import type { configurationType } from '../../interfaces/table';
 import ModalConfiguration from '../../components/materialModal/configuration';
 import { configurationCommunication } from '../../utils/communication/material';
+import { FormMsgsError } from '../../utils/msgs';
 
 interface Props { Data: configurationType[]; idSpecification: number }
 
 const { confirm } = Modal;
 
 const Configurations: FunctionComponent<Props> = (Props: Props) => {
-    const [dataSource, setDataSource] = useState<configurationType[]>(Props['Data']);
+    const {Data, idSpecification} = Props;
+    const [dataSource, setDataSource] = useState<configurationType[]>(Data);
     const [newConfigurationForm] = Form.useForm();
 
     const handleDelete = (key: React.Key) => {
-        configurationCommunication.remove(Number(key)).then((status: Boolean) => {
-            if (status) {
+        configurationCommunication.remove(Number(key)).then((response) => {
+            if (response['status']) {
                 setDataSource(dataSource.filter((item) => item.key !== key));
-                message.success('Configuración eliminada correctamente!');
+                message.success(response['msg']);
             }
-        }).catch((error) => { message.error('Se produjo un error al eliminar la configuración!'); });
+        }).catch((error) => { message.error(error['msg'] | error) });
     };
 
 	const handleAdd = () => {
@@ -31,16 +33,16 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
 			width: 550,
 			onOk: () => {
 				newConfigurationForm.validateFields().then((values) => {
-                    configurationCommunication.add({ idSpecification: Props['idSpecification'], time: values['time'], type: newConfigurationForm.getFieldValue('type'), temperature: values['temperature'] }).then((response: configurationType) => {
-						setDataSource([...dataSource, response]);
-                        message.success('Configuración agregada correctamente!');
+                    configurationCommunication.add({ idSpecification: idSpecification, time: values['time'], type: newConfigurationForm.getFieldValue('type'), temperature: values['temperature'] }).then((response) => {
+						setDataSource([...dataSource, response['data']]);
+                        message.success(response['msg']);
                         newConfigurationForm.resetFields();
-					}).catch((error) => { 
-                        message.error('Se produjo un error al agregar la configuración!');
+					}).catch((error) => {
+                        message.error(error['msg'] | error)
                         newConfigurationForm.resetFields();
                     });
-                }).catch((error) => {
-                    message.error('Por favor, complete todos los campos!');
+                }).catch(() => {
+                    message.error(FormMsgsError);
                     newConfigurationForm.resetFields();
                 });
 			},
@@ -63,20 +65,20 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                     const item = newData[index];
                     if(values['temperature'] !== row['temperature'] || values['time'] !== row['time'] || values['type'] !== row['type']) {
                         const updatedData = { key: row['key'], time: values['time'], type: newConfigurationForm.getFieldValue('type'), temperature: values['temperature'] };
-                    	configurationCommunication.update(updatedData).then((status: Boolean) => {                      
-                            if (status) {
+                    	configurationCommunication.update(updatedData).then((response) => {                      
+                            if (response['status']) {
                                 newData.splice(index, 1, { ...item, ...updatedData });
                                 setDataSource(newData);
-                                message.success('Configuración modificada correctamente!');
+                                message.success(response['msg']);
                                 newConfigurationForm.resetFields();
                             }
                         }).catch((error) => {
-                            message.error('Se produjo un error al modificar la configuración!');
+                            message.error(error['msg'] | error)
                             newConfigurationForm.resetFields();
                         });
                     }
-                }).catch((error) => {
-                    message.error('Por favor, complete todos los campos!');
+                }).catch(() => {
+                    message.error(FormMsgsError);
                     newConfigurationForm.resetFields();
                 });
             },
@@ -93,7 +95,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
         {
             title: 'Tiempo',
             dataIndex: 'time',
-            render: (value, record) => (
+            render: (_, record) => (
                 <>
                     {`${record['time']} ${record['type']}`}
                 </>
@@ -113,6 +115,8 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                 ) : null,
         }
     ];
+
+	useEffect(() => {  }, [dataSource]);
 
     return (
 		<>

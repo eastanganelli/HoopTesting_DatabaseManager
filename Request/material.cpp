@@ -65,7 +65,7 @@ void Material::API(QHttpServer &myServer, const QString &apiPath) {
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL updateMaterial(%1, '%2', '%3');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["material"].toString()).arg(bodyJSON["description"].toString()));
+            myQuery.exec(QString("CALL updateMaterial(%1, '%2', '%3');").arg(bodyJSON["key"].toInt()).arg(bodyJSON["material"].toString()).arg((bodyJSON["description"].isNull()) ? "Sin descripción" : bodyJSON["description"].toString()));
             myQuery.next();
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccesful Updated!") {
                 std::string msg = "No se pudo actualizar el material " + bodyJSON["material"].toString().toStdString() + "!";
@@ -109,7 +109,7 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = { QJsonDocument::fromJson(request.body()).object() };
-            myQuery.exec(QString("CALL insertSpecification(%1, '%2', '%3');").arg(bodyJSON["idMaterial"].toInt()).arg(bodyJSON["specification"].toString()).arg(bodyJSON["description"].toString()));
+            myQuery.exec(QString("CALL insertSpecification(%1, '%2', '%3');").arg(bodyJSON["idMaterial"].toInt()).arg(bodyJSON["specification"].toString()).arg((bodyJSON["description"].isNull()) ? "Sin descripción" : bodyJSON["description"].toString()));
             myQuery.next();
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exists!") {
                 std::string msg = "La especificación " + bodyJSON["specification"].toString().toStdString() + " ya existe!";
@@ -169,7 +169,7 @@ void Specification::API(QHttpServer &myServer, const QString &apiPath) {
             responseJSON = { { "msg", err.what() } };
             codeStatus = QHttpServerResponse::StatusCode::NoContent;
         }
-        return QHttpServerResponse(responseJSON, QHttpServerResponse::StatusCode::NoContent);
+        return QHttpServerResponse(responseJSON, codeStatus);
     });
 }
 

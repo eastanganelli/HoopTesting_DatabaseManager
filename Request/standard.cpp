@@ -288,17 +288,18 @@ void ConditionalPeriod::API(QHttpServer &myServer, const QString &apiPath) {
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = QJsonDocument::fromJson(request.body()).object();
-            myQuery.exec(QString("CALL insertEnviroment(%1, %2, %3, '%4')").arg(bodyJSON["idStandard"].toInt()).arg(bodyJSON["minwall"].toInt()).arg(bodyJSON["maxwall"].toInt()).arg(bodyJSON["time"].toString()));
+            myQuery.exec(QString("CALL insertConditionalPeriod(%1, %2, %3, %4, '%5', %6, '%7')").arg(bodyJSON["idStandard"].toInt()).arg(bodyJSON["minWall"].toInt()).arg(bodyJSON["maxWall"].toInt()).arg(bodyJSON["time"].toInt()).arg(bodyJSON["timeType"].toString()).arg(bodyJSON["aproxTime"].toInt()).arg(bodyJSON["aproxType"].toString()));
             myQuery.next();
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exist!") {
-                std::string msg = "Ya existe el periodo conditional " + bodyJSON["time"].toString().toStdString() + " !";
+                qDebug() << myQuery.lastError().text();
+                std::string msg = "Ya existe el periodo conditional !";
                 throw std::exception(msg.c_str());
             }
             QJsonObject op = {
-                { "key",      myQuery.value("key").toInt() },
-                { "time",     myQuery.value("time").toString() },
-                { "minwall",  myQuery.value("minwall").toInt() },
-                { "max0wall", myQuery.value("maxwall").toInt() }
+                { "key",        myQuery.value("key").toInt() },
+                { "condPeriod", myQuery.value("condperiod").toString() },
+                { "minwall",    myQuery.value("minwall").toInt() },
+                { "maxwall",    myQuery.value("maxwall").toInt() }
             };
             responseJSON = { { "conditionalPeriod", op } };
             codeStatus = QHttpServerResponse::StatusCode::Ok;
@@ -315,7 +316,7 @@ void ConditionalPeriod::API(QHttpServer &myServer, const QString &apiPath) {
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = QJsonDocument::fromJson(request.body()).object();
-            myQuery.exec(QString("CALL deleteEnviroment(%1)").arg(bodyJSON["key"].toInt()));
+            myQuery.exec(QString("CALL deleteConditionalPeriod(%1)").arg(bodyJSON["key"].toInt()));
             myQuery.next();
 
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Unsuccessful Deleted!") {

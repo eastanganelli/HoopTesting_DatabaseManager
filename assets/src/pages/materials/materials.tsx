@@ -9,12 +9,62 @@ import { EditableRow, EditableCell } from '../../components/editableCell';
 import ModalMaterial  from '../../components/materialModal/material';
 import Specifications from './specifications';
 import { materialCommunication } from '../../utils/communication/material';
+import { FormMsgsError } from '../../utils/msgs';
 
 const { confirm } = Modal;
 
 const Materials = () => {
 	const [dataSource, setDataSource] = useState<materialType[]>([]);
 	const [newMaterialForm] = Form.useForm();
+
+	const handleAdd = () => {
+		confirm({
+			title: 'Nuevo Material',
+			content: ( <ModalMaterial myForm={newMaterialForm} /> ),
+			okText: 'Guardar',
+			width: 550,
+			onOk: () => {
+				newMaterialForm.validateFields().then((values) => {
+					materialCommunication.add({ key: 0, material: values['material'], description: values['description'], specifications: [] }).then((response) => {
+						setDataSource([...dataSource, response['data']]);
+						message.success('Material agregado correctamente!');
+						newMaterialForm.resetFields();
+					}).catch((error) => {
+						message.error(error['msg'] | error);
+						newMaterialForm.resetFields();
+					});
+				}).catch((error) => {
+					message.error(FormMsgsError);
+					newMaterialForm.resetFields();
+				});
+			},
+			cancelText: 'Cancelar',
+			onCancel: () => { newMaterialForm.resetFields(); }
+		});
+	};
+
+	const handleSave = (row: materialType) => {
+		const newData = [...dataSource];
+		const index = newData.findIndex((item) => row.key === item.key);
+		if(row['material'] !== dataSource[index]['material'] || row['description'] !== dataSource[index]['description']) {
+			const item = newData[index];
+			newData.splice(index, 1, { ...item, ...row });
+			setDataSource(newData);
+			materialCommunication.update(row).then((response) => {
+                if (response['status']) { message.success(response['msg']); }
+            }).catch((error) => { message.error(error['msg'] | error); });
+		}
+	};
+
+	const handleDelete = (key: React.Key) => {
+		materialCommunication.remove(Number(key)).then((response) => {
+			if (response['status']) {
+				const newData = [...dataSource];
+				setDataSource(newData.filter((item) => item.key !== key));
+				message.success(response['msg']);
+			}
+		}).catch((error) => { message.error(error['msg'] | error); });
+	};
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
 		{
@@ -41,57 +91,8 @@ const Materials = () => {
     useEffect(() => {
         materialCommunication.get().then((data: materialType[]) => {
 			setDataSource(data);
-		}).catch((error) => { message.error('Se produjo un error al cargar los materiales!'); });
+		}).catch((error) => { message.error(error['msg'] | error); });
     }, []);
-
-	const handleDelete = (key: React.Key) => {
-		materialCommunication.remove(Number(key)).then((status: Boolean) => {
-			if (status) {
-				const newData = [...dataSource];
-				setDataSource(newData.filter((item) => item.key !== key));
-				message.success('Material eliminado correctamente!');
-			}
-		}).catch((error) => { message.error('Se produjo un error al eliminar el material.'); });
-	};
-
-	const handleAdd = () => {
-		confirm({
-			title: 'Nuevo Material',
-			content: ( <ModalMaterial myForm={newMaterialForm} /> ),
-			okText: 'Guardar',
-			width: 550,
-			onOk: () => {
-				newMaterialForm.validateFields().then((values) => {
-					materialCommunication.add({ key: 0, material: values['material'], description: values['description'], specifications: [] }).then((response: materialType) => {
-						setDataSource([...dataSource, response]);
-						message.success('Material agregado correctamente!');
-						newMaterialForm.resetFields();
-					}).catch((error) => {
-						message.error('Se produjo un error al agregar el material!');
-						newMaterialForm.resetFields();
-					});
-				}).catch((error) => {
-					message.error('Por favor, complete todos los campos!');
-					newMaterialForm.resetFields();
-				});
-			},
-			cancelText: 'Cancelar',
-			onCancel: () => { newMaterialForm.resetFields(); }
-		});
-	};
-
-	const handleSave = (row: materialType) => {
-		const newData = [...dataSource];
-		const index = newData.findIndex((item) => row.key === item.key);
-		if(row['material'] !== dataSource[index]['material'] || row['description'] !== dataSource[index]['description']) {
-			const item = newData[index];
-			newData.splice(index, 1, { ...item, ...row });
-			setDataSource(newData);
-			materialCommunication.update(row).then((status: Boolean) => {
-                if (status) { message.success('Material modificado correctamente!'); }
-            }).catch((error) => { message.error('Se produjo un error al modificar el material!'); });
-		}
-	};
 
  	const components = { body: { row: EditableRow, cell: EditableCell } };
 

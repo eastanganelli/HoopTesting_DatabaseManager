@@ -27,16 +27,16 @@ const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
                         <InputNumber min={0} />
                     </Form.Item>
                     <Form.Item name="timeType" style={{ width: "5vw" }}>
-                        <Select onSelect={(element) => { console.log(Props['myForm']?.getFieldValue("timeType")); Props['myForm']?.setFieldValue("timeType", element); }} defaultValue={{ value: 'h', label: 'h' }} options={optionsSelect} />
+                        <Select onSelect={(element) => { Props['myForm']?.setFieldValue("timeType", element); }} defaultValue={{ value: 'h', label: 'h' }} options={optionsSelect} />
                     </Form.Item>
                     <Form.Item>
-                        <span>{'  ±  '}</span>
+                        <span>{"  ±  "}</span>
                     </Form.Item>
                     <Form.Item name="aproxTime" rules={[{ required: true }]}>
                         <InputNumber min={0} />
                     </Form.Item>
                     <Form.Item name="aproxType" style={{ width: "vw" }}>
-                        <Select onChange={(element) => { console.log(Props['myForm']?.getFieldValue("timeType")); Props['myForm']?.setFieldValue("aproxType", element); }} defaultValue={{ value: 'min', label: 'min' }} options={optionsSelect} />
+                        <Select onChange={(element) => { Props['myForm']?.setFieldValue("aproxType", element); }} defaultValue={{ value: 'min', label: 'min' }} options={optionsSelect} />
                     </Form.Item>
                 </Space>
             </Form.Item>

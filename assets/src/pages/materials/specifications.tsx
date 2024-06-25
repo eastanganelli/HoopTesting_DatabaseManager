@@ -31,7 +31,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 						message.success(response['msg']);
 						newSpecificationForm.resetFields();
 					}).catch((error) => {
-						message.error(error['msg'] | error);
+						message.error(error);
 						newSpecificationForm.resetFields();
 					});
 				}).catch(() => {
@@ -55,7 +55,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 					setDataSource(newData);
 					message.success(response['msg']);
 				}
-			}).catch((error) => { message.error(error['msg'] | error); })
+			}).catch((error) => { message.error(error); })
 		}
 	};
 
@@ -65,7 +65,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 				setDataSource(dataSource.filter((item) => item.key !== key));
 				message.success(response['msg']);
 			}
-		}).catch((error) => { message.error(error['msg'] | error); });
+		}).catch((error) => { message.error(error); });
 	};
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [

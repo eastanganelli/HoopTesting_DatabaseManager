@@ -30,7 +30,7 @@ const Operators = () => {
 						message.success(response['msg']);
 						newOperatorForm.resetFields();
 					}).catch((error) => {
-						message.error(error['msg'] | error);
+						message.error(error);
 						newOperatorForm.resetFields();
 					});
 				}).catch(() => {
@@ -54,7 +54,7 @@ const Operators = () => {
 					setDataSource(newData);
 					message.success(response['msg']);
 				}
-			}).catch((error) => { message.error(error['msg'] | error); });
+			}).catch((error) => { message.error(error); });
 		}
 	};
 
@@ -64,7 +64,7 @@ const Operators = () => {
                 setDataSource(dataSource.filter((item) => item.key !== key));
                 message.success(response['msg']);
             }
-        }).catch((error) => { message.error(error['msg'] | error); });
+        }).catch((error) => { message.error(error); });
     };
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -97,7 +97,7 @@ const Operators = () => {
 	];
 
 	useEffect(() => {
-			operatorCommunication.get().then((response) => { setDataSource(response['data']); }).catch((error) => { message.error(error['msg'] | error); });
+			operatorCommunication.get().then((response) => { setDataSource(response['data']); }).catch((error) => { message.error(error); });
 	}, []);
 
     const components = { body: { row: EditableRow, cell: EditableCell } };

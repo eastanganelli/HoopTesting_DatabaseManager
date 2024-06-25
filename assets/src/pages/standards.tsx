@@ -43,7 +43,7 @@ const Standards = () => {
             setDataSource(newData);
             standardCommunication.update({ key: Number(row['key']), standard: row['standard'] }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error['msg'] | error); });
+            }).catch((error) => { message.error(error); });
         }
     };
 
@@ -61,7 +61,7 @@ const Standards = () => {
                         standardCommunication.add({ standard: values['standard'] }).then(response => {
                             setDataSource([...dataSource, response['data']]);
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error['msg'] | error); });
+                        }).catch((error) => { message.error(error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -75,7 +75,7 @@ const Standards = () => {
                     setDataSource(dataSource.filter((item) => item.key !== key));
                     message.success(response['msg']);
                 }
-            }).catch((error) => { message.error(error['msg'] | error); });
+            }).catch((error) => { message.error(error); });
         }
     };
 
@@ -95,7 +95,7 @@ const Standards = () => {
                             dataSource[myIndex]['endCaps'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error['msg'] | error); });
+                        }).catch((error) => { message.error(error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -105,7 +105,7 @@ const Standards = () => {
         delete: (key: number) => {
             endCapCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error['msg'] | error); });
+            }).catch((error) => { message.error(error); });
         }
     };
 
@@ -125,7 +125,7 @@ const Standards = () => {
                             dataSource[myIndex]['enviroments'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error['msg'] | error); });
+                        }).catch((error) => { message.error(error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -136,7 +136,7 @@ const Standards = () => {
         delete: (key: number) => {
             enviromentCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error['msg'] | error); });
+            }).catch((error) => { message.error(error); });
         }
     };
 
@@ -157,7 +157,7 @@ const Standards = () => {
                             dataSource[myIndex]['conditionalPeriods'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error['msg'] | error); });
+                        }).catch((error) => { message.error(error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -168,7 +168,7 @@ const Standards = () => {
         delete: (key: number) => {
             conditionalPeriodCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error['msg'] | error); })
+            }).catch((error) => { message.error(error); })
         }
     };
 
@@ -189,7 +189,7 @@ const Standards = () => {
                             dataSource[myIndex]['testTypes'].push(response['data']);
                             setDataSource(dataSource.splice(0, dataSource.length));
                             message.success(response['msg']);
-                        }).catch((error) => { message.error(error['msg'] | error); });
+                        }).catch((error) => { message.error(error); });
                     }).catch(() => { message.error(FormMsgsError); });
                 },
                 cancelText: 'Cancelar',
@@ -200,7 +200,7 @@ const Standards = () => {
         delete: (key: number) => {
             testTypeCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error['msg'] | error); })
+            }).catch((error) => { message.error(error); })
         }
     };
 
@@ -221,18 +221,18 @@ const Standards = () => {
                                 dataSource[myIndex]['materials'].push(response['data']);
                                 setDataSource(dataSource.splice(0, dataSource.length));
                                 message.success(response['msg']);
-                            }).catch((error) => { message.error(error['msg'] | error); });
+                            }).catch((error) => { message.error(error); });
                         }).catch(() => { message.error(FormMsgsError); });
                     },
                     cancelText: 'Cancelar',
                     onCancel: () => { },
                 });
-            }).catch((error) => { message.error(error['msg'] | error); });
+            }).catch((error) => { message.error(error); });
         },
         delete: (key: number) => {
             materialCommunication.remove({ key: key }).then(response => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error['msg'] | error); })
+            }).catch((error) => { message.error(error); })
         }
     };
 
@@ -314,7 +314,7 @@ const Standards = () => {
     ];
 
     useEffect(() => {
-        standardCommunication.get().then((response: {msg:string; data: standardType[];}) => { setDataSource(response['data']); }).catch((error) => { message.error(error['msg'] | error); });
+        standardCommunication.get().then((response) => { setDataSource(response['data']); }).catch((error) => { message.error(error); });
     }, []);
 
     const components = { body: { row: EditableRow, cell: EditableCell } };

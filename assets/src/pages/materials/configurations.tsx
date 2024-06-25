@@ -23,7 +23,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                 setDataSource(dataSource.filter((item) => item.key !== key));
                 message.success(response['msg']);
             }
-        }).catch((error) => { message.error(error['msg'] | error) });
+        }).catch((error) => { message.error(error); });
     };
 
 	const handleAdd = () => {
@@ -39,7 +39,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                         message.success(response['msg']);
                         newConfigurationForm.resetFields();
 					}).catch((error) => {
-                        message.error(error['msg'] | error)
+                        message.error(error);
                         newConfigurationForm.resetFields();
                     });
                 }).catch(() => {
@@ -74,7 +74,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
                                 newConfigurationForm.resetFields();
                             }
                         }).catch((error) => {
-                            message.error(error['msg'] | error)
+                            message.error(error);
                             newConfigurationForm.resetFields();
                         });
                     }

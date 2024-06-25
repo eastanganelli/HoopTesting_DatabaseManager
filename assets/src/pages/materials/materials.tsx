@@ -29,10 +29,10 @@ const Materials = () => {
 						message.success('Material agregado correctamente!');
 						newMaterialForm.resetFields();
 					}).catch((error) => {
-						message.error(error['msg'] | error);
+						message.error(error);
 						newMaterialForm.resetFields();
 					});
-				}).catch((error) => {
+				}).catch(() => {
 					message.error(FormMsgsError);
 					newMaterialForm.resetFields();
 				});
@@ -51,7 +51,7 @@ const Materials = () => {
 			setDataSource(newData);
 			materialCommunication.update(row).then((response) => {
                 if (response['status']) { message.success(response['msg']); }
-            }).catch((error) => { message.error(error['msg'] | error); });
+            }).catch((error) => { message.error(error); });
 		}
 	};
 
@@ -62,7 +62,7 @@ const Materials = () => {
 				setDataSource(newData.filter((item) => item.key !== key));
 				message.success(response['msg']);
 			}
-		}).catch((error) => { message.error(error['msg'] | error); });
+		}).catch((error) => { message.error(error); });
 	};
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
@@ -88,9 +88,7 @@ const Materials = () => {
 	];
 
     useEffect(() => {
-        materialCommunication.get().then((data: materialType[]) => {
-			setDataSource(data);
-		}).catch((error) => { message.error(error['msg'] | error); });
+        materialCommunication.get().then((data) => { setDataSource(data['data']); }).catch((error) => { message.error(error); });
     }, []);
 
  	const components = { body: { row: EditableRow, cell: EditableCell } };

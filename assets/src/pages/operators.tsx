@@ -97,7 +97,7 @@ const Operators = () => {
 	];
 
 	useEffect(() => {
-			operatorCommunication.get().then((response) => { setDataSource(response['data']); }).catch((error) => { message.error(error); });
+			operatorCommunication.get().then((response) => { console.log(response['data']); setDataSource(response['data']); }).catch((error) => { message.error(error); });
 	}, []);
 
     const components = { body: { row: EditableRow, cell: EditableCell } };

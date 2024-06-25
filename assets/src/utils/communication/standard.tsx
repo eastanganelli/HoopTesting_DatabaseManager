@@ -9,8 +9,8 @@ const standardCommunication = {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 }).then((response) => {
-                    response.json().then((data) => { resolve({ status: true, msg: StandardMsgs['success']['select'], data: data['standards'] }); });
-                    if (response.status != 204) reject(StandardMsgs['error']['select']);
+                    response.json().then((data: any) => { resolve({ status: true, msg: StandardMsgs['success']['select'], data: data['standards'] }); });
+                    if (response.status == 204) reject(StandardMsgs['error']['select']);
                 }).catch(() => { reject(StandardMsgs['error']['select']); })
             });
         },
@@ -22,7 +22,7 @@ const standardCommunication = {
                     body: JSON.stringify(inputData)
                 }).then((response) => {
                     response.json().then((data: { standard: standardType } ) => { resolve({ status: true, msg: StandardMsgs['success']['create'], data: data['standard'] }); });
-                    if (response.status != 204) reject(StandardMsgs['error']['create']);
+                    if (response.status == 204) reject(StandardMsgs['error']['create']);
                 }).catch(() => { reject(StandardMsgs['error']['create']) })
             });
         },
@@ -61,7 +61,7 @@ const endCapCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { endCap: endCapType }) => { resolve({ status: true, msg: EndCapMsgs['success']['create'], data: data['endCap'] }); });
-                if (response.status != 204) reject(EndCapMsgs['error']['create']);
+                if (response.status == 204) reject(EndCapMsgs['error']['create']);
             }).catch(() => { reject(EndCapMsgs['error']['create']); })
         });
     },
@@ -88,7 +88,7 @@ const enviromentCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { enviroment: enviromentType }) => { resolve({ status: true, msg: EnviromentMsgs['success']['create'], data: data['enviroment'] }); });
-                if (response.status != 204) reject(EnviromentMsgs['error']['create']);
+                if (response.status == 204) reject(EnviromentMsgs['error']['create']);
             }).catch(() => { reject(EnviromentMsgs['error']['create']); })
         });
     },
@@ -116,7 +116,7 @@ const conditionalPeriodCommunication = {
             }).then((response) => {
                 response.json().then((data: { conditionalPeriod: conditionalPeriodType }) => {
                     resolve({ status: true, msg: ConditionalPeriodMsgs['success']['create'], data: data['conditionalPeriod']});
-                    if (response.status != 204) reject(ConditionalPeriodMsgs['error']['create']);
+                    if (response.status == 204) reject(ConditionalPeriodMsgs['error']['create']);
                 });
             }).catch(() => { reject(ConditionalPeriodMsgs['error']['create']); })
         });
@@ -143,7 +143,7 @@ const materialCommunication = {
                 headers: { 'Content-Type': 'application/json' }
             }).then((response) => {
                 response.json().then((data: any) => { resolve({ status: true, msg: MaterialRelatedMsgs['success']['select'], data: data['materials'] }); });
-                if (response.status != 204) reject(MaterialRelatedMsgs['error']['select']);
+                if (response.status == 204) reject(MaterialRelatedMsgs['error']['select']);
             }).catch(() => { reject(MaterialRelatedMsgs['error']['select']); })
         });
     },
@@ -155,7 +155,7 @@ const materialCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { materialRelated: standardHasMaterialType }) => { resolve({ status: true, msg: MaterialRelatedMsgs['success']['create'], data: data['materialRelated'] }); });
-                if (response.status != 204) reject(MaterialRelatedMsgs['error']['create']);
+                if (response.status == 204) reject(MaterialRelatedMsgs['error']['create']);
             }).catch(() => { reject(MaterialRelatedMsgs['error']['create']) })
         });
     },
@@ -182,7 +182,7 @@ const testTypeCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: { testType: testTypeType }) => { resolve({ status: true, msg: TestTypeMsgs['success']['create'], data: data['testType'] }); });
-                if (response.status != 204) reject(TestTypeMsgs['error']['create']);
+                if (response.status == 204) reject(TestTypeMsgs['error']['create']);
             }).catch(() => { reject(TestTypeMsgs['error']['create']); })
         });
     },

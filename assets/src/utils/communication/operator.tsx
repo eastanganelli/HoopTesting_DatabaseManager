@@ -6,8 +6,8 @@ const operatorCommunication = {
     get: (): Promise<responseTypeData<operatorType[]>> => {
         return new Promise<responseTypeData<operatorType[]>>((resolve, reject) => {
             fetch(`${basePath}/operators`).then((response) => {
-                response.json().then((data: { operators: operatorType[] }) => { resolve({ status: true, msg: OperatorMsgs['success']['select'], data: data['operators'] }); });
-                if (response.status != 204) reject(OperatorMsgs['error']['select']);
+                response.json().then((data: { operators: operatorType[] }) => { console.log(data['operators']); resolve({ status: true, msg: OperatorMsgs['success']['select'], data: data['operators'] }); });
+                if (response.status == 204) reject(OperatorMsgs['error']['select']);
             }).catch(() => { reject(OperatorMsgs['error']['select']); })
         });
     },
@@ -19,7 +19,7 @@ const operatorCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: any) => { resolve(data.operator); });
-                if (response.status != 204) reject(OperatorMsgs['error']['create']);
+                if (response.status == 204) reject(OperatorMsgs['error']['create']);
             }).catch(() => { reject(OperatorMsgs['error']['create']) })
         });
     },

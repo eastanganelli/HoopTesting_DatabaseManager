@@ -6,3 +6,4 @@
 [Cc]MakeLists.txt.user
 
 *.txt.user
+dist/bundle.js

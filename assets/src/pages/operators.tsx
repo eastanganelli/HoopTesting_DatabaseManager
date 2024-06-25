@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Popconfirm, FloatButton, message, Modal, Form } from 'antd';
 
 import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
-import type { ColumnTypes } from '../components/editableCell';
 
-import { EditableRow, EditableCell } from '../components/editableCell';
-import { operatorType } from "../interfaces/table";
-import { operatorCommunication } from "../utils/communication/operator";
+import { operatorType }      from "../interfaces/table";
+import operatorCommunication from "../utils/communication/operator";
+import { FormMsgsError }     from "../utils/msgs";
+
+import { type ColumnTypes, EditableRow, EditableCell } from '../components/editableCell';
 import ModalOperator from "../components/operatorModal";
 
 const { confirm } = Modal;
@@ -15,37 +16,25 @@ const Operators = () => {
 	const [dataSource, setDataSource] = useState<operatorType[]>([]);
 	const [newOperatorForm] = Form.useForm();
 
-	useEffect(() => {
-			operatorCommunication.get().then((data: operatorType[]) => { setDataSource(data); }).catch(() => { message.error('De produjo un error al obtener los operadores!'); });
-	}, []);
-
-    const handleDelete = (key: React.Key) => {
-        operatorCommunication.remove(Number(key)).then((status: Boolean) => {
-            if (status) {
-                setDataSource(dataSource.filter((item) => item.key !== key));
-                message.success('Operador eliminadao correctamente!');
-            }
-        }).catch((error) => { message.error('Se produjo un error al eliminar el operador!'); });
-    };
-
 	const handleAdd = () => {
 		confirm({
 			title: 'Nuevo Operador',
+			centered: true,
 			content: ( <ModalOperator myForm={newOperatorForm} /> ),
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
 				newOperatorForm.validateFields().then((values) => {
-					operatorCommunication.add({ key: 0, dni: values['dni'], name: values['name'], familyName: values['familyName'] }).then((response: operatorType) => {
-						setDataSource([...dataSource, response]);
-						message.success('Operador agregado correctamente!');
+					operatorCommunication.add({ key: 0, dni: values['dni'], name: values['name'], familyName: values['familyName'] }).then((response) => {
+						setDataSource([...dataSource, response['data']]);
+						message.success(response['msg']);
 						newOperatorForm.resetFields();
-					}).catch(() => {
-						message.error('Se produjo un error al agregar el operador!');
+					}).catch((error) => {
+						message.error(error['msg'] | error);
 						newOperatorForm.resetFields();
 					});
 				}).catch(() => {
-					message.error('Se produjo un error al validar los campos!');
+					message.error(FormMsgsError);
 					newOperatorForm.resetFields();
 				});
 			},
@@ -59,15 +48,24 @@ const Operators = () => {
 		const index = newData.findIndex((item) => row.key === item.key);
 		const item = newData[index];
 		if(item['dni'] !== row['dni'] || item['name'] !== row['name'] || item['familyName'] !== row['familyName']) {
-			operatorCommunication.update(row).then((status: Boolean) => {                      
-				if (status) {
+			operatorCommunication.update(row).then((response) => {                      
+				if (response['status']) {
 					newData.splice(index, 1, { ...item, ...row });
 					setDataSource(newData);
-					message.success('Operador modificado correctamente!');
+					message.success(response['msg']);
 				}
-			}).catch((error) => { message.error('Se produjo un error al modificarlo!'); });
+			}).catch((error) => { message.error(error['msg'] | error); });
 		}
 	};
+
+    const handleDelete = (key: React.Key) => {
+        operatorCommunication.remove(Number(key)).then((response) => {
+            if (response['status']) {
+                setDataSource(dataSource.filter((item) => item.key !== key));
+                message.success(response['msg']);
+            }
+        }).catch((error) => { message.error(error['msg'] | error); });
+    };
 
 	const defaultColumns: (ColumnTypes[number] & { editable?: boolean; dataIndex: string })[] = [
 		{
@@ -88,7 +86,7 @@ const Operators = () => {
 		{
 			title: '',
 			dataIndex: 'actions',
-			render: (value, record, index) => (
+			render: (_, record) => (
 				<>
 					<Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record['key'])}>
 						<Button icon={<DeleteOutlined />} danger />
@@ -97,6 +95,10 @@ const Operators = () => {
 			),
 		}
 	];
+
+	useEffect(() => {
+			operatorCommunication.get().then((response) => { setDataSource(response['data']); }).catch((error) => { message.error(error['msg'] | error); });
+	}, []);
 
     const components = { body: { row: EditableRow, cell: EditableCell } };
 
@@ -112,4 +114,5 @@ const Operators = () => {
 		</>
 	);
 };
+
 export default Operators;

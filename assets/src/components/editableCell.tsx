@@ -1,6 +1,5 @@
 import React, { FunctionComponent, useContext, useEffect, useRef, useState } from 'react';
-import type { GetRef, InputRef } from 'antd';
-import { Form, Input, Table } from 'antd';
+import { type GetRef, type InputRef, Form, Input, Table } from 'antd';
 
 import type { EditableRowProps, EditableCellProps, materialType, specificationType, configurationType, operatorType, standardType } from '../interfaces/table';
 

@@ -1,7 +1,7 @@
 import type { materialType, specificationType, configurationType } from '../../interfaces/table';
 import { basePath } from '../basePath';
 
-import { ConfigurationMsgs, MaterialMsgs, SpecificationMsgs, responseTypeData, responseTypeStatus } from '../msgs';
+import { responseTypeData, responseTypeStatus, ConfigurationMsgs, MaterialMsgs, SpecificationMsgs } from '../msgs';
 
 const materialCommunication = {
     get: (): Promise<materialType[]> => {

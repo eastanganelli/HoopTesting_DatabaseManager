@@ -1,15 +1,14 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, Button, Modal, Form, message } from 'antd';
 
-import type { specificationType }    from '../../interfaces/table';
-import type { ColumnTypes }          from '../../components/editableCell';
-import { EditableRow, EditableCell } from '../../components/editableCell';
+import type { specificationType }     from '../../interfaces/table';
+import { specificationCommunication } from '../../utils/communication/material';
+import { FormMsgsError }              from '../../utils/msgs';
 
 import Configurations     from './configurations';
+import { type ColumnTypes, EditableRow, EditableCell } from '../../components/editableCell';
 import ModalSpecification from '../../components/materialModal/specification';
-import { specificationCommunication } from '../../utils/communication/material';
-import { FormMsgsError } from '../../utils/msgs';
 
 interface Props { Data: specificationType[]; idMaterial: number }
 

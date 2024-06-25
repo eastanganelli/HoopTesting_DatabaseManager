@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
+import { Layout, Menu, FloatButton, theme, message, type MenuProps } from 'antd';
 import { BookOutlined, FormatPainterOutlined, UserOutlined, DatabaseOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Layout, Menu, FloatButton, theme, message } from 'antd';
+
+import { ConnectDB } from './utils/communication/database';
 
 import Operators from "./pages/operators";
 import Materials from "./pages/materials/materials";
 import Standards from './pages/standards';
-import Database from './pages/database';
-import { ConnectDB } from './utils/communication/database';
+import Database  from './pages/database';
 
 const { Content, Sider } = Layout;
 
@@ -15,6 +15,13 @@ const App = () => {
     const [selected,  setSelected]  = React.useState<any>({ key: '', label: '', icon: null, page: <></> });
     const [menuItems, setMenuItems] = React.useState<any[]>([]);
     const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
+
+    const items: MenuProps['items'] = menuItems.map((menuItem: { key: string; label: string; icon: any; page: any }) => ({
+        key: menuItem.key,
+        icon: React.createElement(menuItem.icon),
+        label: menuItem.label,
+        page: menuItem.page
+    }));
     
     useEffect(() => {
         ConnectDB().then(() => {
@@ -31,13 +38,6 @@ const App = () => {
             message.error(error['msg']);
         });
     }, []);
-
-    const items: MenuProps['items'] = menuItems.map((menuItem: { key: string; label: string; icon: any; page: any }) => ({
-        key: menuItem.key,
-        icon: React.createElement(menuItem.icon),
-        label: menuItem.label,
-        page: menuItem.page
-    }));
 
     return (
         <Layout hasSider style={{ minWidth: '850px' }}>

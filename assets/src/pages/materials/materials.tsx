@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { DeleteOutlined, InsertRowBelowOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, FloatButton, Button, Modal, Form, message } from 'antd';
 
-import type { materialType } from '../../interfaces/table';
-import type { ColumnTypes }  from '../../components/editableCell';
-import { EditableRow, EditableCell } from '../../components/editableCell';
+import type { materialType }     from '../../interfaces/table';
+import { materialCommunication } from '../../utils/communication/material';
+import { FormMsgsError }         from '../../utils/msgs';
 
+import { type ColumnTypes, EditableRow, EditableCell } from '../../components/editableCell';
 import ModalMaterial  from '../../components/materialModal/material';
 import Specifications from './specifications';
-import { materialCommunication } from '../../utils/communication/material';
-import { FormMsgsError } from '../../utils/msgs';
 
 const { confirm } = Modal;
 

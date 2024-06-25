@@ -1,11 +1,12 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { DeleteOutlined, PlusOutlined, EditOutlined } from '@ant-design/icons';
 import { Popconfirm, Table, Button, Modal, Form, TableColumnsType, message } from 'antd';
 
-import type { configurationType } from '../../interfaces/table';
-import ModalConfiguration from '../../components/materialModal/configuration';
 import { configurationCommunication } from '../../utils/communication/material';
 import { FormMsgsError } from '../../utils/msgs';
+
+import type { configurationType } from '../../interfaces/table';
+import ModalConfiguration         from '../../components/materialModal/configuration';
 
 interface Props { Data: configurationType[]; idSpecification: number }
 
@@ -105,18 +106,14 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
             title: '',
             dataIndex: 'operation',
             render: (_, record) =>
-                dataSource.length >= 1 ? (
-                    <>
-                        <Button icon={<EditOutlined />} onClick={() => { handleEdit(record); }}/>
-                        <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
-                            <Button icon={<DeleteOutlined />} danger />
-                        </Popconfirm>
-                    </>
-                ) : null,
+                <>
+                    <Button icon={<EditOutlined />} onClick={() => { handleEdit(record); }}/>
+                    <Popconfirm title="Desea eliminar registro?" okText="Si" cancelText="No" onConfirm={() => handleDelete(record.key)}>
+                        <Button icon={<DeleteOutlined />} danger />
+                    </Popconfirm>
+                </>
         }
     ];
-
-	useEffect(() => {  }, [dataSource]);
 
     return (
 		<>

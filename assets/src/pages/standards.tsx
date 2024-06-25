@@ -3,18 +3,16 @@ import { DeleteOutlined, InsertRowBelowOutlined, PlusOutlined } from '@ant-desig
 import { Popconfirm, Table, FloatButton, Button, Tag, theme, Modal, Form, message } from 'antd';
 
 import type { conditionalPeriodType, endCapType, enviromentType, standardHasMaterialType, standardType, testTypeType } from '../interfaces/table';
-import type { ColumnTypes } from '../components/editableCell';
-
-import { EditableRow, EditableCell } from '../components/editableCell';
 import { standardCommunication, endCapCommunication, enviromentCommunication, conditionalPeriodCommunication, materialCommunication, testTypeCommunication } from '../utils/communication/standard';
+import { FormMsgsError }      from '../utils/msgs';
 
-import ModalStandard from '../components/standardsModal/standard';
-import ModalMaterial from '../components/standardsModal/material';
+import { type ColumnTypes, EditableRow, EditableCell } from '../components/editableCell';
+import ModalStandard          from '../components/standardsModal/standard';
+import ModalMaterial          from '../components/standardsModal/material';
 import ModalConditionalPeriod from '../components/standardsModal/conditionalPeriod';
-import ModalEnviroment from '../components/standardsModal/enviroment';
-import ModalEndCap from '../components/standardsModal/endcap';
-import { FormMsgsError } from '../utils/msgs';
-import ModalTestType from '../components/standardsModal/testtype';
+import ModalEnviroment        from '../components/standardsModal/enviroment';
+import ModalEndCap            from '../components/standardsModal/endcap';
+import ModalTestType          from '../components/standardsModal/testtype';
 
 const widthMaxForm = Math.floor(window.innerWidth);
 const columnsWidth = Math.floor(window.innerWidth/5.0);
@@ -316,10 +314,7 @@ const Standards = () => {
     ];
 
     useEffect(() => {
-        standardCommunication.get().then((response: {msg:string; data: standardType[];}) => {
-            setDataSource(response['data']);
-            // message.success(response['msg']);
-        }).catch((error) => { message.error(error['msg'] | error); });
+        standardCommunication.get().then((response: {msg:string; data: standardType[];}) => { setDataSource(response['data']); }).catch((error) => { message.error(error['msg'] | error); });
     }, []);
 
     const components = { body: { row: EditableRow, cell: EditableCell } };

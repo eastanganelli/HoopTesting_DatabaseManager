@@ -30,17 +30,6 @@ void Operator::API(QHttpServer &myServer, const QString &apiPath) {
         return QHttpServerResponse(responseJSON, codeStatus);
     });
 
-    // myServer.route(apiPath, QHttpServerRequest::Method::Get, [](const QHttpServerRequest &request) {
-    //     QJsonObject responseJSON;
-
-    //     try {
-    //         QSqlQuery myQuery("CALL selectOperators()", QSqlDatabase::database(STATIC_DB_NAME));
-    //     } catch(...) {
-
-    //     }
-    //     return "Operator API";
-    // });
-
     myServer.route(apiPath, QHttpServerRequest::Method::Post, [](const QHttpServerRequest &request) {
         QJsonObject responseJSON;
         auto codeStatus = QHttpServerResponse::StatusCode::NoContent;

@@ -1,8 +1,6 @@
 import type { conditionalPeriodType, endCapType, enviromentType, materialType, standardHasMaterialType, standardType, testTypeType } from '../../interfaces/table';
 import { basePath } from '../basePath';
-import { ConditionalPeriodMsgs, EndCapMsgs, EnviromentMsgs, MaterialRelatedMsgs, StandardMsgs, TestTypeMsgs } from '../msgs';
-
-import { responseTypeData, responseTypeStatus } from '../msgs';
+import { responseTypeData, responseTypeStatus, ConditionalPeriodMsgs, EndCapMsgs, EnviromentMsgs, MaterialRelatedMsgs, StandardMsgs, TestTypeMsgs } from '../msgs';
 
 const standardCommunication = {
         get: (): Promise<responseTypeData<standardType[]>> => {

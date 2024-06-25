@@ -1,9 +1,8 @@
 [Bb]uild/
 [Aa]ssets/[Dd]ist/
 [As]ssets/[Nn]ode_modules/
-[Dd]ist/
+[Dd]ist/bundle.js
 
 [Cc]MakeLists.txt.user
 
 *.txt.user
-dist/bundle.js

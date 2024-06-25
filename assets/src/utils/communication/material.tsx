@@ -4,16 +4,15 @@ import { basePath } from '../basePath';
 import { responseTypeData, responseTypeStatus, ConfigurationMsgs, MaterialMsgs, SpecificationMsgs } from '../msgs';
 
 const materialCommunication = {
-    get: (): Promise<materialType[]> => {
-        return new Promise<materialType[]>((resolve, reject) => {
+    get: (): Promise<responseTypeData<materialType[]>> => {
+        return new Promise<responseTypeData<materialType[]>>((resolve, reject) => {
             fetch(`${basePath}/materials`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' }
             }).then((response) => {
-                response.json().then((data: any) => {
-                    resolve(data.materials);
-                });
-            }).catch((error) => { reject(error); })
+                response.json().then((data: { materials: materialType[] }) => { resolve({ status: true, msg: MaterialMsgs['success']['select'], data: data['materials'] }); });
+                if (response.status == 204) reject(MaterialMsgs['error']['select']);
+            }).catch(() => { reject(MaterialMsgs['error']['select']); })
         });
     },
     add: (inputData: materialType): Promise<responseTypeData<materialType>> => {
@@ -23,10 +22,8 @@ const materialCommunication = {
                 headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin':'*' },
                 body: JSON.stringify(inputData)
             }).then((response) => {
-                response.json().then((data: { material: materialType } ) => {
-                    resolve({ status: true, data: data['material'], msg: MaterialMsgs['success']['create'] });
-                });
-                if (response.status == 204) reject({ status: false, msg: MaterialMsgs['error']['create'] });
+                response.json().then((data: { material: materialType } ) => { resolve({ status: true, data: data['material'], msg: MaterialMsgs['success']['create'] }); });
+                if (response.status == 204) reject(MaterialMsgs['error']['create']);
             }).catch(() => { reject(MaterialMsgs['error']['create']); })
         });
     },
@@ -38,7 +35,7 @@ const materialCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve({ status: true, msg: ConfigurationMsgs['success']['update'] });
-                else if (response.status == 204) reject({ status: false, msg: ConfigurationMsgs['error']['update'] });
+                else if (response.status == 204) reject(ConfigurationMsgs['error']['update']);
             }).catch(() => { reject(MaterialMsgs['error']['update']); })
         });
     },
@@ -50,7 +47,7 @@ const materialCommunication = {
                 body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve({ status: true, msg: ConfigurationMsgs['success']['delete'] });
-                else if (response.status == 204) reject({ status: false, msg: ConfigurationMsgs['error']['delete'] });
+                else if (response.status == 204) reject(ConfigurationMsgs['error']['delete']);
             }).catch(() => { reject(MaterialMsgs['error']['delete']); })
         });
     }
@@ -67,7 +64,7 @@ const specificationCommunication = {
                 response.json().then((data: { specification: specificationType } ) => {
                     resolve({ status: true, data: data['specification'], msg: SpecificationMsgs['success']['create']});
                 });
-                if (response.status == 204) reject({ status: false, msg: SpecificationMsgs['error']['create'] });
+                if (response.status == 204) reject(SpecificationMsgs['error']['create']);
             }).catch(() => { reject(SpecificationMsgs['error']['create']); })
         });
     },
@@ -79,7 +76,7 @@ const specificationCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve({ status: true, msg: SpecificationMsgs['success']['update'] });
-                else if (response.status == 204) reject({ status: false, msg: SpecificationMsgs['error']['update'] });
+                else if (response.status == 204) reject(SpecificationMsgs['error']['update']);
             }).catch(() => { reject(SpecificationMsgs['error']['update']); })
         });
     },
@@ -91,7 +88,7 @@ const specificationCommunication = {
                 body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve({ status: true, msg: SpecificationMsgs['success']['delete'] });
-                else if (response.status == 204) reject({ status: false, msg: SpecificationMsgs['error']['delete'] });
+                else if (response.status == 204) reject(SpecificationMsgs['error']['delete']);
             }).catch(() => { reject(SpecificationMsgs['error']['delete']); })
         });
     }
@@ -108,7 +105,7 @@ const configurationCommunication = {
                 response.json().then((data: { configuration: configurationType } ) => { 
                     resolve({ status: true, data: data['configuration'], msg: SpecificationMsgs['success']['create'] });
                 });
-                if (response.status == 204) reject({ status: false, msg: ConfigurationMsgs['error']['create'] });
+                if (response.status == 204) reject(ConfigurationMsgs['error']['create']);
             }).catch(() => { reject(ConfigurationMsgs['error']['create']); })
         });
     },
@@ -120,7 +117,7 @@ const configurationCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200) resolve({ status: true, msg: ConfigurationMsgs['success']['update'] });
-                else if (response.status == 204) reject({ status: false, msg: ConfigurationMsgs['error']['update'] });
+                else if (response.status == 204) reject(ConfigurationMsgs['error']['update']);
             }).catch(() => { reject(SpecificationMsgs['error']['update']); })
         });
     },
@@ -132,7 +129,7 @@ const configurationCommunication = {
                 body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200) resolve({ status: true, msg: ConfigurationMsgs['success']['delete'] });
-                else if (response.status == 204) reject({ status: false, msg: ConfigurationMsgs['error']['delete'] });
+                else if (response.status == 204) reject(ConfigurationMsgs['error']['delete']);
             }).catch(() => { reject(SpecificationMsgs['error']['delete']); })
         });
     }

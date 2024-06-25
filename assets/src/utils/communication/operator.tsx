@@ -7,8 +7,8 @@ const operatorCommunication = {
         return new Promise<responseTypeData<operatorType[]>>((resolve, reject) => {
             fetch(`${basePath}/operators`).then((response) => {
                 response.json().then((data: { operators: operatorType[] }) => { resolve({ status: true, msg: OperatorMsgs['success']['select'], data: data['operators'] }); });
-                if (response.status != 204) reject({ status: false, msg: OperatorMsgs['error']['select'], data: [] });
-            }).catch(() => { reject(OperatorMsgs['error']['select']); });
+                if (response.status != 204) reject(OperatorMsgs['error']['select']);
+            }).catch(() => { reject(OperatorMsgs['error']['select']); })
         });
     },
     add: (inputData: operatorType): Promise<responseTypeData<operatorType>> => {
@@ -19,8 +19,8 @@ const operatorCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 response.json().then((data: any) => { resolve(data.operator); });
-                if (response.status != 204) reject({ status: false, msg: OperatorMsgs['error']['create'], data: { key: 0, dni: '', name: '', familyName: '' } });
-            }).catch(() => { reject(OperatorMsgs['error']['create']); })
+                if (response.status != 204) reject(OperatorMsgs['error']['create']);
+            }).catch(() => { reject(OperatorMsgs['error']['create']) })
         });
     },
     update: (inputData: operatorType): Promise<responseTypeStatus> => {
@@ -31,7 +31,7 @@ const operatorCommunication = {
                 body: JSON.stringify(inputData)
             }).then((response) => {
                 if (response.status == 200)      resolve({ status: true, msg: OperatorMsgs['success']['update'] });
-                else if (response.status == 204) reject({ status: false, msg: OperatorMsgs['error']['update'] });
+                else if (response.status == 204) reject(OperatorMsgs['error']['update']);
             }).catch(() => { reject(OperatorMsgs['error']['update']); })
         });
     },
@@ -43,7 +43,7 @@ const operatorCommunication = {
                 body: JSON.stringify({ key: id })
             }).then((response) => {
                 if (response.status == 200)      resolve({ status: true, msg: OperatorMsgs['success']['delete'] });
-                else if (response.status == 204) reject({ status: false, msg: OperatorMsgs['error']['delete'] });
+                else if (response.status == 204) reject(OperatorMsgs['error']['delete']);
             }).catch(() => { reject(OperatorMsgs['error']['delete']); })
         });
     }

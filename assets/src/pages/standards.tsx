@@ -267,7 +267,7 @@ const Standards = () => {
             width: columnsWidth,
             render: (enviroment: enviromentType[], record, index) =>
                 <>
-                    {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['key']}`} closeIcon onClose={() => Enviroment.delete(Number(value['key']))}>{`${value['insideFluid']} en ${value['outsideFluid']}`}</Tag>)}
+                    {enviroment.map((value: enviromentType) => <Tag key={`enviroment_${value['key']}`} closeIcon onClose={() => Enviroment.delete(Number(value['key']))}>{`${value['insideFluid']}`/* {`${value['insideFluid']} en ${value['outsideFluid']}`} */}</Tag>)}
                     <Tag key={`new_enviroment_${index}`} onClick={() => Enviroment.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
@@ -277,7 +277,7 @@ const Standards = () => {
             width: columnsWidth * 1.5,
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
-                    {conditionalPeriods.sort((a, b) => a['minwall'] < b['minwall'] ? -1 : 1).map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{`${value['condPeriod']}`}</Tag>)}
+                    {conditionalPeriods.sort((a, b) => a['minwall'] < b['minwall'] ? -1 : 1).map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{`[${value['minwall']} a ${value['maxwall']}] mm`}<br/>{`${value['condPeriod']}`}</Tag>)}
                     <Tag key={`new_conditionalperiod_${index}`} onClick={() => ConditionalPeriod.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },

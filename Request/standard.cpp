@@ -238,16 +238,16 @@ void Enviroment::API(       QHttpServer &myServer, const QString &apiPath) {
         QSqlQuery myQuery(QSqlDatabase::database(STATIC_DB_NAME));
         try {
             QJsonObject bodyJSON = QJsonDocument::fromJson(request.body()).object();
-            myQuery.exec(QString("CALL insertEnviroment(%1, '%2', '%3')").arg(bodyJSON["idStandard"].toInt()).arg(bodyJSON["insideFluid"].toString()).arg(bodyJSON["outsideFluid"].toString()));
+            myQuery.exec(QString("CALL insertEnviroment(%1, '%2')").arg(bodyJSON["idStandard"].toInt()).arg(bodyJSON["insideFluid"].toString()));
             myQuery.next();
             if(!myQuery.lastError().text().isEmpty() || myQuery.value("response").toString() == "Already Exist!") {
-                std::string msg = "Ya existe el entorno " + bodyJSON["insideFluid"].toString().toStdString() + " en " + bodyJSON["outsideFluid"].toString().toStdString() + " !";
+                std::string msg = "Ya existe el entorno " + bodyJSON["insideFluid"].toString().toStdString() + /*" en " + bodyJSON["outsideFluid"].toString().toStdString() +*/ " !";
                 throw std::exception(msg.c_str());
             }
             QJsonObject op = {
                 { "key",          myQuery.value("key").toInt() },
-                { "insideFluid",  myQuery.value("insideFluid").toString() },
-                { "outsideFluid", myQuery.value("outsideFluid").toString() }
+                { "insideFluid",  myQuery.value("insideFluid").toString() }/*,
+                { "outsideFluid", myQuery.value("outsideFluid").toString() }*/
             };
             responseJSON = { { "enviroment", op } };
             codeStatus = QHttpServerResponse::StatusCode::Ok;

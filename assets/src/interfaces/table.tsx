@@ -18,7 +18,7 @@ interface EditableCellProps<T> {
 interface enviromentType {
     key:          Key;
     insideFluid:  string;
-    outsideFluid: string;
+    // outsideFluid: string;
 }
 
 interface endCapType {

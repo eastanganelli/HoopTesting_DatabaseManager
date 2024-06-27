@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['dbmanager_2ecpp_0',['dbmanager.cpp',['../dbmanager_8cpp.html',1,'']]],
-  ['dbmanager_2eh_1',['dbmanager.h',['../dbmanager_8h.html',1,'']]]
+  ['main_2ecpp_0',['main.cpp',['../main_8cpp.html',1,'']]],
+  ['myreactpage_2ecpp_1',['myreactpage.cpp',['../myreactpage_8cpp.html',1,'']]],
+  ['myreactpage_2eh_2',['myreactpage.h',['../myreactpage_8h.html',1,'']]],
+  ['mywebengine_2ecpp_3',['mywebengine.cpp',['../mywebengine_8cpp.html',1,'']]]
 ];

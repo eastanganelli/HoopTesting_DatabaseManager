@@ -21,6 +21,7 @@ const Specifications: FunctionComponent<Props> = (Props : Props) => {
 
 	const handleAdd = () => {confirm({
 			title: 'Nueva Especificación',
+            centered: true,
 			content: ( <ModalSpecification myForm={newSpecificationForm} /> ),
 			okText: 'Guardar',
 			width: 550,

@@ -1,6 +1,5 @@
 var files_dup =
 [
-    [ "assets_rc.py", "assets__rc_8py.html", "assets__rc_8py" ],
     [ "dbmanager.cpp", "dbmanager_8cpp.html", null ],
     [ "dbmanager.h", "dbmanager_8h.html", "dbmanager_8h" ],
     [ "main.cpp", "main_8cpp.html", "main_8cpp" ],

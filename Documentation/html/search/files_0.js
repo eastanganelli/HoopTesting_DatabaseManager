@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['assets_5frc_2epy_0',['assets_rc.py',['../assets__rc_8py.html',1,'']]]
+  ['dbmanager_2ecpp_0',['dbmanager.cpp',['../dbmanager_8cpp.html',1,'']]],
+  ['dbmanager_2eh_1',['dbmanager.h',['../dbmanager_8h.html',1,'']]]
 ];

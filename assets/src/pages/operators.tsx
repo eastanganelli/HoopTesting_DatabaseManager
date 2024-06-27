@@ -25,7 +25,7 @@ const Operators = () => {
 			width: 550,
 			onOk: () => {
 				newOperatorForm.validateFields().then((values) => {
-					operatorCommunication.add({ key: 0, dni: values['dni'], name: values['name'], familyName: values['familyName'] }).then((response) => {
+					operatorCommunication.add({ dni: values['dni'], name: values['name'], familyName: values['familyName'] }).then((response) => {
 						setDataSource([...dataSource, response['data']]);
 						message.success(response['msg']);
 						newOperatorForm.resetFields();
@@ -97,7 +97,7 @@ const Operators = () => {
 	];
 
 	useEffect(() => {
-			operatorCommunication.get().then((response) => { console.log(response['data']); setDataSource(response['data']); }).catch((error) => { message.error(error); });
+			operatorCommunication.get().then((response) => { setDataSource(response['data']); }).catch((error) => { message.error(error); });
 	}, []);
 
     const components = { body: { row: EditableRow, cell: EditableCell } };

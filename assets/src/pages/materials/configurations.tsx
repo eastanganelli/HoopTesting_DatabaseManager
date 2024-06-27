@@ -27,14 +27,17 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
     };
 
 	const handleAdd = () => {
+        newConfigurationForm.resetFields();
+        newConfigurationForm.setFieldValue('type', 'h');
 		confirm({
 			title: 'Nueva Configuración',
+            centered: true,
 			content: ( <ModalConfiguration myForm={newConfigurationForm} /> ),
 			okText: 'Guardar',
 			width: 550,
 			onOk: () => {
 				newConfigurationForm.validateFields().then((values) => {
-                    configurationCommunication.add({ idSpecification: idSpecification, time: values['time'], type: newConfigurationForm.getFieldValue('type'), temperature: values['temperature'] }).then((response) => {
+                    configurationCommunication.add({ idSpecification: idSpecification, time: values['time'], type: values['type'], temperature: values['temperature'] }).then((response) => {
 						setDataSource([...dataSource, response['data']]);
                         message.success(response['msg']);
                         newConfigurationForm.resetFields();
@@ -56,6 +59,7 @@ const Configurations: FunctionComponent<Props> = (Props: Props) => {
         newConfigurationForm.setFieldsValue({ time: row['time'], type: row['type'], temperature: row['temperature'] });
 		confirm({
 			title: 'Modificar Configuración',
+            centered: true,
 			content: ( <ModalConfiguration myForm={newConfigurationForm} /> ),
 			okText: 'Guardar',
 			width: 550,

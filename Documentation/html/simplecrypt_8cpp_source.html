@@ -28,7 +28,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">DatabaseManager<span id="projectnumber">&#160;1.0</span>
+   <div id="projectname">DatabaseManager<span id="projectnumber">&#160;1.0.5</span>
    </div>
    <div id="projectbrief">Database Manager Documentation</div>
   </td>
@@ -207,7 +207,7 @@ $(function(){initNavTree('simplecrypt_8cpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        flags |= <a class="code hl_enumvalue" href="class_simple_crypt.html#abc7918ae3afd91a98831fad119add27aa95c36ec5a646eb510fdcf1fc86324b1c">CryptoFlagCompression</a>;</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (m_compressionMode == <a class="code hl_enumvalue" href="class_simple_crypt.html#a25298e746f175cf175a18f082092ca8ea8d04b76ed73553456ec87e88b18ddc66">CompressionAuto</a>) {</div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        QByteArray compressed = qCompress(ba, 9);</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        <span class="keywordflow">if</span> (compressed.count() &lt; ba.count()) {</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        <span class="keywordflow">if</span> (compressed.length() &lt; ba.length()) {</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>            ba = compressed;</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            flags |= <a class="code hl_enumvalue" href="class_simple_crypt.html#abc7918ae3afd91a98831fad119add27aa95c36ec5a646eb510fdcf1fc86324b1c">CryptoFlagCompression</a>;</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        }</div>
@@ -233,7 +233,7 @@ $(function(){initNavTree('simplecrypt_8cpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="keywordtype">int</span> pos(0);</div>
 <div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keywordtype">char</span> lastChar(0);</div>
 <div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    <span class="keywordtype">int</span> cnt = ba.count();</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    <span class="keywordtype">int</span> cnt = ba.length();</div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
 <div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    <span class="keywordflow">while</span> (pos &lt; cnt) {</div>
 <div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        ba[pos] = ba.at(pos) ^ m_keyParts.at(pos % 8) ^ lastChar;</div>
@@ -312,7 +312,7 @@ $(function(){initNavTree('simplecrypt_8cpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span> </div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    QByteArray ba = cypher;</div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    <span class="keywordflow">if</span>( cypher.count() &lt; 3 )</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    <span class="keywordflow">if</span>( cypher.length() &lt; 3 )</div>
 <div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        <span class="keywordflow">return</span> QByteArray();</div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <span class="keywordtype">char</span> version = ba.at(0);</div>
@@ -327,7 +327,7 @@ $(function(){initNavTree('simplecrypt_8cpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    ba = ba.mid(2);</div>
 <div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    <span class="keywordtype">int</span> pos(0);</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    <span class="keywordtype">int</span> cnt(ba.count());</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    <span class="keywordtype">int</span> cnt(ba.length());</div>
 <div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    <span class="keywordtype">char</span> lastChar = 0;</div>
 <div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span> </div>
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <span class="keywordflow">while</span> (pos &lt; cnt) {</div>

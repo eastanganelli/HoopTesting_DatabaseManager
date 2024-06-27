@@ -19,6 +19,7 @@ const Materials = () => {
 	const handleAdd = () => {
 		confirm({
 			title: 'Nuevo Material',
+            centered: true,
 			content: ( <ModalMaterial myForm={newMaterialForm} /> ),
 			okText: 'Guardar',
 			width: 550,

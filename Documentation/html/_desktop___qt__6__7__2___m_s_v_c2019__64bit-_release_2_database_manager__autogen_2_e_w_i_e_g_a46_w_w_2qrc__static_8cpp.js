@@ -1,0 +1,7 @@
+var _desktop___qt__6__7__2___m_s_v_c2019__64bit__release_2_database_manager__autogen_2_e_w_i_e_g_a46_w_w_2qrc__static_8cpp =
+[
+    [ "QT_RCC_MANGLE_NAMESPACE", "_desktop___qt__6__7__2___m_s_v_c2019__64bit-_release_2_database_manager__autogen_2_e_w_i_e_g_a46_w_w_2qrc__static_8cpp.html#a590f80ddb226779f6f432d80438ea190", null ],
+    [ "QT_RCC_PREPEND_NAMESPACE", "_desktop___qt__6__7__2___m_s_v_c2019__64bit-_release_2_database_manager__autogen_2_e_w_i_e_g_a46_w_w_2qrc__static_8cpp.html#afbfc3bb3cd2fa03dd0a3fc36563480d6", null ],
+    [ "qCleanupResources_static", "_desktop___qt__6__7__2___m_s_v_c2019__64bit-_release_2_database_manager__autogen_2_e_w_i_e_g_a46_w_w_2qrc__static_8cpp.html#a51721281619c3e4b5be19b6989bc288c", null ],
+    [ "qInitResources_static", "_desktop___qt__6__7__2___m_s_v_c2019__64bit-_release_2_database_manager__autogen_2_e_w_i_e_g_a46_w_w_2qrc__static_8cpp.html#a937a4e47ebe3577403958bcb3c3a7073", null ]
+];

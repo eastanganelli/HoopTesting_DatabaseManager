@@ -1,30 +1,28 @@
 import React, { FunctionComponent } from "react";
-import { Form, FormInstance, InputNumber, Select } from "antd";
+import { Form, FormInstance, InputNumber, Select, Space } from "antd";
 
 interface Props { myForm: FormInstance<{ time: number; type: string; temperature: number; }>; }
 
 const { Option } = Select;
+
+const optionsSelect: { value: string; label: string }[] = [{ value: 'h', label: 'h' }, { value: 's', label: 's' }];
 
 const ModalConfiguration: FunctionComponent<Props> = (Props: Props) => {
     const { myForm } = Props;
 
     return (
         <Form form={myForm} layout="vertical" variant="filled">
-            <Form.Item label="Tiempo " name="time" rules={[{ required: true, message: 'Tiempo es requerido!' }]}>
-                <InputNumber
-                    min={0}
-                    addonAfter={
-                        <Select
-                            defaultValue={myForm.getFieldValue('type') === 's' ? 's' : myForm.getFieldValue('type') === 'm' ? 'm' : 'h'}
-                            onSelect={(value) => { Props['myForm']?.setFieldValue('type', value); } }
-                        >
-                            <Option value="h">Horas</Option>
-                            <Option value="m">Minutos</Option>
-                            <Option value="s">Segundos</Option>
-                        </Select>}
-                />
+            <Form.Item label="Tiempo" rules={[{ required: true }]}>
+                <Space>
+                    <Form.Item name="time">
+                        <InputNumber min={0} />
+                    </Form.Item>
+                    <Form.Item name="type">
+                        <Select onSelect={(element) => { Props['myForm']?.setFieldValue("type", element); }} defaultValue={{ value: 'h', label: 'h' }} options={optionsSelect} />
+                    </Form.Item>
+                </Space>
             </Form.Item>
-            <Form.Item label="Temperatura" name="temperature" rules={[{ required: true, message: 'Temperatura es requerido!' }]}>
+            <Form.Item label="Temperatura" name="temperature" rules={[{ required: true }]}>
                 <InputNumber min={0} addonAfter="°C" />
             </Form.Item>
         </Form>

@@ -31,14 +31,14 @@ export const StandardMsgs = {
 
 export const EndCapMsgs = {
     success: {
-        create: "EndCap creado con éxito!",
-        update: "EndCap actualizado con éxito!",
-        delete: "EndCap eliminado con éxito!"
+        create: "Tapa creada con éxito!",
+        update: "Tapa actualizada con éxito!",
+        delete: "Tapa eliminada con éxito!"
     },
     error: {
-        create: "Error al crear el EndCap!",
-        update: "Error al actualizar el EndCap!",
-        delete: "Error al eliminar el EndCap!"
+        create: "Error al crear la Tapa!",
+        update: "Error al actualizar la Tapa!",
+        delete: "Error al eliminar la Tapa!"
     }
 };
 

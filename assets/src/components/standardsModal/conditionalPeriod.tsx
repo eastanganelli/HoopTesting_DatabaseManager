@@ -17,8 +17,9 @@ const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
                 <Space>
                     <Form.Item>
                         <Checkbox onChange={(e) => {
+                            if(!supMaxWall) { setSupMaxWall(supMaxWall); }
                             setInfMinWall(!e.target.checked);
-                            if (e.target.checked) { myForm.setFieldsValue({ minWall: -99999 }); }
+                            if (e.target.checked) { myForm.setFieldsValue({ minWall: 0 }); }
                             else { myForm.setFieldsValue({ maxWall: 0 }); }
                         }}>{`Limite Inferior`}</Checkbox>
                     </Form.Item>
@@ -30,6 +31,7 @@ const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
                     </Form.Item>
                     <Form.Item>
                         <Checkbox onChange={(e) => {
+                            if(!infMinWall) { setSupMaxWall(infMinWall); }
                             setSupMaxWall(!e.target.checked);
                             if (e.target.checked) { myForm.setFieldsValue({ maxWall: -99999 }); }
                             else { myForm.setFieldsValue({ maxWall: 0 }); }

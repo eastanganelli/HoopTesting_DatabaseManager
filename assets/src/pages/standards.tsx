@@ -18,7 +18,7 @@ const widthMaxForm = Math.floor(window.innerWidth);
 const columnsWidth = Math.floor(window.innerWidth/5.0);
 
 const printConditional = (minWall: number, maxWall: number): any => {
-    if (minWall == -99999)      { return `Menor ${maxWall} mm`; }
+    if (minWall == 0)      { return `Menor ${maxWall} mm`; }
     else if (maxWall == 99999)  { return `Igual o mayor ${minWall} mm`; }
     return `De ${minWall} a ${maxWall} mm`;
 };

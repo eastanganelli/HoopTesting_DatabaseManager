@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from "react";
-import { Form, Space, InputNumber, Select, FormInstance } from "antd";
+import { Form, Space, InputNumber, Select, FormInstance, Checkbox } from "antd";
 
 interface Props { myForm: FormInstance<{ aproxTime: number; aproxType: string; maxWall: number; minWall: number; time: number; timeType: string; }> }
 
@@ -23,6 +23,9 @@ const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
             </Form.Item>
             <Form.Item label="Período">
                 <Space>
+                    <Form.Item name="inferiorMax">
+                        <Checkbox>{`Limite Superior`}</Checkbox>
+                    </Form.Item>
                     <Form.Item name="time" rules={[{ required: true }]}>
                         <InputNumber min={0} />
                     </Form.Item>
@@ -34,6 +37,9 @@ const ModalConditionalPeriod: FunctionComponent<Props> = (Props: Props) => {
                     </Form.Item>
                     <Form.Item name="aproxTime" rules={[{ required: true }]}>
                         <InputNumber min={0} />
+                    </Form.Item>
+                    <Form.Item name="inferiorMax">
+                        <Checkbox>{`Limite Superior`}</Checkbox>
                     </Form.Item>
                     <Form.Item name="aproxType" style={{ width: "vw" }}>
                         <Select onChange={(element) => { Props['myForm']?.setFieldValue("aproxType", element); }} defaultValue={{ value: 'min', label: 'min' }} options={optionsSelect} />

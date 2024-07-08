@@ -33,7 +33,7 @@ interface testTypeType {
 
 interface conditionalPeriodType {
     key:        Key;
-    condPeriod: number;
+    condPeriod: string;
     minwall:    number;
     maxwall:    number;
 }

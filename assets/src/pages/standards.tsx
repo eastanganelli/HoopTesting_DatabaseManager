@@ -17,13 +17,19 @@ import ModalTestType          from '../components/standardsModal/testtype';
 const widthMaxForm = Math.floor(window.innerWidth);
 const columnsWidth = Math.floor(window.innerWidth/5.0);
 
+const printConditional = (minWall: number, maxWall: number, conditionalperiod: string): any => {
+    if (minWall == -99999)      { return `Menor ${maxWall} mm <br/> ${conditionalperiod}`; }
+    else if (maxWall == -90999) { return `Igual o mayor ${minWall} mm <br/> ${conditionalperiod}`; }
+    return `De ${minWall} a ${maxWall} mm <br/> ${conditionalperiod}`;
+};
+
 const { confirm } = Modal;
 
 const Standards = () => {
     const { token } = theme.useToken();
     const [dataSource, setDataSource] = useState<standardType[]>([]);
     const [newStandardForm]   = Form.useForm();
-    const [newTestTypeForm] = Form.useForm();
+    const [newTestTypeForm]   = Form.useForm();
     const [newConditionalPeriodForm] = Form.useForm();
     const [newEndCapForm]     = Form.useForm();
     const [newMaterialForm]   = Form.useForm();
@@ -277,7 +283,7 @@ const Standards = () => {
             width: columnsWidth * 1.5,
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
-                    {conditionalPeriods.sort((a, b) => a['minwall'] < b['minwall'] ? -1 : 1).map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{`[${value['minwall']} a ${value['maxwall']}] mm`}<br/>{`${value['condPeriod']}`}</Tag>)}
+                    {conditionalPeriods.sort((a, b) => a['minwall'] < b['minwall'] ? -1 : 1).map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{printConditional(value['minwall'], value['maxwall'], value['condPeriod'])}</Tag>)}
                     <Tag key={`new_conditionalperiod_${index}`} onClick={() => ConditionalPeriod.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },

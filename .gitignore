@@ -2,7 +2,6 @@
 [Aa]ssets/[Dd]ist/
 [As]ssets/[Nn]ode_modules/
 [Dd]ist/bundle.js
-
 [Cc]MakeLists.txt.user
-
+[Aa]ssets_rc.py
 *.txt.user

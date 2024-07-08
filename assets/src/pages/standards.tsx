@@ -17,10 +17,10 @@ import ModalTestType          from '../components/standardsModal/testtype';
 const widthMaxForm = Math.floor(window.innerWidth);
 const columnsWidth = Math.floor(window.innerWidth/5.0);
 
-const printConditional = (minWall: number, maxWall: number, conditionalperiod: string): any => {
-    if (minWall == -99999)      { return `Menor ${maxWall} mm <br/> ${conditionalperiod}`; }
-    else if (maxWall == -90999) { return `Igual o mayor ${minWall} mm <br/> ${conditionalperiod}`; }
-    return `De ${minWall} a ${maxWall} mm <br/> ${conditionalperiod}`;
+const printConditional = (minWall: number, maxWall: number): any => {
+    if (minWall == -99999)      { return `Menor ${maxWall} mm`; }
+    else if (maxWall == 99999)  { return `Igual o mayor ${minWall} mm`; }
+    return `De ${minWall} a ${maxWall} mm`;
 };
 
 const { confirm } = Modal;
@@ -168,7 +168,6 @@ const Standards = () => {
                 },
                 cancelText: 'Cancelar',
                 onCancel: () => { },
-
             });
         },
         delete: (key: number) => {
@@ -283,7 +282,7 @@ const Standards = () => {
             width: columnsWidth * 1.5,
             render: (conditionalPeriods: conditionalPeriodType[], record, index) =>
                 <>
-                    {conditionalPeriods.sort((a, b) => a['minwall'] < b['minwall'] ? -1 : 1).map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{printConditional(value['minwall'], value['maxwall'], value['condPeriod'])}</Tag>)}
+                    {conditionalPeriods.sort((a, b) => a['minwall'] < b['minwall'] ? -1 : 1).map((value: conditionalPeriodType) => <Tag key={`time_${value['key']}`} closeIcon onClose={() => ConditionalPeriod.delete(Number(value['key']))}>{printConditional(value['minwall'], value['maxwall'])}<br/>{`${value['condPeriod']}`}</Tag>)}
                     <Tag key={`new_conditionalperiod_${index}`} onClick={() => ConditionalPeriod.new(record)} style={tagPlusStyle}><PlusOutlined /></Tag>
                 </>
         },
